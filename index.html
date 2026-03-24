@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beauty Bar Salon - Where Luxury Meets Beauty ✨</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="/" class="logo">Beauty Bar ✨</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="#services">Services</a>
+            <a href="#gallery">Gallery</a>
+            <a href="#team">Our Team</a>
+            <a href="booking.html">Book Now</a>
+            <a href="gift-card.html">Gift Cards</a>
+            <a href="history.html">My Bookings</a>
+            <!-- Social Icons in Navbar -->
+            <div class="social-nav">
+                <a href="#" class="social-icon" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="social-icon" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-icon" target="_blank"><i class="fab fa-pinterest"></i></a>
+            </div>
+            <button class="btn btn-outline" id="loginBtn">Login</button>
+        </div>
+    </nav>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/1234567890?text=Hello%20Beauty%20Bar%20Salon%2C%20I%20want%20to%20book%20an%20appointment%20for" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Hero Section with Video Background -->
+    <section class="hero" style="background: linear-gradient(135deg, rgba(183, 110, 121, 0.2), rgba(248, 215, 218, 0.3)), url('https://images.unsplash.com/photo-1562322140-8baeececf3df?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') center/cover no-repeat;">
+        <div class="hero-content">
+            <h1>Where Beauty Meets Luxury</h1>
+            <p>Experience premium salon services in an elegant atmosphere. Book your appointment today and get 30% off on your first visit!</p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <a href="booking.html" class="btn btn-primary">Book Appointment</a>
+                <a href="#gallery" class="btn btn-outline">View Gallery</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Client Love Counter -->
+    <section class="love-counter">
+        <div class="counter-grid">
+            <div class="counter-item">
+                <div class="counter-number" id="happyClients">15,000+</div>
+                <div class="counter-label">Happy Clients</div>
+            </div>
+            <div class="counter-item">
+                <div class="counter-number" id="servicesDone">45,000+</div>
+                <div class="counter-label">Services Done</div>
+            </div>
+            <div class="counter-item">
+                <div class="counter-number" id="expertStylists">25+</div>
+                <div class="counter-label">Expert Stylists</div>
+            </div>
+            <div class="counter-item">
+                <div class="counter-number" id="awardsWon">12</div>
+                <div class="counter-label">Awards Won</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <h2 class="section-title">Our Premium Services</h2>
+        <div class="services-grid" id="services-grid">
+            <!-- Services will be loaded dynamically -->
+        </div>
+    </section>
+
+    <!-- Image Gallery Section -->
+    <section class="gallery-section" id="gallery">
+        <h2 class="section-title">Our Beautiful Studio</h2>
+        <p style="text-align: center; margin-bottom: 2rem; color: #666;">Take a virtual tour of our luxury salon</p>
+        <div class="gallery-grid" id="gallery-grid">
+            <!-- Gallery images will be loaded here -->
+        </div>
+    </section>
+
+    <!-- Before/After Transformations -->
+    <section class="before-after-section">
+        <h2 class="section-title">Real Transformations</h2>
+        <p style="text-align: center; margin-bottom: 2rem; color: #666;">See the magic our stylists create</p>
+        <div class="before-after-container" id="transformations">
+            <!-- Before/After sliders will be loaded here -->
+        </div>
+    </section>
+
+    <!-- Video Tour -->
+    <section class="video-tour">
+        <h2 class="section-title">Take a Tour of Our Salon</h2>
+        <div class="video-container">
+            <video poster="https://images.unsplash.com/photo-1522337660859-02fbefca4700?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80">
+                <source src="https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" type="video/mp4">
+            </video>
+            <div class="video-overlay">
+                <div class="play-button" onclick="playVideo()">
+                    <i class="fas fa-play"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meet Our Team -->
+    <section class="team-section" id="team">
+        <h2 class="section-title">Meet Our Expert Stylists</h2>
+        <p style="text-align: center; margin-bottom: 2rem; color: #666;">Award-winning professionals dedicated to your beauty</p>
+        <div class="team-grid" id="team-grid">
+            <!-- Team members will be loaded here -->
+        </div>
+    </section>
+
+    <!-- Client Testimonials -->
+    <section class="testimonials">
+        <h2 class="section-title">What Our Clients Say</h2>
+        <div class="testimonials-slider" id="testimonials-slider">
+            <!-- Testimonials will be loaded here -->
+        </div>
+    </section>
+
+    <!-- Instagram Feed -->
+    <section class="instagram-feed">
+        <h2 class="section-title">Follow Us on Instagram</h2>
+        <p style="text-align: center; margin-bottom: 2rem;">@beautybarsalon</p>
+        <div class="instagram-grid" id="instagram-feed">
+            <!-- Instagram posts will be loaded here -->
+        </div>
+    </section>
+
+    <!-- Awards & Recognition -->
+    <section class="awards-section">
+        <h2 class="section-title" style="color: var(--white);">Awards & Recognition</h2>
+        <div class="awards-grid">
+            <div class="award-item">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Award">
+                <p>Best Salon 2023</p>
+            </div>
+            <div class="award-item">
+                <img src="https://cdn-icons-png.flaticon.com/512/1865/1865269.png" alt="Award">
+                <p>Luxury Beauty Award</p>
+            </div>
+            <div class="award-item">
+                <img src="https://cdn-icons-png.flaticon.com/512/3095/3095583.png" alt="Award">
+                <p>Top Stylist Team</p>
+            </div>
+            <div class="award-item">
+                <img src="https://cdn-icons-png.flaticon.com/512/2632/2632048.png" alt="Award">
+                <p>Customer Choice 2024</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Signup -->
+    <section class="newsletter">
+        <div class="newsletter-box">
+            <h3>Get Exclusive Offers</h3>
+            <p>Subscribe to receive special discounts and beauty tips</p>
+            <form class="newsletter-form" onsubmit="return subscribeNewsletter(event)">
+                <input type="email" class="newsletter-input" placeholder="Your email address" required>
+                <button type="submit" class="btn btn-primary">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Beauty Bar Salon</h3>
+                <p>Experience luxury beauty services in the heart of the city. Our expert stylists are here to make you feel beautiful.</p>
+                <div class="footer-social">
+                    <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-youtube"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-pinterest"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <p><a href="#services" style="color: #ccc; text-decoration: none;">Services</a></p>
+                <p><a href="#gallery" style="color: #ccc; text-decoration: none;">Gallery</a></p>
+                <p><a href="#team" style="color: #ccc; text-decoration: none;">Our Team</a></p>
+                <p><a href="booking.html" style="color: #ccc; text-decoration: none;">Book Now</a></p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+                <p><i class="fas fa-envelope"></i> info@beautybarsalon.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Luxury Lane, Mumbai - 400001</p>
+            </div>
+            <div class="footer-section">
+                <h3>Working Hours</h3>
+                <p>Monday - Friday: 10am - 8pm</p>
+                <p>Saturday: 10am - 6pm</p>
+                <p>Sunday: 11am - 5pm</p>
+                <p style="color: var(--primary); margin-top: 1rem;">Emergency: +91 98765 43211</p>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2024 Beauty Bar Salon. All rights reserved. | Designed with ❤️ for luxury beauty</p>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2 style="text-align: center; margin-bottom: 2rem;">Welcome Back! 👋</h2>
+            <div class="google-login" id="googleLogin">
+                <img src="https://www.google.com/favicon.ico" alt="Google">
+                <span>Continue with Google</span>
+            </div>
+            <p style="text-align: center; color: #666; margin-top: 1rem;">Only Gmail accounts are accepted for booking</p>
+        </div>
+    </div>
+
+    <!-- Lightbox for Gallery -->
+    <div class="lightbox" id="lightbox">
+        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <span class="lightbox-prev" onclick="changeImage(-1)">&#10094;</span>
+        <span class="lightbox-next" onclick="changeImage(1)">&#10095;</span>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="">
+            <div class="lightbox-counter" id="lightbox-counter">1/5</div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/gallery.js"></script>
+</body>
+</html>
