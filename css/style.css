@@ -11,8 +11,97 @@
     --gradient: linear-gradient(135deg, #B76E79, #F8D7DA);
     --font-heading: 'Playfair Display', serif;
     --font-body: 'Poppins', sans-serif;
+  
+}
+/* FULL WIDTH FIX */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
+html, body {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* If you have any container class, ensure it's full width */
+.container, .main-container, .wrapper, #root, .app {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+}
+/* Add at the beginning of your CSS file, after :root */
+html, body {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+/* Ensure all main containers use full width */
+.navbar,
+.hero,
+.services,
+.booking-section,
+.gallery-section,
+.team-section,
+.testimonials,
+.instagram-feed,
+.awards-section,
+.video-tour,
+.love-counter,
+.newsletter,
+.footer {
+    width: 100%;
+}
+
+/* If you have a main wrapper, ensure it's full width */
+main, .app, #root {
+    width: 100%;
+    overflow-x: hidden;
+}
+/* FULL WIDTH FIX */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* If you have any container class, ensure it's full width */
+.container, .main-container, .wrapper, #root, .app {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+}
 /* Add to existing style.css */
 
 /* Image Gallery Styles */
