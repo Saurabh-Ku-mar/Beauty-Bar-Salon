@@ -6,6 +6,9 @@ class GoogleAuth {
     }
 
     init() {
+        // Check for existing session
+        this.checkSession();
+        
         // Load Google Identity Services
         const script = document.createElement('script');
         script.src = 'https://accounts.google.com/gsi/client';
@@ -16,23 +19,20 @@ class GoogleAuth {
         script.onload = () => {
             this.initializeGoogleSignIn();
         };
-
-        // Check for existing session
-        this.checkSession();
+        
+        // Setup login button
+        this.setupLoginButton();
     }
 
     initializeGoogleSignIn() {
-        google.accounts.id.initialize({
-            client_id: 'YOUR_GOOGLE_CLIENT_ID', // Replace with your Google Client ID
-            callback: this.handleCredentialResponse.bind(this),
-            auto_select: false,
-            cancel_on_tap_outside: true
-        });
-
-        // Attach click handler to Google login button
-        document.getElementById('googleLogin')?.addEventListener('click', () => {
-            google.accounts.id.prompt();
-        });
+        if (typeof google !== 'undefined') {
+            google.accounts.id.initialize({
+                client_id: 'YOUR_GOOGLE_CLIENT_ID', // Replace with your Google Client ID
+                callback: this.handleCredentialResponse.bind(this),
+                auto_select: false,
+                cancel_on_tap_outside: true
+            });
+        }
     }
 
     async handleCredentialResponse(response) {
@@ -53,11 +53,16 @@ class GoogleAuth {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
                 
-                this.showToast('Login successful!', 'success');
-                document.getElementById('loginModal').classList.remove('active');
+                this.showToast('Login successful! Welcome back!', 'success');
+                this.closeModal();
                 this.updateUIForLoggedInUser();
+                
+                // Redirect if on booking page
+                if (window.location.pathname.includes('booking.html')) {
+                    this.loadUserDetails();
+                }
             } else {
-                this.showToast('Login failed. Please try again.', 'error');
+                this.showToast(data.message || 'Login failed. Please try again.', 'error');
             }
         } catch (error) {
             console.error('Login error:', error);
@@ -72,15 +77,97 @@ class GoogleAuth {
         if (token && user) {
             this.user = JSON.parse(user);
             this.updateUIForLoggedInUser();
+            this.verifyToken(token);
+        }
+    }
+
+    async verifyToken(token) {
+        try {
+            const response = await fetch('/api/auth/verify', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (!response.ok) {
+                this.logout();
+            }
+        } catch (error) {
+            console.error('Token verification failed:', error);
+        }
+    }
+
+    setupLoginButton() {
+        const loginBtn = document.getElementById('loginBtn');
+        if (loginBtn) {
+            loginBtn.addEventListener('click', () => {
+                if (this.isAuthenticated()) {
+                    this.showLogoutConfirm();
+                } else {
+                    this.openModal();
+                }
+            });
+        }
+        
+        // Setup modal close
+        const closeModal = document.getElementById('closeModal');
+        if (closeModal) {
+            closeModal.addEventListener('click', () => this.closeModal());
+        }
+        
+        // Close modal on outside click
+        const modal = document.getElementById('loginModal');
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) this.closeModal();
+            });
+        }
+        
+        // Setup Google login button in modal
+        const googleLogin = document.getElementById('googleLogin');
+        if (googleLogin) {
+            googleLogin.addEventListener('click', () => {
+                if (typeof google !== 'undefined') {
+                    google.accounts.id.prompt();
+                } else {
+                    this.showToast('Loading Google Sign-In...', 'info');
+                }
+            });
+        }
+    }
+
+    openModal() {
+        const modal = document.getElementById('loginModal');
+        if (modal) {
+            modal.classList.add('active');
+        }
+    }
+
+    closeModal() {
+        const modal = document.getElementById('loginModal');
+        if (modal) {
+            modal.classList.remove('active');
         }
     }
 
     updateUIForLoggedInUser() {
         const loginBtn = document.getElementById('loginBtn');
         if (loginBtn && this.user) {
-            loginBtn.textContent = this.user.email.split('@')[0];
+            loginBtn.innerHTML = `<i class="fas fa-user-circle"></i> ${this.user.name.split(' ')[0]}`;
             loginBtn.classList.remove('btn-outline');
             loginBtn.classList.add('btn-primary');
+        }
+        
+        // Update any user-specific elements
+        const userGreeting = document.getElementById('userGreeting');
+        if (userGreeting) {
+            userGreeting.textContent = `Welcome, ${this.user.name}!`;
+        }
+    }
+
+    showLogoutConfirm() {
+        if (confirm('Do you want to logout?')) {
+            this.logout();
         }
     }
 
@@ -91,15 +178,34 @@ class GoogleAuth {
         
         const loginBtn = document.getElementById('loginBtn');
         if (loginBtn) {
-            loginBtn.textContent = 'Login';
+            loginBtn.innerHTML = 'Login';
             loginBtn.classList.add('btn-outline');
             loginBtn.classList.remove('btn-primary');
         }
-
+        
         this.showToast('Logged out successfully', 'info');
+        
+        // Reload page if on booking page
+        if (window.location.pathname.includes('booking.html')) {
+            window.location.reload();
+        }
+    }
+
+    loadUserDetails() {
+        if (this.user) {
+            const nameInput = document.getElementById('customer-name');
+            const emailInput = document.getElementById('customer-email');
+            
+            if (nameInput) nameInput.value = this.user.name;
+            if (emailInput) emailInput.value = this.user.email;
+        }
     }
 
     showToast(message, type = 'info') {
+        // Remove existing toast
+        const existingToast = document.querySelector('.toast');
+        if (existingToast) existingToast.remove();
+        
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
         toast.innerHTML = `
@@ -110,7 +216,8 @@ class GoogleAuth {
         document.body.appendChild(toast);
         
         setTimeout(() => {
-            toast.remove();
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
         }, 3000);
     }
 
@@ -123,30 +230,11 @@ class GoogleAuth {
     }
 }
 
-// Initialize authentication
-const auth = new GoogleAuth();
-
-// Login button event listener
-document.getElementById('loginBtn')?.addEventListener('click', () => {
-    if (auth.isAuthenticated()) {
-        // Show logout option or profile
-        if (confirm('Do you want to logout?')) {
-            auth.logout();
-        }
-    } else {
-        document.getElementById('loginModal').classList.add('active');
-    }
+// Initialize authentication when page loads
+let auth;
+document.addEventListener('DOMContentLoaded', () => {
+    auth = new GoogleAuth();
 });
 
-// Close modal
-document.getElementById('closeModal')?.addEventListener('click', () => {
-    document.getElementById('loginModal').classList.remove('active');
-});
-
-// Close modal when clicking outside
-window.addEventListener('click', (e) => {
-    const modal = document.getElementById('loginModal');
-    if (e.target === modal) {
-        modal.classList.remove('active');
-    }
-});
+// Export for use in other files
+window.auth = auth;
