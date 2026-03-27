@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Staff - Beauty Bar Salon</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .admin-container { display: flex; min-height: 100vh; }
+        .admin-sidebar { width: 280px; background: var(--dark); color: white; padding: 2rem; position: fixed; height: 100vh; overflow-y: auto; }
+        .admin-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 2rem; text-align: center; }
+        .admin-nav { list-style: none; }
+        .admin-nav li { margin-bottom: 0.5rem; }
+        .admin-nav a { display: flex; align-items: center; gap: 1rem; padding: 12px 15px; color: #ccc; text-decoration: none; border-radius: 10px; transition: all 0.3s; }
+        .admin-nav a:hover, .admin-nav a.active { background: rgba(255,255,255,0.1); color: white; }
+        .admin-main { flex: 1; margin-left: 280px; padding: 2rem; background: var(--light); }
+        
+        .staff-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+        .staff-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: var(--shadow); text-align: center; }
+        .staff-card img { width: 100%; height: 250px; object-fit: cover; }
+        .staff-info { padding: 1rem; }
+        .staff-actions { display: flex; gap: 0.5rem; margin-top: 1rem; padding: 0 1rem 1rem; }
+        .staff-actions button { flex: 1; padding: 8px; border: none; border-radius: 8px; cursor: pointer; }
+        .btn-edit { background: #2196F3; color: white; }
+        .btn-delete { background: #F44336; color: white; }
+        
+        @media (max-width: 768px) {
+            .admin-sidebar { width: 70px; padding: 1rem; }
+            .admin-logo span, .admin-nav a span { display: none; }
+            .admin-main { margin-left: 70px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-sidebar">
+            <div class="admin-logo"><i class="fas fa-crown"></i><span>Beauty Bar</span></div>
+            <ul class="admin-nav">
+                <li><a href="dashboard.html"><i class="fas fa-chart-line"></i><span>Dashboard</span></a></li>
+                <li><a href="bookings.html"><i class="fas fa-calendar-check"></i><span>Bookings</span></a></li>
+                <li><a href="services.html"><i class="fas fa-cut"></i><span>Services</span></a></li>
+                <li><a href="staff.html" class="active"><i class="fas fa-users"></i><span>Staff</span></a></li>
+                <li><a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
+            </ul>
+        </div>
+        
+        <div class="admin-main">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2>Manage Staff</h2>
+                <button class="btn btn-primary" onclick="openStaffModal()">+ Add New Staff</button>
+            </div>
+            
+            <div id="staff-grid" class="staff-grid"></div>
+        </div>
+    </div>
+    
+    <div id="staff-modal" class="modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000;">
+        <div class="modal-content" style="background: white; padding: 2rem; border-radius: 15px; max-width: 500px; width: 90%;">
+            <h3 id="modal-title">Add New Staff</h3>
+            <form id="staff-form">
+                <input type="hidden" id="staff-id">
+                <div class="form-group"><label>Full Name</label><input type="text" id="staff-name" class="form-control" required></div>
+                <div class="form-group"><label>Position</label><input type="text" id="staff-position" class="form-control" required></div>
+                <div class="form-group"><label>Specialty</label><input type="text" id="staff-specialty" class="form-control" required></div>
+                <div class="form-group"><label>Experience</label><input type="text" id="staff-experience" class="form-control" placeholder="5+ years" required></div>
+                <div class="form-group"><label>Image URL</label><input type="text" id="staff-image" class="form-control" placeholder="https://..."></div>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <button type="submit" class="btn btn-primary">Save Staff</button>
+                    <button type="button" class="btn btn-outline" onclick="closeStaffModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        if (!localStorage.getItem('adminLoggedIn')) window.location.href = 'login.html';
+        
+        let staff = [
+            { id: 1, name: "Priya Sharma", position: "Senior Makeup Artist", specialty: "Bridal Makeup", experience: "12+ years", image: "https://images.unsplash.com/photo-1494790108777-223fd4f5603d?w=200" },
+            { id: 2, name: "Anjali Desai", position: "Hair Stylist", specialty: "Hair Color", experience: "8+ years", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200" },
+            { id: 3, name: "Meera Kapoor", position: "Skincare Expert", specialty: "Facial Treatments", experience: "10+ years", image: "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?w=200" }
+        ];
+        
+        function displayStaff() {
+            const grid = document.getElementById('staff-grid');
+            grid.innerHTML = staff.map(s => `
+                <div class="staff-card">
+                    <img src="${s.image}" alt="${s.name}">
+                    <div class="staff-info">
+                        <h3>${s.name}</h3>
+                        <p style="color: var(--primary);">${s.position}</p>
+                        <p>🎯 ${s.specialty}</p>
+                        <p>⭐ ${s.experience}</p>
+                        <div class="staff-actions">
+                            <button class="btn-edit" onclick="editStaff(${s.id})">Edit</button>
+                            <button class="btn-delete" onclick="deleteStaff(${s.id})">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function openStaffModal(staffMember = null) {
+            const modal = document.getElementById('staff-modal');
+            modal.style.display = 'flex';
+            if (staffMember) {
+                document.getElementById('modal-title').textContent = 'Edit Staff';
+                document.getElementById('staff-id').value = staffMember.id;
+                document.getElementById('staff-name').value = staffMember.name;
+                document.getElementById('staff-position').value = staffMember.position;
+                document.getElementById('staff-specialty').value = staffMember.specialty;
+                document.getElementById('staff-experience').value = staffMember.experience;
+                document.getElementById('staff-image').value = staffMember.image;
+            } else {
+                document.getElementById('modal-title').textContent = 'Add New Staff';
+                document.getElementById('staff-form').reset();
+                document.getElementById('staff-id').value = '';
+            }
+        }
+        
+        function closeStaffModal() {
+            document.getElementById('staff-modal').style.display = 'none';
+        }
+        
+        function editStaff(id) {
+            const staffMember = staff.find(s => s.id === id);
+            if (staffMember) openStaffModal(staffMember);
+        }
+        
+        function deleteStaff(id) {
+            if (confirm('Remove this staff member?')) {
+                staff = staff.filter(s => s.id !== id);
+                displayStaff();
+            }
+        }
+        
+        document.getElementById('staff-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('staff-id').value;
+            const staffData = {
+                name: document.getElementById('staff-name').value,
+                position: document.getElementById('staff-position').value,
+                specialty: document.getElementById('staff-specialty').value,
+                experience: document.getElementById('staff-experience').value,
+                image: document.getElementById('staff-image').value
+            };
+            
+            if (id) {
+                const index = staff.findIndex(s => s.id == id);
+                if (index !== -1) staff[index] = { ...staff[index], ...staffData };
+            } else {
+                staffData.id = Date.now();
+                staff.push(staffData);
+            }
+            
+            closeStaffModal();
+            displayStaff();
+        });
+        
+        document.getElementById('logout-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'login.html';
+        });
+        
+        displayStaff();
+    </script>
+</body>
+</html>
