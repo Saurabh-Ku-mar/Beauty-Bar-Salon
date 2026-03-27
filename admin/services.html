@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Services - Beauty Bar Salon</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .admin-container { display: flex; min-height: 100vh; }
+        .admin-sidebar { width: 280px; background: var(--dark); color: white; padding: 2rem; position: fixed; height: 100vh; overflow-y: auto; }
+        .admin-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 2rem; text-align: center; }
+        .admin-nav { list-style: none; }
+        .admin-nav li { margin-bottom: 0.5rem; }
+        .admin-nav a { display: flex; align-items: center; gap: 1rem; padding: 12px 15px; color: #ccc; text-decoration: none; border-radius: 10px; transition: all 0.3s; }
+        .admin-nav a:hover, .admin-nav a.active { background: rgba(255,255,255,0.1); color: white; }
+        .admin-main { flex: 1; margin-left: 280px; padding: 2rem; background: var(--light); }
+        
+        .add-service-btn { margin-bottom: 2rem; }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+        .service-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: var(--shadow); }
+        .service-card img { width: 100%; height: 180px; object-fit: cover; }
+        .service-info { padding: 1rem; }
+        .service-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
+        .service-actions button { flex: 1; padding: 8px; border: none; border-radius: 8px; cursor: pointer; }
+        .btn-edit { background: #2196F3; color: white; }
+        .btn-delete { background: #F44336; color: white; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; padding: 2rem; border-radius: 15px; max-width: 500px; width: 90%; }
+        
+        @media (max-width: 768px) {
+            .admin-sidebar { width: 70px; padding: 1rem; }
+            .admin-logo span, .admin-nav a span { display: none; }
+            .admin-main { margin-left: 70px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-sidebar">
+            <div class="admin-logo"><i class="fas fa-crown"></i><span>Beauty Bar</span></div>
+            <ul class="admin-nav">
+                <li><a href="dashboard.html"><i class="fas fa-chart-line"></i><span>Dashboard</span></a></li>
+                <li><a href="bookings.html"><i class="fas fa-calendar-check"></i><span>Bookings</span></a></li>
+                <li><a href="services.html" class="active"><i class="fas fa-cut"></i><span>Services</span></a></li>
+                <li><a href="staff.html"><i class="fas fa-users"></i><span>Staff</span></a></li>
+                <li><a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
+            </ul>
+        </div>
+        
+        <div class="admin-main">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2>Manage Services</h2>
+                <button class="btn btn-primary" onclick="openModal()">+ Add New Service</button>
+            </div>
+            
+            <div id="services-grid" class="services-grid"></div>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Modal -->
+    <div id="service-modal" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-title">Add New Service</h3>
+            <form id="service-form">
+                <input type="hidden" id="service-id">
+                <div class="form-group"><label>Service Name</label><input type="text" id="service-name" class="form-control" required></div>
+                <div class="form-group"><label>Category</label>
+                    <select id="service-category" class="form-control">
+                        <option>Bridal</option><option>Hair</option><option>Makeup</option><option>Nails</option><option>Skincare</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Price (₹)</label><input type="number" id="service-price" class="form-control" required></div>
+                <div class="form-group"><label>Duration (minutes)</label><input type="number" id="service-duration" class="form-control" required></div>
+                <div class="form-group"><label>Description</label><textarea id="service-description" class="form-control" rows="3"></textarea></div>
+                <div class="form-group"><label>Image URL</label><input type="text" id="service-image" class="form-control" placeholder="https://..."></div>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <button type="submit" class="btn btn-primary">Save Service</button>
+                    <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        if (!localStorage.getItem('adminLoggedIn')) window.location.href = 'login.html';
+        
+        let services = [
+            { id: 1, name: "Bridal Makeup", category: "Bridal", price: 4999, duration: 120, description: "Complete bridal makeup with premium products", image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=300" },
+            { id: 2, name: "Hair Styling", category: "Hair", price: 1999, duration: 60, description: "Professional hair styling", image: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=300" },
+            { id: 3, name: "Facial Treatment", category: "Skincare", price: 2499, duration: 75, description: "Deep cleansing facial", image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=300" }
+        ];
+        
+        function displayServices() {
+            const grid = document.getElementById('services-grid');
+            grid.innerHTML = services.map(s => `
+                <div class="service-card">
+                    <img src="${s.image}" alt="${s.name}">
+                    <div class="service-info">
+                        <h3>${s.name}</h3>
+                        <p style="color: var(--primary); font-weight: bold;">₹${s.price}</p>
+                        <p>⏱️ ${s.duration} mins</p>
+                        <p>📂 ${s.category}</p>
+                        <p style="font-size: 0.9rem; color: #666;">${s.description}</p>
+                        <div class="service-actions">
+                            <button class="btn-edit" onclick="editService(${s.id})">Edit</button>
+                            <button class="btn-delete" onclick="deleteService(${s.id})">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function openModal(service = null) {
+            document.getElementById('service-modal').classList.add('active');
+            if (service) {
+                document.getElementById('modal-title').textContent = 'Edit Service';
+                document.getElementById('service-id').value = service.id;
+                document.getElementById('service-name').value = service.name;
+                document.getElementById('service-category').value = service.category;
+                document.getElementById('service-price').value = service.price;
+                document.getElementById('service-duration').value = service.duration;
+                document.getElementById('service-description').value = service.description;
+                document.getElementById('service-image').value = service.image;
+            } else {
+                document.getElementById('modal-title').textContent = 'Add New Service';
+                document.getElementById('service-form').reset();
+                document.getElementById('service-id').value = '';
+            }
+        }
+        
+        function closeModal() {
+            document.getElementById('service-modal').classList.remove('active');
+        }
+        
+        function editService(id) {
+            const service = services.find(s => s.id === id);
+            if (service) openModal(service);
+        }
+        
+        function deleteService(id) {
+            if (confirm('Delete this service?')) {
+                services = services.filter(s => s.id !== id);
+                displayServices();
+            }
+        }
+        
+        document.getElementById('service-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('service-id').value;
+            const serviceData = {
+                name: document.getElementById('service-name').value,
+                category: document.getElementById('service-category').value,
+                price: parseInt(document.getElementById('service-price').value),
+                duration: parseInt(document.getElementById('service-duration').value),
+                description: document.getElementById('service-description').value,
+                image: document.getElementById('service-image').value
+            };
+            
+            if (id) {
+                const index = services.findIndex(s => s.id == id);
+                if (index !== -1) services[index] = { ...services[index], ...serviceData };
+            } else {
+                serviceData.id = Date.now();
+                services.push(serviceData);
+            }
+            
+            closeModal();
+            displayServices();
+        });
+        
+        document.getElementById('logout-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'login.html';
+        });
+        
+        displayServices();
+    </script>
+</body>
+</html>
