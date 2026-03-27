@@ -1,7 +1,7 @@
 // Gallery Data with Beautiful Images
 const galleryImages = [
     {
-        src: 'https://images.unsplash.com/photo-1562322140-8baeececf3df?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+        src: 'https://unsplash.com/photos/top-view-of-young-woman-is-lying-on-massage-table-with-closed-eyes-on-her-face-is-applied-white-mask-cosmetologist-is-standing-behind-her-selective-focus-lqBnWjN2BZ8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
         title: 'Luxury Interior',
         category: 'Salon'
     },
