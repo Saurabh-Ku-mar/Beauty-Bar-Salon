@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gift Cards - Beauty Bar Salon</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .gift-card-hero {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 4rem 5%;
+            text-align: center;
+            color: white;
+        }
+        
+        .gift-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .gift-card-design {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+        }
+        
+        .gift-card-design.selected {
+            transform: scale(1.02);
+            box-shadow: 0 0 0 3px var(--primary), var(--shadow-hover);
+        }
+        
+        .gift-card-preview {
+            background: linear-gradient(135deg, #f5f5f5, #fff);
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .gift-card-preview i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .amount-options {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+        
+        .amount-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--primary);
+            background: white;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .amount-btn.selected {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .custom-amount {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        .custom-amount input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .delivery-options {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .delivery-option {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+        }
+        
+        .delivery-option.selected {
+            border-color: var(--primary);
+            background: var(--secondary);
+        }
+        
+        .gift-card-summary {
+            background: var(--secondary);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .delivery-options {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo">Beauty Bar ✨</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="index.html#services">Services</a>
+            <a href="booking.html">Book Now</a>
+            <a href="gift-card.html">Gift Cards</a>
+            <a href="history.html">My Bookings</a>
+            <div class="social-nav">
+                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            </div>
+            <button class="btn btn-outline" id="loginBtn">Login</button>
+        </div>
+    </nav>
+
+    <a href="https://wa.me/1234567890?text=Hello%20Beauty%20Bar%20Salon" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <div class="gift-card-hero">
+        <h1>✨ Gift the Gift of Beauty ✨</h1>
+        <p>Give your loved ones an unforgettable salon experience</p>
+    </div>
+
+    <section style="padding: 4rem 5%;">
+        <h2 class="section-title">Choose a Design</h2>
+        <div class="gift-card-grid" id="gift-card-designs">
+            <div class="gift-card-design" data-design="classic">
+                <div class="gift-card-preview">
+                    <i class="fas fa-gem"></i>
+                    <h3>Classic Elegance</h3>
+                    <p>Rose gold with floral accents</p>
+                </div>
+            </div>
+            <div class="gift-card-design" data-design="bridal">
+                <div class="gift-card-preview">
+                    <i class="fas fa-heart"></i>
+                    <h3>Bridal Special</h3>
+                    <p>Perfect for wedding gifts</p>
+                </div>
+            </div>
+            <div class="gift-card-design" data-design="minimal">
+                <div class="gift-card-preview">
+                    <i class="fas fa-feather-alt"></i>
+                    <h3>Minimal Chic</h3>
+                    <p>Modern and sophisticated</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title" style="margin-top: 3rem;">Select Amount</h2>
+        <div class="amount-options" id="amount-options">
+            <div class="amount-btn" data-amount="500">₹500</div>
+            <div class="amount-btn" data-amount="1000">₹1,000</div>
+            <div class="amount-btn" data-amount="2000">₹2,000</div>
+            <div class="amount-btn" data-amount="5000">₹5,000</div>
+            <div class="custom-amount">
+                <input type="number" id="custom-amount" placeholder="Custom amount" min="100" step="100">
+            </div>
+        </div>
+
+        <h2 class="section-title" style="margin-top: 3rem;">Recipient Details</h2>
+        <div class="booking-form" style="max-width: 100%;">
+            <div class="form-group">
+                <label>Recipient Name</label>
+                <input type="text" class="form-control" id="recipient-name" placeholder="Enter name">
+            </div>
+            <div class="form-group">
+                <label>Recipient Email</label>
+                <input type="email" class="form-control" id="recipient-email" placeholder="Enter email for delivery">
+            </div>
+            <div class="form-group">
+                <label>Personal Message</label>
+                <textarea class="form-control" id="personal-message" rows="3" placeholder="Write a heartfelt message..."></textarea>
+            </div>
+        </div>
+
+        <h2 class="section-title" style="margin-top: 3rem;">Delivery Method</h2>
+        <div class="delivery-options" id="delivery-options">
+            <div class="delivery-option" data-delivery="email">
+                <i class="fas fa-envelope" style="font-size: 2rem;"></i>
+                <h4>Email</h4>
+                <p>Instant digital delivery</p>
+            </div>
+            <div class="delivery-option" data-delivery="whatsapp">
+                <i class="fab fa-whatsapp" style="font-size: 2rem;"></i>
+                <h4>WhatsApp</h4>
+                <p>Send via WhatsApp</p>
+            </div>
+            <div class="delivery-option" data-delivery="physical">
+                <i class="fas fa-gift" style="font-size: 2rem;"></i>
+                <h4>Physical Card</h4>
+                <p>Pickup from salon</p>
+            </div>
+        </div>
+
+        <div class="gift-card-summary" id="gift-summary">
+            <h3>Your Gift Card</h3>
+            <p><strong>Design:</strong> <span id="summary-design">Not selected</span></p>
+            <p><strong>Amount:</strong> <span id="summary-amount">₹0</span></p>
+            <p><strong>Recipient:</strong> <span id="summary-recipient">Not entered</span></p>
+            <p><strong>Delivery:</strong> <span id="summary-delivery">Not selected</span></p>
+            <hr>
+            <p><strong>Total:</strong> <span id="summary-total">₹0</span></p>
+            <button class="btn btn-primary" id="purchase-gift-btn" style="width: 100%; margin-top: 1rem;" disabled>
+                Purchase Gift Card
+            </button>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Beauty Bar Salon</h3>
+                <p>Experience luxury beauty services in the heart of the city.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+                <p><i class="fas fa-envelope"></i> info@beautybarsalon.com</p>
+            </div>
+            <div class="footer-section">
+                <h3>Working Hours</h3>
+                <p>Mon-Fri: 10am - 8pm</p>
+                <p>Sat-Sun: 10am - 6pm</p>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2024 Beauty Bar Salon. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        let giftData = {
+            design: null,
+            amount: 0,
+            recipientName: '',
+            recipientEmail: '',
+            message: '',
+            delivery: null
+        };
+
+        // Design selection
+        document.querySelectorAll('.gift-card-design').forEach(design => {
+            design.addEventListener('click', () => {
+                document.querySelectorAll('.gift-card-design').forEach(d => d.classList.remove('selected'));
+                design.classList.add('selected');
+                giftData.design = design.dataset.design;
+                updateSummary();
+            });
+        });
+
+        // Amount selection
+        document.querySelectorAll('.amount-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (btn.dataset.amount) {
+                    document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    giftData.amount = parseInt(btn.dataset.amount);
+                    document.getElementById('custom-amount').value = '';
+                    updateSummary();
+                }
+            });
+        });
+
+        document.getElementById('custom-amount').addEventListener('input', (e) => {
+            const amount = parseInt(e.target.value);
+            if (amount >= 100) {
+                document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
+                giftData.amount = amount;
+                updateSummary();
+            }
+        });
+
+        // Recipient details
+        document.getElementById('recipient-name').addEventListener('input', (e) => {
+            giftData.recipientName = e.target.value;
+            updateSummary();
+        });
+
+        document.getElementById('recipient-email').addEventListener('input', (e) => {
+            giftData.recipientEmail = e.target.value;
+            updateSummary();
+        });
+
+        document.getElementById('personal-message').addEventListener('input', (e) => {
+            giftData.message = e.target.value;
+        });
+
+        // Delivery selection
+        document.querySelectorAll('.delivery-option').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.delivery-option').forEach(o => o.classList.remove('selected'));
+                option.classList.add('selected');
+                giftData.delivery = option.dataset.delivery;
+                updateSummary();
+            });
+        });
+
+        function updateSummary() {
+            document.getElementById('summary-design').textContent = giftData.design ? giftData.design.toUpperCase() : 'Not selected';
+            document.getElementById('summary-amount').textContent = giftData.amount ? `₹${giftData.amount}` : '₹0';
+            document.getElementById('summary-recipient').textContent = giftData.recipientName || 'Not entered';
+            document.getElementById('summary-delivery').textContent = giftData.delivery ? giftData.delivery.toUpperCase() : 'Not selected';
+            document.getElementById('summary-total').textContent = giftData.amount ? `₹${giftData.amount}` : '₹0';
+            
+            const purchaseBtn = document.getElementById('purchase-gift-btn');
+            purchaseBtn.disabled = !(giftData.design && giftData.amount > 0 && giftData.recipientName && giftData.recipientEmail && giftData.delivery);
+        }
+
+        document.getElementById('purchase-gift-btn').addEventListener('click', () => {
+            if (giftData.amount < 100) {
+                alert('Please select a valid amount (minimum ₹100)');
+                return;
+            }
+            
+            alert(`Proceeding to payment for Gift Card\nAmount: ₹${giftData.amount}\nRecipient: ${giftData.recipientName}\nDelivery: ${giftData.delivery}\n\nThis will be sent to ${giftData.recipientEmail}`);
+            // Here you would integrate Razorpay payment
+        });
+    </script>
+</body>
+</html>
