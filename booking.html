@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - Beauty Bar Salon</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Additional booking page styles */
+        .booking-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .step {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+            opacity: 0.6;
+        }
+        
+        .step.active {
+            opacity: 1;
+            background: var(--gradient);
+            color: white;
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .step.completed {
+            opacity: 1;
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .step.active .step-number {
+            background: white;
+            color: var(--primary);
+        }
+        
+        .step-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .booking-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .step-panel {
+            display: none;
+        }
+        
+        .step-panel.active {
+            display: block;
+        }
+        
+        .service-card {
+            border: 2px solid #eee;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .service-card.selected {
+            border-color: var(--primary);
+            background: var(--secondary);
+        }
+        
+        .service-card:hover {
+            transform: translateX(5px);
+            border-color: var(--primary);
+        }
+        
+        .staff-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .staff-card.selected {
+            border-color: var(--primary);
+            background: var(--secondary);
+        }
+        
+        .staff-card img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .time-slot {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .time-slot.available {
+            background: var(--secondary);
+            border-color: var(--primary);
+        }
+        
+        .time-slot.selected {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .time-slot.booked {
+            background: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+        
+        .booking-summary {
+            background: var(--secondary);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .calendar-day {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .calendar-day.disabled {
+            background: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .calendar-day.selected {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .calendar-day.available {
+            background: var(--secondary);
+            border-color: var(--primary);
+        }
+        
+        @media (max-width: 768px) {
+            .booking-steps {
+                flex-direction: column;
+            }
+            
+            .step {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .staff-card {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo">Beauty Bar ✨</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="index.html#services">Services</a>
+            <a href="booking.html">Book Now</a>
+            <a href="gift-card.html">Gift Cards</a>
+            <a href="history.html">My Bookings</a>
+            <div class="social-nav">
+                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            </div>
+            <button class="btn btn-outline" id="loginBtn">Login</button>
+        </div>
+    </nav>
+
+    <a href="https://wa.me/1234567890?text=Hello%20Beauty%20Bar%20Salon%2C%20I%20want%20to%20book%20an%20appointment" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <section class="booking-section">
+        <h2 class="section-title">Book Your Appointment</h2>
+        <p style="text-align: center; margin-bottom: 2rem;">Complete the steps below to reserve your spot</p>
+
+        <div class="booking-steps">
+            <div class="step active" data-step="1">
+                <div class="step-number">1</div>
+                <div class="step-title">Select Service</div>
+            </div>
+            <div class="step" data-step="2">
+                <div class="step-number">2</div>
+                <div class="step-title">Choose Stylist</div>
+            </div>
+            <div class="step" data-step="3">
+                <div class="step-number">3</div>
+                <div class="step-title">Pick Date</div>
+            </div>
+            <div class="step" data-step="4">
+                <div class="step-number">4</div>
+                <div class="step-title">Select Time</div>
+            </div>
+            <div class="step" data-step="5">
+                <div class="step-number">5</div>
+                <div class="step-title">Your Details</div>
+            </div>
+            <div class="step" data-step="6">
+                <div class="step-number">6</div>
+                <div class="step-title">Payment</div>
+            </div>
+        </div>
+
+        <div class="booking-content">
+            <!-- Step 1: Service Selection -->
+            <div class="step-panel active" id="step1">
+                <h3>Choose Your Service</h3>
+                <div class="service-categories" style="display: flex; gap: 1rem; margin: 1rem 0; flex-wrap: wrap;">
+                    <button class="btn btn-outline category-filter active" data-category="all">All</button>
+                    <button class="btn btn-outline category-filter" data-category="Bridal">Bridal</button>
+                    <button class="btn btn-outline category-filter" data-category="Hair">Hair</button>
+                    <button class="btn btn-outline category-filter" data-category="Makeup">Makeup</button>
+                    <button class="btn btn-outline category-filter" data-category="Nails">Nails</button>
+                    <button class="btn btn-outline category-filter" data-category="Skincare">Skincare</button>
+                </div>
+                <div id="services-list" class="services-grid"></div>
+            </div>
+
+            <!-- Step 2: Staff Selection -->
+            <div class="step-panel" id="step2">
+                <h3>Choose Your Stylist</h3>
+                <div id="staff-list"></div>
+            </div>
+
+            <!-- Step 3: Date Selection -->
+            <div class="step-panel" id="step3">
+                <h3>Select Date</h3>
+                <div id="calendar" class="calendar"></div>
+            </div>
+
+            <!-- Step 4: Time Selection -->
+            <div class="step-panel" id="step4">
+                <h3>Select Time Slot</h3>
+                <div id="time-slots" class="time-slots"></div>
+            </div>
+
+            <!-- Step 5: Customer Details -->
+            <div class="step-panel" id="step5">
+                <h3>Your Information</h3>
+                <form id="customer-form">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" class="form-control" id="customer-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-control" id="customer-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" class="form-control" id="customer-phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Special Requests (Optional)</label>
+                        <textarea class="form-control" id="customer-notes" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Step 6: Payment & Summary -->
+            <div class="step-panel" id="step6">
+                <h3>Booking Summary</h3>
+                <div id="booking-summary" class="booking-summary"></div>
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label>
+                        <input type="checkbox" id="terms"> I agree to the terms and conditions
+                    </label>
+                </div>
+                <button class="btn btn-primary" id="pay-btn" style="width: 100%; margin-top: 1rem;" disabled>
+                    Pay 30% Advance & Confirm Booking
+                </button>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-outline" id="prev-btn" style="display: none;">Previous</button>
+                <button class="btn btn-primary" id="next-btn">Next</button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Beauty Bar Salon</h3>
+                <p>Experience luxury beauty services in the heart of the city.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+                <p><i class="fas fa-envelope"></i> info@beautybarsalon.com</p>
+            </div>
+            <div class="footer-section">
+                <h3>Working Hours</h3>
+                <p>Mon-Fri: 10am - 8pm</p>
+                <p>Sat-Sun: 10am - 6pm</p>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2024 Beauty Bar Salon. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Sample Data
+        const services = [
+            { id: 1, name: "Bridal Makeup", category: "Bridal", price: 4999, duration: 120, image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400" },
+            { id: 2, name: "Hair Styling", category: "Hair", price: 1999, duration: 60, image: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=400" },
+            { id: 3, name: "Facial Treatment", category: "Skincare", price: 2499, duration: 75, image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400" },
+            { id: 4, name: "Nail Art", category: "Nails", price: 999, duration: 45, image: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400" },
+            { id: 5, name: "Party Makeup", category: "Makeup", price: 2999, duration: 90, image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400" },
+            { id: 6, name: "Hair Color", category: "Hair", price: 3499, duration: 120, image: "https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=400" }
+        ];
+
+        const staff = [
+            { id: 1, name: "Priya Sharma", position: "Senior Makeup Artist", specialty: "Bridal", image: "https://images.unsplash.com/photo-1494790108777-223fd4f5603d?w=200", services: [1, 5] },
+            { id: 2, name: "Anjali Desai", position: "Hair Stylist", specialty: "Hair Color", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200", services: [2, 6] },
+            { id: 3, name: "Meera Kapoor", position: "Skincare Expert", specialty: "Facial", image: "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?w=200", services: [3] },
+            { id: 4, name: "Riya Mehta", position: "Nail Artist", specialty: "Nail Art", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200", services: [4] }
+        ];
+
+        let bookingData = {
+            service: null,
+            staff: null,
+            date: null,
+            time: null,
+            customer: null
+        };
+
+        let currentStep = 1;
+
+        // Load services
+        function loadServices(category = 'all') {
+            const filtered = category === 'all' ? services : services.filter(s => s.category === category);
+            const container = document.getElementById('services-list');
+            container.innerHTML = filtered.map(service => `
+                <div class="service-card" onclick="selectService(${service.id})" data-id="${service.id}">
+                    <img src="${service.image}" alt="${service.name}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">
+                    <h4 style="margin: 0.5rem 0;">${service.name}</h4>
+                    <p style="color: #666;">${service.duration} mins</p>
+                    <p style="color: var(--primary); font-weight: bold;">₹${service.price}</p>
+                </div>
+            `).join('');
+        }
+
+        function selectService(serviceId) {
+            bookingData.service = services.find(s => s.id === serviceId);
+            document.querySelectorAll('.service-card').forEach(card => {
+                card.classList.remove('selected');
+                if (card.dataset.id == serviceId) card.classList.add('selected');
+            });
+        }
+
+        // Load staff
+        function loadStaff() {
+            const container = document.getElementById('staff-list');
+            container.innerHTML = staff.map(s => `
+                <div class="staff-card" onclick="selectStaff(${s.id})" data-id="${s.id}">
+                    <img src="${s.image}" alt="${s.name}">
+                    <div>
+                        <h4>${s.name}</h4>
+                        <p>${s.position}</p>
+                        <p style="color: var(--primary);">Specialty: ${s.specialty}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectStaff(staffId) {
+            bookingData.staff = staff.find(s => s.id === staffId);
+            document.querySelectorAll('.staff-card').forEach(card => {
+                card.classList.remove('selected');
+                if (card.dataset.id == staffId) card.classList.add('selected');
+            });
+        }
+
+        // Load calendar
+        function loadCalendar() {
+            const today = new Date();
+            const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1).getDay();
+            
+            let calendarHTML = '';
+            const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            weekdays.forEach(day => {
+                calendarHTML += `<div style="text-align: center; font-weight: bold;">${day}</div>`;
+            });
+            
+            for (let i = 0; i < firstDay; i++) {
+                calendarHTML += `<div></div>`;
+            }
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(today.getFullYear(), today.getMonth(), day);
+                const isPast = date < new Date().setHours(0,0,0,0);
+                calendarHTML += `
+                    <div class="calendar-day ${isPast ? 'disabled' : 'available'}" onclick="${!isPast ? `selectDate(${day})` : ''}">
+                        ${day}
+                    </div>
+                `;
+            }
+            
+            document.getElementById('calendar').innerHTML = calendarHTML;
+        }
+
+        function selectDate(day) {
+            bookingData.date = new Date(new Date().getFullYear(), new Date().getMonth(), day);
+            document.querySelectorAll('.calendar-day').forEach(dayEl => {
+                dayEl.classList.remove('selected');
+                if (dayEl.innerText == day) dayEl.classList.add('selected');
+            });
+            loadTimeSlots();
+        }
+
+        // Load time slots
+        function loadTimeSlots() {
+            const slots = ['10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM', '7:00 PM'];
+            const container = document.getElementById('time-slots');
+            container.innerHTML = slots.map(slot => `
+                <div class="time-slot available" onclick="selectTime('${slot}')">${slot}</div>
+            `).join('');
+        }
+
+        function selectTime(time) {
+            bookingData.time = time;
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+                if (slot.innerText === time) slot.classList.add('selected');
+            });
+        }
+
+        // Update summary
+        function updateSummary() {
+            const summary = document.getElementById('booking-summary');
+            if (!bookingData.service) return;
+            
+            const advanceAmount = bookingData.service.price * 0.3;
+            summary.innerHTML = `
+                <h4>Booking Details</h4>
+                <p><strong>Service:</strong> ${bookingData.service.name}</p>
+                <p><strong>Staff:</strong> ${bookingData.staff?.name || 'Not selected'}</p>
+                <p><strong>Date:</strong> ${bookingData.date?.toLocaleDateString() || 'Not selected'}</p>
+                <p><strong>Time:</strong> ${bookingData.time || 'Not selected'}</p>
+                <hr>
+                <p><strong>Total Amount:</strong> ₹${bookingData.service.price}</p>
+                <p><strong>Advance (30%):</strong> ₹${advanceAmount}</p>
+                <p><strong>Balance at Salon:</strong> ₹${bookingData.service.price - advanceAmount}</p>
+            `;
+        }
+
+        // Navigation
+        function updateSteps() {
+            document.querySelectorAll('.step').forEach((step, index) => {
+                if (index + 1 === currentStep) {
+                    step.classList.add('active');
+                    step.classList.remove('completed');
+                } else if (index + 1 < currentStep) {
+                    step.classList.add('completed');
+                    step.classList.remove('active');
+                } else {
+                    step.classList.remove('active', 'completed');
+                }
+            });
+            
+            document.querySelectorAll('.step-panel').forEach((panel, index) => {
+                if (index + 1 === currentStep) {
+                    panel.classList.add('active');
+                } else {
+                    panel.classList.remove('active');
+                }
+            });
+            
+            document.getElementById('prev-btn').style.display = currentStep === 1 ? 'none' : 'inline-block';
+            document.getElementById('next-btn').innerText = currentStep === 6 ? 'Complete Booking' : 'Next';
+        }
+
+        function nextStep() {
+            // Validate current step
+            if (currentStep === 1 && !bookingData.service) {
+                alert('Please select a service');
+                return;
+            }
+            if (currentStep === 2 && !bookingData.staff) {
+                alert('Please select a stylist');
+                return;
+            }
+            if (currentStep === 3 && !bookingData.date) {
+                alert('Please select a date');
+                return;
+            }
+            if (currentStep === 4 && !bookingData.time) {
+                alert('Please select a time');
+                return;
+            }
+            if (currentStep === 5) {
+                const name = document.getElementById('customer-name').value;
+                const email = document.getElementById('customer-email').value;
+                const phone = document.getElementById('customer-phone').value;
+                if (!name || !email || !phone) {
+                    alert('Please fill all details');
+                    return;
+                }
+                bookingData.customer = { name, email, phone, notes: document.getElementById('customer-notes').value };
+                updateSummary();
+            }
+            
+            if (currentStep < 6) {
+                currentStep++;
+                updateSteps();
+            } else {
+                // Process payment
+                const terms = document.getElementById('terms').checked;
+                if (!terms) {
+                    alert('Please accept terms and conditions');
+                    return;
+                }
+                alert('Proceeding to payment with Razorpay...');
+                // Here you would integrate Razorpay
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateSteps();
+            }
+        }
+
+        // Category filters
+        document.querySelectorAll('.category-filter').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.category-filter').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                loadServices(btn.dataset.category);
+            });
+        });
+
+        // Initialize
+        loadServices();
+        loadStaff();
+        loadCalendar();
+        updateSteps();
+        
+        document.getElementById('next-btn').onclick = nextStep;
+        document.getElementById('prev-btn').onclick = prevStep;
+    </script>
+</body>
+</html>
