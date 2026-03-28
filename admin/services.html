@@ -85,100 +85,137 @@
         </div>
     </div>
     
-    <script>
-        if (!localStorage.getItem('adminLoggedIn')) window.location.href = 'login.html';
+<!-- Add this script at the bottom of services.html, replacing the existing script -->
+<script src="../js/data-service.js"></script>
+<script>
+    if (!localStorage.getItem('adminLoggedIn')) window.location.href = 'login.html';
+    
+    let services = [];
+    
+    function loadServices() {
+        if (window.dataService) {
+            services = window.dataService.getAllServices();
+            displayServices();
+        } else {
+            setTimeout(loadServices, 100);
+        }
+    }
+    
+    function displayServices() {
+        const grid = document.getElementById('services-grid');
+        if (!grid) return;
         
-        let services = [
-            { id: 1, name: "Bridal Makeup", category: "Bridal", price: 4999, duration: 120, description: "Complete bridal makeup with premium products", image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=300" },
-            { id: 2, name: "Hair Styling", category: "Hair", price: 1999, duration: 60, description: "Professional hair styling", image: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=300" },
-            { id: 3, name: "Facial Treatment", category: "Skincare", price: 2499, duration: 75, description: "Deep cleansing facial", image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=300" }
-        ];
-        
-        function displayServices() {
-            const grid = document.getElementById('services-grid');
-            grid.innerHTML = services.map(s => `
-                <div class="service-card">
-                    <img src="${s.image}" alt="${s.name}">
-                    <div class="service-info">
-                        <h3>${s.name}</h3>
-                        <p style="color: var(--primary); font-weight: bold;">₹${s.price}</p>
-                        <p>⏱️ ${s.duration} mins</p>
-                        <p>📂 ${s.category}</p>
-                        <p style="font-size: 0.9rem; color: #666;">${s.description}</p>
-                        <div class="service-actions">
-                            <button class="btn-edit" onclick="editService(${s.id})">Edit</button>
-                            <button class="btn-delete" onclick="deleteService(${s.id})">Delete</button>
-                        </div>
+        grid.innerHTML = services.map(s => `
+            <div class="service-card">
+                <img src="${s.image}" alt="${s.name}">
+                <div class="service-info">
+                    <h3>${s.name}</h3>
+                    <p style="color: var(--primary); font-weight: bold;">₹${s.price}</p>
+                    <p>⏱️ ${s.duration} mins</p>
+                    <p>📂 ${s.category}</p>
+                    <p style="font-size: 0.9rem; color: #666;">${s.description || ''}</p>
+                    <div class="service-actions">
+                        <button class="btn-edit" onclick="editService(${s.id})">Edit</button>
+                        <button class="btn-delete" onclick="deleteService(${s.id})">Delete</button>
                     </div>
                 </div>
-            `).join('');
-        }
+            </div>
+        `).join('');
+    }
+    
+    function openModal(service = null) {
+        const modal = document.getElementById('service-modal');
+        modal.style.display = 'flex';
         
-        function openModal(service = null) {
-            document.getElementById('service-modal').classList.add('active');
-            if (service) {
-                document.getElementById('modal-title').textContent = 'Edit Service';
-                document.getElementById('service-id').value = service.id;
-                document.getElementById('service-name').value = service.name;
-                document.getElementById('service-category').value = service.category;
-                document.getElementById('service-price').value = service.price;
-                document.getElementById('service-duration').value = service.duration;
-                document.getElementById('service-description').value = service.description;
-                document.getElementById('service-image').value = service.image;
-            } else {
-                document.getElementById('modal-title').textContent = 'Add New Service';
-                document.getElementById('service-form').reset();
-                document.getElementById('service-id').value = '';
+        if (service) {
+            document.getElementById('modal-title').textContent = 'Edit Service';
+            document.getElementById('service-id').value = service.id;
+            document.getElementById('service-name').value = service.name;
+            document.getElementById('service-category').value = service.category;
+            document.getElementById('service-price').value = service.price;
+            document.getElementById('service-duration').value = service.duration;
+            document.getElementById('service-description').value = service.description || '';
+            document.getElementById('service-image').value = service.image;
+        } else {
+            document.getElementById('modal-title').textContent = 'Add New Service';
+            document.getElementById('service-form').reset();
+            document.getElementById('service-id').value = '';
+        }
+    }
+    
+    function closeModal() {
+        document.getElementById('service-modal').style.display = 'none';
+    }
+    
+    function editService(id) {
+        const service = services.find(s => s.id === id);
+        if (service) openModal(service);
+    }
+    
+    function deleteService(id) {
+        if (confirm('Delete this service? This will affect all bookings.')) {
+            if (window.dataService) {
+                window.dataService.deleteService(id);
+                loadServices();
+                showToast('Service deleted successfully!', 'success');
             }
         }
+    }
+    
+    document.getElementById('service-form').addEventListener('submit', (e) => {
+        e.preventDefault();
         
-        function closeModal() {
-            document.getElementById('service-modal').classList.remove('active');
-        }
+        const id = document.getElementById('service-id').value;
+        const serviceData = {
+            name: document.getElementById('service-name').value,
+            category: document.getElementById('service-category').value,
+            price: parseInt(document.getElementById('service-price').value),
+            duration: parseInt(document.getElementById('service-duration').value),
+            description: document.getElementById('service-description').value,
+            image: document.getElementById('service-image').value,
+            isActive: true
+        };
         
-        function editService(id) {
-            const service = services.find(s => s.id === id);
-            if (service) openModal(service);
-        }
-        
-        function deleteService(id) {
-            if (confirm('Delete this service?')) {
-                services = services.filter(s => s.id !== id);
-                displayServices();
-            }
-        }
-        
-        document.getElementById('service-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const id = document.getElementById('service-id').value;
-            const serviceData = {
-                name: document.getElementById('service-name').value,
-                category: document.getElementById('service-category').value,
-                price: parseInt(document.getElementById('service-price').value),
-                duration: parseInt(document.getElementById('service-duration').value),
-                description: document.getElementById('service-description').value,
-                image: document.getElementById('service-image').value
-            };
-            
+        if (window.dataService) {
             if (id) {
-                const index = services.findIndex(s => s.id == id);
-                if (index !== -1) services[index] = { ...services[index], ...serviceData };
+                window.dataService.updateService(id, serviceData);
+                showToast('Service updated successfully!', 'success');
             } else {
-                serviceData.id = Date.now();
-                services.push(serviceData);
+                window.dataService.addService(serviceData);
+                showToast('Service added successfully!', 'success');
             }
-            
             closeModal();
-            displayServices();
-        });
-        
-        document.getElementById('logout-btn').addEventListener('click', (e) => {
-            e.preventDefault();
-            localStorage.removeItem('adminLoggedIn');
-            window.location.href = 'login.html';
-        });
-        
-        displayServices();
-    </script>
+            loadServices();
+        }
+    });
+    
+    function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<span>${message}</span>`;
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: ${type === 'success' ? '#4CAF50' : '#2196F3'};
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 2000;
+            animation: slideIn 0.3s;
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+    
+    document.getElementById('logout-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        localStorage.removeItem('adminLoggedIn');
+        window.location.href = 'login.html';
+    });
+    
+    // Initialize
+    loadServices();
+</script>
 </body>
 </html>
