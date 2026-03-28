@@ -2,41 +2,330 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=0.4">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Staff - Beauty Bar Salon</title>
     <link rel="stylesheet" href="../css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .admin-container { display: flex; min-height: 100vh; }
-        .admin-sidebar { width: 280px; background: var(--dark); color: white; padding: 2rem; position: fixed; height: 100vh; overflow-y: auto; }
-        .admin-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 2rem; text-align: center; }
-        .admin-nav { list-style: none; }
-        .admin-nav li { margin-bottom: 0.5rem; }
-        .admin-nav a { display: flex; align-items: center; gap: 1rem; padding: 12px 15px; color: #ccc; text-decoration: none; border-radius: 10px; transition: all 0.3s; }
-        .admin-nav a:hover, .admin-nav a.active { background: rgba(255,255,255,0.1); color: white; }
-        .admin-main { flex: 1; margin-left: 280px; padding: 2rem; background: var(--light); }
-        
-        .staff-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
-        .staff-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: var(--shadow); text-align: center; }
-        .staff-card img { width: 100%; height: 250px; object-fit: cover; }
-        .staff-info { padding: 1rem; }
-        .staff-actions { display: flex; gap: 0.5rem; margin-top: 1rem; padding: 0 1rem 1rem; }
-        .staff-actions button { flex: 1; padding: 8px; border: none; border-radius: 8px; cursor: pointer; }
-        .btn-edit { background: #2196F3; color: white; }
-        .btn-delete { background: #F44336; color: white; }
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--light);
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .admin-sidebar {
+            width: 280px;
+            background: var(--dark);
+            color: white;
+            padding: 2rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .admin-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .admin-nav {
+            list-style: none;
+        }
+
+        .admin-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-nav a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 12px 15px;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .admin-nav a:hover,
+        .admin-nav a.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .admin-nav a i {
+            width: 24px;
+        }
+
+        .admin-main {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+            background: var(--light);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-header h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--dark);
+        }
+
+        .btn-add {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .staff-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .staff-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .staff-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .staff-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .staff-info {
+            padding: 1.5rem;
+        }
+
+        .staff-info h3 {
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .staff-position {
+            color: var(--primary);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .staff-specialty {
+            background: var(--secondary);
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 0.5rem 0;
+        }
+
+        .staff-rating {
+            color: #FFD700;
+            margin: 0.5rem 0;
+        }
+
+        .staff-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .staff-actions button {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #F44336;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem;
+            background: white;
+            border-radius: 15px;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 1.5rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-save {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-cancel {
+            background: #ddd;
+            color: #666;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            z-index: 2000;
+            animation: slideIn 0.3s;
+        }
+
+        .toast.success { background: #4CAF50; }
+        .toast.error { background: #F44336; }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
         @media (max-width: 768px) {
-            .admin-sidebar { width: 70px; padding: 1rem; }
-            .admin-logo span, .admin-nav a span { display: none; }
-            .admin-main { margin-left: 70px; }
+            .admin-sidebar {
+                width: 70px;
+                padding: 1rem;
+            }
+            .admin-logo span,
+            .admin-nav a span {
+                display: none;
+            }
+            .admin-main {
+                margin-left: 70px;
+            }
+            .staff-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
     <div class="admin-container">
         <div class="admin-sidebar">
-            <div class="admin-logo"><i class="fas fa-crown"></i><span>Beauty Bar</span></div>
+            <div class="admin-logo">
+                <i class="fas fa-crown"></i>
+                <span>Beauty Bar</span>
+            </div>
             <ul class="admin-nav">
                 <li><a href="dashboard.html"><i class="fas fa-chart-line"></i><span>Dashboard</span></a></li>
                 <li><a href="bookings.html"><i class="fas fa-calendar-check"></i><span>Bookings</span></a></li>
@@ -45,174 +334,232 @@
                 <li><a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
             </ul>
         </div>
-        
+
         <div class="admin-main">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <h2>Manage Staff</h2>
-                <button class="btn btn-primary" onclick="openStaffModal()">+ Add New Staff</button>
+            <div class="page-header">
+                <h2><i class="fas fa-users"></i> Manage Staff</h2>
+                <button class="btn-add" onclick="openAddModal()">
+                    <i class="fas fa-plus"></i> Add New Staff
+                </button>
             </div>
-            
-            <div id="staff-grid" class="staff-grid"></div>
+
+            <div id="staff-container">
+                <div class="empty-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading staff...</p>
+                </div>
+            </div>
         </div>
     </div>
-    
-    <div id="staff-modal" class="modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000;">
-        <div class="modal-content" style="background: white; padding: 2rem; border-radius: 15px; max-width: 500px; width: 90%;">
-            <h3 id="modal-title">Add New Staff</h3>
-            <form id="staff-form">
-                <input type="hidden" id="staff-id">
-                <div class="form-group"><label>Full Name</label><input type="text" id="staff-name" class="form-control" required></div>
-                <div class="form-group"><label>Position</label><input type="text" id="staff-position" class="form-control" required></div>
-                <div class="form-group"><label>Specialty</label><input type="text" id="staff-specialty" class="form-control" required></div>
-                <div class="form-group"><label>Experience</label><input type="text" id="staff-experience" class="form-control" placeholder="5+ years" required></div>
-                <div class="form-group"><label>Image URL</label><input type="text" id="staff-image" class="form-control" placeholder="https://..."></div>
-                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                    <button type="submit" class="btn btn-primary">Save Staff</button>
-                    <button type="button" class="btn btn-outline" onclick="closeStaffModal()">Cancel</button>
+
+    <!-- Add/Edit Modal -->
+    <div id="staffModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Add New Staff Member</h3>
+            <form id="staffForm">
+                <input type="hidden" id="staffId">
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="staffName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Position *</label>
+                    <input type="text" id="staffPosition" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Specialty *</label>
+                    <input type="text" id="staffSpecialty" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Experience *</label>
+                    <input type="text" id="staffExperience" class="form-control" placeholder="e.g., 8+ years" required>
+                </div>
+                <div class="form-group">
+                    <label>Rating (1-5)</label>
+                    <input type="number" id="staffRating" class="form-control" step="0.1" min="0" max="5" value="4.8">
+                </div>
+                <div class="form-group">
+                    <label>Number of Reviews</label>
+                    <input type="number" id="staffReviews" class="form-control" value="100">
+                </div>
+                <div class="form-group">
+                    <label>Profile Image URL</label>
+                    <input type="text" id="staffImage" class="form-control" placeholder="https://images.unsplash.com/...">
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-save">Save Staff</button>
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
                 </div>
             </form>
         </div>
     </div>
-    
-    <!-- Add this script at the bottom of staff.html, replacing the existing script -->
-<script src="../js/data-service.js"></script>
-<script>
-    if (!localStorage.getItem('adminLoggedIn')) window.location.href = 'login.html';
-    
-    let staff = [];
-    
-    function loadStaff() {
-        if (window.dataService) {
-            staff = window.dataService.getAllStaff();
-            displayStaff();
-        } else {
-            setTimeout(loadStaff, 100);
+
+    <script src="../js/data-service.js"></script>
+    <script>
+        // Check admin authentication
+        if (!localStorage.getItem('adminLoggedIn')) {
+            window.location.href = 'login.html';
         }
-    }
-    
-    function displayStaff() {
-        const grid = document.getElementById('staff-grid');
-        if (!grid) return;
-        
-        grid.innerHTML = staff.map(s => `
-            <div class="staff-card">
-                <img src="${s.image}" alt="${s.name}">
-                <div class="staff-info">
-                    <h3>${s.name}</h3>
-                    <p style="color: var(--primary);">${s.position}</p>
-                    <p>🎯 ${s.specialty}</p>
-                    <p>⭐ ${s.experience}</p>
-                    <p>📊 ${s.rating || 4.8} ★ (${s.reviews || 100}+ reviews)</p>
-                    <div class="staff-actions">
-                        <button class="btn-edit" onclick="editStaff(${s.id})">Edit</button>
-                        <button class="btn-delete" onclick="deleteStaff(${s.id})">Delete</button>
+
+        let currentStaff = [];
+
+        // Load staff from data service
+        function loadStaff() {
+            const container = document.getElementById('staff-container');
+            
+            if (!window.dataService) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>Data service not loaded. Please refresh the page.</p>
                     </div>
+                `;
+                return;
+            }
+
+            currentStaff = window.dataService.getAllStaff();
+            
+            if (currentStaff.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <h3>No Staff Members Yet</h3>
+                        <p>Click "Add New Staff" to get started.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="staff-grid">
+                    ${currentStaff.map(staff => `
+                        <div class="staff-card">
+                            <img src="${staff.image || 'https://images.unsplash.com/photo-1494790108777-223fd4f5603d?w=400'}" alt="${staff.name}">
+                            <div class="staff-info">
+                                <h3>${staff.name}</h3>
+                                <div class="staff-position">${staff.position}</div>
+                                <div class="staff-specialty">${staff.specialty}</div>
+                                <div class="staff-rating">
+                                    ${'★'.repeat(Math.floor(staff.rating || 4.8))}${'☆'.repeat(5 - Math.floor(staff.rating || 4.8))}
+                                    <span style="color: #666;"> (${staff.reviews || 100}+ reviews)</span>
+                                </div>
+                                <p>⭐ ${staff.experience} experience</p>
+                                <div class="staff-actions">
+                                    <button class="btn-edit" onclick="editStaff(${staff.id})">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn-delete" onclick="deleteStaff(${staff.id})">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
                 </div>
-            </div>
-        `).join('');
-    }
-    
-    function openStaffModal(staffMember = null) {
-        const modal = document.getElementById('staff-modal');
-        modal.style.display = 'flex';
-        
-        // Get all services for dropdown
-        const services = window.dataService ? window.dataService.getAllServices() : [];
-        
-        if (staffMember) {
-            document.getElementById('modal-title').textContent = 'Edit Staff';
-            document.getElementById('staff-id').value = staffMember.id;
-            document.getElementById('staff-name').value = staffMember.name;
-            document.getElementById('staff-position').value = staffMember.position;
-            document.getElementById('staff-specialty').value = staffMember.specialty;
-            document.getElementById('staff-experience').value = staffMember.experience;
-            document.getElementById('staff-image').value = staffMember.image;
-            document.getElementById('staff-rating').value = staffMember.rating || 4.8;
-            document.getElementById('staff-reviews').value = staffMember.reviews || 100;
-        } else {
-            document.getElementById('modal-title').textContent = 'Add New Staff';
-            document.getElementById('staff-form').reset();
-            document.getElementById('staff-id').value = '';
-            document.getElementById('staff-rating').value = '4.8';
-            document.getElementById('staff-reviews').value = '100';
+            `;
         }
-    }
-    
-    function closeStaffModal() {
-        document.getElementById('staff-modal').style.display = 'none';
-    }
-    
-    function editStaff(id) {
-        const staffMember = staff.find(s => s.id === id);
-        if (staffMember) openStaffModal(staffMember);
-    }
-    
-    function deleteStaff(id) {
-        if (confirm('Remove this staff member? This will affect assigned bookings.')) {
-            if (window.dataService) {
-                window.dataService.deleteStaff(id);
-                loadStaff();
-                showToast('Staff member removed successfully!', 'success');
+
+        // Open modal for adding new staff
+        function openAddModal() {
+            document.getElementById('modalTitle').textContent = 'Add New Staff Member';
+            document.getElementById('staffForm').reset();
+            document.getElementById('staffId').value = '';
+            document.getElementById('staffRating').value = '4.8';
+            document.getElementById('staffReviews').value = '100';
+            document.getElementById('staffModal').classList.add('active');
+        }
+
+        // Edit existing staff
+        function editStaff(id) {
+            const staff = currentStaff.find(s => s.id === id);
+            if (staff) {
+                document.getElementById('modalTitle').textContent = 'Edit Staff Member';
+                document.getElementById('staffId').value = staff.id;
+                document.getElementById('staffName').value = staff.name;
+                document.getElementById('staffPosition').value = staff.position;
+                document.getElementById('staffSpecialty').value = staff.specialty;
+                document.getElementById('staffExperience').value = staff.experience;
+                document.getElementById('staffRating').value = staff.rating || 4.8;
+                document.getElementById('staffReviews').value = staff.reviews || 100;
+                document.getElementById('staffImage').value = staff.image || '';
+                document.getElementById('staffModal').classList.add('active');
             }
         }
-    }
-    
-    document.getElementById('staff-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        const id = document.getElementById('staff-id').value;
-        const staffData = {
-            name: document.getElementById('staff-name').value,
-            position: document.getElementById('staff-position').value,
-            specialty: document.getElementById('staff-specialty').value,
-            experience: document.getElementById('staff-experience').value,
-            image: document.getElementById('staff-image').value,
-            rating: parseFloat(document.getElementById('staff-rating').value),
-            reviews: parseInt(document.getElementById('staff-reviews').value),
-            isActive: true,
-            services: [] // You can add service assignment later
-        };
-        
-        if (window.dataService) {
+
+        // Delete staff
+        function deleteStaff(id) {
+            if (confirm('Are you sure you want to delete this staff member? This action cannot be undone.')) {
+                window.dataService.deleteStaff(id);
+                loadStaff();
+                showToast('Staff member deleted successfully!', 'success');
+            }
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('staffModal').classList.remove('active');
+        }
+
+        // Show toast notification
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Handle form submission
+        document.getElementById('staffForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('staffId').value;
+            const staffData = {
+                name: document.getElementById('staffName').value,
+                position: document.getElementById('staffPosition').value,
+                specialty: document.getElementById('staffSpecialty').value,
+                experience: document.getElementById('staffExperience').value,
+                rating: parseFloat(document.getElementById('staffRating').value),
+                reviews: parseInt(document.getElementById('staffReviews').value),
+                image: document.getElementById('staffImage').value,
+                isActive: true,
+                services: []
+            };
+            
             if (id) {
+                // Update existing staff
                 window.dataService.updateStaff(id, staffData);
                 showToast('Staff updated successfully!', 'success');
             } else {
+                // Add new staff
                 window.dataService.addStaff(staffData);
                 showToast('Staff added successfully!', 'success');
             }
-            closeStaffModal();
+            
+            closeModal();
             loadStaff();
-        }
-    });
-    
-    function showToast(message, type) {
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.innerHTML = `<span>${message}</span>`;
-        toast.style.cssText = `
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: ${type === 'success' ? '#4CAF50' : '#2196F3'};
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            z-index: 2000;
-            animation: slideIn 0.3s;
-        `;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
-    }
-    
-    document.getElementById('logout-btn').addEventListener('click', (e) => {
-        e.preventDefault();
-        localStorage.removeItem('adminLoggedIn');
-        window.location.href = 'login.html';
-    });
-    
-    // Initialize
-    loadStaff();
-</script>
+        });
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('adminLoggedIn');
+            localStorage.removeItem('adminEmail');
+            window.location.href = 'login.html';
+        });
+
+        // Wait for data service to load
+        const checkDataService = setInterval(() => {
+            if (window.dataService) {
+                clearInterval(checkDataService);
+                loadStaff();
+                
+                // Listen for data changes
+                window.dataService.subscribe(() => {
+                    loadStaff();
+                });
+            }
+        }, 100);
+    </script>
 </body>
 </html>
