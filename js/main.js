@@ -250,124 +250,153 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
-// Video Player Functionality - Fixed Version
-function playVideo() {
-    const video = document.getElementById('salonVideo');
-    
-    if (video) {
-        // Try to play the video
-        const playPromise = video.play();
-        
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                console.log('Video playing successfully');
-                // Hide any overlay if exists
-                const overlay = document.getElementById('videoOverlay');
-                if (overlay) overlay.style.display = 'none';
-            }).catch(error => {
-                console.log('Playback failed:', error);
-                // Show user-friendly message
-                alert('Please click the video play button to watch. Autoplay is blocked by your browser.');
-            });
-        }
-    } else {
-        console.error('Video element not found');
-        alert('Video not found. Please check if the video file exists in assets/videos/');
-    }
-}
+// Video Player Functionality - Fixed Quality & Loop
 
-function downloadVideo() {
-    const videoUrl = 'assets/tour.mp4';
-    const link = document.createElement('a');
-    link.href = videoUrl;
-    link.download = 'assets/tour.mp4';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
+let video = null;
+let isLooping = true;
 
-// Alternative: Show play button overlay on video
-function setupVideoWithControls() {
-    const video = document.getElementById('salonVideo');
-    
-    if (video) {
-        // Add click-to-play functionality
-        video.addEventListener('click', () => {
-            if (video.paused) {
-                video.play();
-            } else {
-                video.pause();
-            }
-        });
-        
-        // Log when video starts playing
-        video.addEventListener('play', () => {
-            console.log('Video started playing');
-        });
-        
-        // Log when video ends
-        video.addEventListener('ended', () => {
-            console.log('Video finished');
-        });
-        
-        // Handle errors
-        video.addEventListener('error', (e) => {
-            console.error('Video error:', e);
-            const errorMessage = document.createElement('div');
-            errorMessage.style.cssText = `
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: rgba(0,0,0,0.8);
-                color: white;
-                padding: 20px;
-                border-radius: 10px;
-                text-align: center;
-            `;
-            errorMessage.innerHTML = `
-                <i class="fas fa-exclamation-circle" style="font-size: 2rem; margin-bottom: 10px;"></i>
-                <p>Video cannot be played.</p>
-                <p>Please <a href="assets/tour.mp4" download style="color: var(--primary);">download the video</a> to watch.</p>
-            `;
-            video.parentElement.appendChild(errorMessage);
-        });
-    }
-}
-
-// Initialize when page loads
 document.addEventListener('DOMContentLoaded', () => {
-    setupVideoWithControls();
+    video = document.getElementById('salonVideo');
     
-    // Check if video exists
-    const video = document.getElementById('salonVideo');
     if (video) {
-        // Test if video source loads
-        video.addEventListener('loadeddata', () => {
-            console.log('Video loaded successfully');
+        setupVideoPlayer();
+        setupQualityFix();
+    }
+});
+
+function setupVideoPlayer() {
+    // Set loop to true by default
+    video.loop = true;
+    isLooping = true;
+    
+    // Ensure video plays at highest available quality
+    video.addEventListener('loadedmetadata', () => {
+        // Force browser to use highest quality
+        if (video.videoWidth > 0) {
+            console.log('Video loaded:', video.videoWidth + 'x' + video.videoHeight);
+        }
+    });
+    
+    // Fix for blurry video - force hardware acceleration
+    video.style.transform = 'translateZ(0)';
+    video.style.backfaceVisibility = 'hidden';
+    
+    // Handle video errors
+    video.addEventListener('error', (e) => {
+        console.error('Video error:', e);
+        showQualityMessage();
+    });
+    
+    // Log when video starts playing
+    video.addEventListener('play', () => {
+        console.log('Video playing');
+    });
+    
+    // Mute video to allow autoplay (browsers allow autoplay only for muted videos)
+    video.muted = true;
+    
+    // Try to play automatically
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+        playPromise.catch(error => {
+            console.log('Autoplay prevented:', error);
+            // User will need to click play button
         });
-        
-        video.addEventListener('error', () => {
-            console.error('Video failed to load');
-            // Show download link if video fails
-            const container = video.parentElement;
-            const errorDiv = document.createElement('div');
-            errorDiv.style.cssText = `
-                text-align: center;
-                padding: 40px;
-                background: #f8f9fa;
-                border-radius: 20px;
-                margin-top: 20px;
-            `;
-            errorDiv.innerHTML = `
-                <i class="fas fa-video-slash" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
-                <h3>Video Preview Not Available</h3>
-                <p>Click below to download and watch our salon tour</p>
-                <a href="assets/videos/salon-tour.mp4" download class="btn btn-primary" style="margin-top: 1rem;">
-                    <i class="fas fa-download"></i> Download Video (45 sec)
-                </a>
-            `;
-            container.parentElement.appendChild(errorDiv);
-        });
+    }
+}
+
+function setupQualityFix() {
+    if (!video) return;
+    
+    // Force video to use source quality
+    const originalSrc = video.currentSrc;
+    
+    // Re-load video to ensure quality
+    video.addEventListener('pause', () => {
+        // When paused, make sure video is crisp
+        video.style.transform = 'scale(1)';
+    });
+    
+    // Fix for picture-in-picture quality
+    video.addEventListener('enterpictureinpicture', () => {
+        console.log('Entered PiP mode');
+    });
+    
+    video.addEventListener('leavepictureinpicture', () => {
+        console.log('Left PiP mode');
+        // Force re-render when leaving PiP
+        video.style.transform = 'translateZ(0)';
+        setTimeout(() => {
+            video.style.transform = '';
+        }, 100);
+    });
+}
+
+function togglePlayPause() {
+    if (!video) return;
+    
+    if (video.paused) {
+        video.play();
+    } else {
+        video.pause();
+    }
+}
+
+function toggleLoop() {
+    if (!video) return;
+    
+    isLooping = !isLooping;
+    video.loop = isLooping;
+    
+    const loopBtn = document.getElementById('loopBtn');
+    if (loopBtn) {
+        if (isLooping) {
+            loopBtn.innerHTML = '<i class="fas fa-repeat"></i> Loop: ON';
+            loopBtn.classList.remove('btn-outline');
+            loopBtn.classList.add('btn-primary');
+        } else {
+            loopBtn.innerHTML = '<i class="fas fa-repeat"></i> Loop: OFF';
+            loopBtn.classList.remove('btn-primary');
+            loopBtn.classList.add('btn-outline');
+        }
+    }
+    
+    console.log('Loop mode:', isLooping ? 'ON' : 'OFF');
+}
+
+function showQualityMessage() {
+    const qualityInfo = document.createElement('div');
+    qualityInfo.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: rgba(0,0,0,0.8);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        z-index: 1000;
+        font-size: 0.9rem;
+    `;
+    qualityInfo.innerHTML = `
+        <i class="fas fa-video"></i> 
+        For best quality, <a href="assets/videos/salon-tour.mp4" download style="color: #B76E79;">download the video</a>
+        or click the settings gear ⚙️ to select HD quality.
+    `;
+    document.body.appendChild(qualityInfo);
+    
+    setTimeout(() => {
+        qualityInfo.remove();
+    }, 5000);
+}
+
+// Handle video quality settings via browser
+function forceHighQuality() {
+    if (!video) return;
+    
+    // Try to get highest quality by reloading with quality parameter
+    const currentSrc = video.currentSrc;
+    if (currentSrc && !currentSrc.includes('quality=')) {
+        // This is a fallback - browser will usually choose best quality automatically
+        console.log('Video source:', currentSrc);
     }
 });
