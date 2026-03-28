@@ -250,3 +250,52 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+// Video Player Functionality
+function playVideo() {
+    const video = document.getElementById('salonVideo');
+    const overlay = document.getElementById('videoOverlay');
+    
+    if (video) {
+        video.play();
+        if (overlay) {
+            overlay.classList.add('hide');
+        }
+    }
+}
+
+// Auto-hide overlay when video plays
+function setupVideoPlayer() {
+    const video = document.getElementById('salonVideo');
+    const overlay = document.getElementById('videoOverlay');
+    
+    if (video) {
+        // Hide overlay when video starts playing
+        video.addEventListener('play', () => {
+            if (overlay) overlay.classList.add('hide');
+        });
+        
+        // Show overlay when video is paused
+        video.addEventListener('pause', () => {
+            if (overlay && !video.ended) overlay.classList.remove('hide');
+        });
+        
+        // Show overlay when video ends
+        video.addEventListener('ended', () => {
+            if (overlay) overlay.classList.remove('hide');
+        });
+        
+        // Also hide overlay when user clicks on video directly
+        video.addEventListener('click', () => {
+            if (video.paused) {
+                video.play();
+            } else {
+                video.pause();
+            }
+        });
+    }
+}
+
+// Make sure DOM is loaded before setting up video
+document.addEventListener('DOMContentLoaded', () => {
+    setupVideoPlayer();
+});
