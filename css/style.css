@@ -1249,3 +1249,37 @@ body {
         opacity: 1;
     }
 }
+/* Make login button always visible on mobile */
+@media (max-width: 768px) {
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    /* Keep the login button visible */
+    .nav-links .btn-outline,
+    .nav-links .btn-primary {
+        display: inline-block !important;
+        order: 3;
+        margin-left: auto;
+    }
+    
+    /* Hide other nav links but keep login button */
+    .nav-links a:not(.social-icon) {
+        display: none;
+    }
+    
+    /* Show social icons in a row */
+    .social-nav {
+        display: flex;
+        order: 2;
+    }
+    
+    /* Menu toggle button */
+    .menu-toggle {
+        display: block !important;
+        order: 1;
+    }
+}
