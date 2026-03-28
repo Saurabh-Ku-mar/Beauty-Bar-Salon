@@ -1,5 +1,152 @@
 // frontend/js/main.js
 // Complete Main JavaScript for Beauty Bar Salon
+// ============================================
+// HAMBURGER MENU FUNCTIONALITY
+// ============================================
+
+function initHamburgerMenu() {
+    const hamburger = document.getElementById('hamburgerMenu');
+    const navLinks = document.getElementById('navLinks');
+    const mobileLoginBtn = document.getElementById('loginBtnMobile');
+    const desktopLoginBtn = document.getElementById('loginBtn');
+    
+    if (!hamburger || !navLinks) return;
+    
+    // Toggle menu when hamburger is clicked
+    hamburger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        hamburger.classList.toggle('active');
+        navLinks.classList.toggle('active');
+        
+        // Prevent body scroll when menu is open
+        if (navLinks.classList.contains('active')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    });
+    
+    // Close menu when clicking a link
+    const navLinksItems = navLinks.querySelectorAll('a');
+    navLinksItems.forEach(link => {
+        link.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (navLinks.classList.contains('active') && 
+            !navLinks.contains(e.target) && 
+            !hamburger.contains(e.target)) {
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+    
+    // Mobile login button functionality
+    if (mobileLoginBtn) {
+        mobileLoginBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (window.auth) {
+                if (window.auth.isAuthenticated()) {
+                    if (confirm('Do you want to logout?')) {
+                        window.auth.logout();
+                        updateLoginButtonUI();
+                    }
+                } else {
+                    window.auth.openModal();
+                }
+            }
+            // Close menu after clicking login
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    }
+    
+    // Desktop login button functionality
+    if (desktopLoginBtn) {
+        desktopLoginBtn.addEventListener('click', () => {
+            if (window.auth) {
+                if (window.auth.isAuthenticated()) {
+                    if (confirm('Do you want to logout?')) {
+                        window.auth.logout();
+                        updateLoginButtonUI();
+                    }
+                } else {
+                    window.auth.openModal();
+                }
+            }
+        });
+    }
+}
+
+// Update login buttons when auth state changes
+function updateLoginButtonUI() {
+    const desktopLoginBtn = document.getElementById('loginBtn');
+    const mobileLoginBtn = document.getElementById('loginBtnMobile');
+    
+    if (!window.auth) return;
+    
+    const isLoggedIn = window.auth.isAuthenticated();
+    const userName = window.auth.getUser()?.name?.split(' ')[0] || '';
+    
+    if (desktopLoginBtn) {
+        if (isLoggedIn) {
+            desktopLoginBtn.innerHTML = `<i class="fas fa-user-circle"></i> ${userName}`;
+            desktopLoginBtn.classList.remove('btn-outline');
+            desktopLoginBtn.classList.add('btn-primary');
+        } else {
+            desktopLoginBtn.innerHTML = 'Login';
+            desktopLoginBtn.classList.add('btn-outline');
+            desktopLoginBtn.classList.remove('btn-primary');
+        }
+    }
+    
+    if (mobileLoginBtn) {
+        if (isLoggedIn) {
+            mobileLoginBtn.innerHTML = `<i class="fas fa-user-circle"></i> ${userName}`;
+            mobileLoginBtn.classList.remove('btn-outline');
+            mobileLoginBtn.classList.add('btn-primary');
+        } else {
+            mobileLoginBtn.innerHTML = 'Login';
+            mobileLoginBtn.classList.add('btn-outline');
+            mobileLoginBtn.classList.remove('btn-primary');
+        }
+    }
+}
+
+// Add to your DOMContentLoaded event
+document.addEventListener('DOMContentLoaded', () => {
+    // ... existing initialization code ...
+    
+    // Initialize hamburger menu
+    initHamburgerMenu();
+    
+    // Update login buttons
+    updateLoginButtonUI();
+    
+    // Listen for auth changes
+    if (window.auth) {
+        // Override the updateUI method to also update mobile button
+        const originalUpdateUI = window.auth.updateUIForLoggedInUser;
+        if (originalUpdateUI) {
+            window.auth.updateUIForLoggedInUser = function() {
+                originalUpdateUI.call(window.auth);
+                updateLoginButtonUI();
+            };
+        }
+        
+        // Also check periodically for auth changes
+        setInterval(() => {
+            updateLoginButtonUI();
+        }, 500);
+    }
+});
 // frontend/js/main.js - Add these functions
 
 function initMobileMenu() {
