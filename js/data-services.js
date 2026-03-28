@@ -360,4 +360,4 @@ window.dataService = new DataService();
 // Export for modules
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = DataService;
-                    }
+                    };
