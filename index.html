@@ -7,6 +7,15 @@
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+	<!-- PWA Meta Tags -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#B76E79">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Beauty Bar">
+<link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512x512.png">
 </head>
 <body>
     <!-- Navbar -->
@@ -885,5 +894,142 @@ video::-webkit-media-controls-volume-slider {
         }
     }
 </style>
+	<!-- PWA Registration Script -->
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                .then(registration => {
+                    console.log('Service Worker registered:', registration);
+                    
+                    // Check for updates
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        console.log('New service worker installing...');
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                console.log('New update available!');
+                                showUpdateNotification();
+                            }
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.log('Service Worker registration failed:', error);
+                });
+        });
+    }
+    
+    // Install prompt
+    let deferredPrompt;
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+        console.log('beforeinstallprompt fired');
+        e.preventDefault();
+        deferredPrompt = e;
+        showInstallButton();
+    });
+    
+    window.addEventListener('appinstalled', () => {
+        console.log('App installed');
+        deferredPrompt = null;
+        hideInstallButton();
+        showToast('Beauty Bar installed successfully! 🎉');
+    });
+    
+    function showInstallButton() {
+        const btn = document.getElementById('installBtn');
+        if (btn) {
+            btn.style.display = 'flex';
+            btn.onclick = async () => {
+                if (!deferredPrompt) return;
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log('Install prompt outcome:', outcome);
+                deferredPrompt = null;
+                hideInstallButton();
+            };
+        }
+    }
+    
+    function hideInstallButton() {
+        const btn = document.getElementById('installBtn');
+        if (btn) btn.style.display = 'none';
+    }
+    
+    function showToast(msg) {
+        const toast = document.createElement('div');
+        toast.textContent = msg;
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            z-index: 9999;
+            font-size: 14px;
+            animation: fadeInUp 0.3s;
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+    
+    function showUpdateNotification() {
+        const notif = document.createElement('div');
+        notif.innerHTML = `
+            <div style="position: fixed; bottom: 80px; right: 20px; background: white; padding: 12px 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); z-index: 9999; display: flex; gap: 12px; align-items: center;">
+                <span>✨ New update available!</span>
+                <button onclick="location.reload()" style="background: #B76E79; color: white; border: none; padding: 6px 16px; border-radius: 30px; cursor: pointer;">Update</button>
+            </div>
+        `;
+        document.body.appendChild(notif);
+        setTimeout(() => notif.remove(), 10000);
+    }
+    
+    // Add styles
+    const style = document.createElement('style');
+    style.textContent = `
+        #installBtn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #B76E79, #F8D7DA);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            cursor: pointer;
+            z-index: 999;
+            display: none;
+            font-weight: 500;
+            gap: 8px;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        #installBtn:hover {
+            transform: translateY(-2px);
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        @media (max-width: 768px) {
+            #installBtn {
+                bottom: 80px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+
+<!-- Install Button -->
+<button id="installBtn">
+    <i class="fas fa-download"></i> Install App
+</button>
 </body>
 </html>
