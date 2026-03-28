@@ -74,98 +74,145 @@
         </div>
     </div>
     
-    <script>
-        if (!localStorage.getItem('adminLoggedIn')) window.location.href = 'login.html';
+    <!-- Add this script at the bottom of staff.html, replacing the existing script -->
+<script src="../js/data-service.js"></script>
+<script>
+    if (!localStorage.getItem('adminLoggedIn')) window.location.href = 'login.html';
+    
+    let staff = [];
+    
+    function loadStaff() {
+        if (window.dataService) {
+            staff = window.dataService.getAllStaff();
+            displayStaff();
+        } else {
+            setTimeout(loadStaff, 100);
+        }
+    }
+    
+    function displayStaff() {
+        const grid = document.getElementById('staff-grid');
+        if (!grid) return;
         
-        let staff = [
-            { id: 1, name: "Priya Sharma", position: "Senior Makeup Artist", specialty: "Bridal Makeup", experience: "12+ years", image: "https://images.unsplash.com/photo-1494790108777-223fd4f5603d?w=200" },
-            { id: 2, name: "Anjali Desai", position: "Hair Stylist", specialty: "Hair Color", experience: "8+ years", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200" },
-            { id: 3, name: "Meera Kapoor", position: "Skincare Expert", specialty: "Facial Treatments", experience: "10+ years", image: "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?w=200" }
-        ];
-        
-        function displayStaff() {
-            const grid = document.getElementById('staff-grid');
-            grid.innerHTML = staff.map(s => `
-                <div class="staff-card">
-                    <img src="${s.image}" alt="${s.name}">
-                    <div class="staff-info">
-                        <h3>${s.name}</h3>
-                        <p style="color: var(--primary);">${s.position}</p>
-                        <p>🎯 ${s.specialty}</p>
-                        <p>⭐ ${s.experience}</p>
-                        <div class="staff-actions">
-                            <button class="btn-edit" onclick="editStaff(${s.id})">Edit</button>
-                            <button class="btn-delete" onclick="deleteStaff(${s.id})">Delete</button>
-                        </div>
+        grid.innerHTML = staff.map(s => `
+            <div class="staff-card">
+                <img src="${s.image}" alt="${s.name}">
+                <div class="staff-info">
+                    <h3>${s.name}</h3>
+                    <p style="color: var(--primary);">${s.position}</p>
+                    <p>🎯 ${s.specialty}</p>
+                    <p>⭐ ${s.experience}</p>
+                    <p>📊 ${s.rating || 4.8} ★ (${s.reviews || 100}+ reviews)</p>
+                    <div class="staff-actions">
+                        <button class="btn-edit" onclick="editStaff(${s.id})">Edit</button>
+                        <button class="btn-delete" onclick="deleteStaff(${s.id})">Delete</button>
                     </div>
                 </div>
-            `).join('');
-        }
+            </div>
+        `).join('');
+    }
+    
+    function openStaffModal(staffMember = null) {
+        const modal = document.getElementById('staff-modal');
+        modal.style.display = 'flex';
         
-        function openStaffModal(staffMember = null) {
-            const modal = document.getElementById('staff-modal');
-            modal.style.display = 'flex';
-            if (staffMember) {
-                document.getElementById('modal-title').textContent = 'Edit Staff';
-                document.getElementById('staff-id').value = staffMember.id;
-                document.getElementById('staff-name').value = staffMember.name;
-                document.getElementById('staff-position').value = staffMember.position;
-                document.getElementById('staff-specialty').value = staffMember.specialty;
-                document.getElementById('staff-experience').value = staffMember.experience;
-                document.getElementById('staff-image').value = staffMember.image;
-            } else {
-                document.getElementById('modal-title').textContent = 'Add New Staff';
-                document.getElementById('staff-form').reset();
-                document.getElementById('staff-id').value = '';
+        // Get all services for dropdown
+        const services = window.dataService ? window.dataService.getAllServices() : [];
+        
+        if (staffMember) {
+            document.getElementById('modal-title').textContent = 'Edit Staff';
+            document.getElementById('staff-id').value = staffMember.id;
+            document.getElementById('staff-name').value = staffMember.name;
+            document.getElementById('staff-position').value = staffMember.position;
+            document.getElementById('staff-specialty').value = staffMember.specialty;
+            document.getElementById('staff-experience').value = staffMember.experience;
+            document.getElementById('staff-image').value = staffMember.image;
+            document.getElementById('staff-rating').value = staffMember.rating || 4.8;
+            document.getElementById('staff-reviews').value = staffMember.reviews || 100;
+        } else {
+            document.getElementById('modal-title').textContent = 'Add New Staff';
+            document.getElementById('staff-form').reset();
+            document.getElementById('staff-id').value = '';
+            document.getElementById('staff-rating').value = '4.8';
+            document.getElementById('staff-reviews').value = '100';
+        }
+    }
+    
+    function closeStaffModal() {
+        document.getElementById('staff-modal').style.display = 'none';
+    }
+    
+    function editStaff(id) {
+        const staffMember = staff.find(s => s.id === id);
+        if (staffMember) openStaffModal(staffMember);
+    }
+    
+    function deleteStaff(id) {
+        if (confirm('Remove this staff member? This will affect assigned bookings.')) {
+            if (window.dataService) {
+                window.dataService.deleteStaff(id);
+                loadStaff();
+                showToast('Staff member removed successfully!', 'success');
             }
         }
+    }
+    
+    document.getElementById('staff-form').addEventListener('submit', (e) => {
+        e.preventDefault();
         
-        function closeStaffModal() {
-            document.getElementById('staff-modal').style.display = 'none';
-        }
+        const id = document.getElementById('staff-id').value;
+        const staffData = {
+            name: document.getElementById('staff-name').value,
+            position: document.getElementById('staff-position').value,
+            specialty: document.getElementById('staff-specialty').value,
+            experience: document.getElementById('staff-experience').value,
+            image: document.getElementById('staff-image').value,
+            rating: parseFloat(document.getElementById('staff-rating').value),
+            reviews: parseInt(document.getElementById('staff-reviews').value),
+            isActive: true,
+            services: [] // You can add service assignment later
+        };
         
-        function editStaff(id) {
-            const staffMember = staff.find(s => s.id === id);
-            if (staffMember) openStaffModal(staffMember);
-        }
-        
-        function deleteStaff(id) {
-            if (confirm('Remove this staff member?')) {
-                staff = staff.filter(s => s.id !== id);
-                displayStaff();
-            }
-        }
-        
-        document.getElementById('staff-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const id = document.getElementById('staff-id').value;
-            const staffData = {
-                name: document.getElementById('staff-name').value,
-                position: document.getElementById('staff-position').value,
-                specialty: document.getElementById('staff-specialty').value,
-                experience: document.getElementById('staff-experience').value,
-                image: document.getElementById('staff-image').value
-            };
-            
+        if (window.dataService) {
             if (id) {
-                const index = staff.findIndex(s => s.id == id);
-                if (index !== -1) staff[index] = { ...staff[index], ...staffData };
+                window.dataService.updateStaff(id, staffData);
+                showToast('Staff updated successfully!', 'success');
             } else {
-                staffData.id = Date.now();
-                staff.push(staffData);
+                window.dataService.addStaff(staffData);
+                showToast('Staff added successfully!', 'success');
             }
-            
             closeStaffModal();
-            displayStaff();
-        });
-        
-        document.getElementById('logout-btn').addEventListener('click', (e) => {
-            e.preventDefault();
-            localStorage.removeItem('adminLoggedIn');
-            window.location.href = 'login.html';
-        });
-        
-        displayStaff();
-    </script>
+            loadStaff();
+        }
+    });
+    
+    function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<span>${message}</span>`;
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: ${type === 'success' ? '#4CAF50' : '#2196F3'};
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 2000;
+            animation: slideIn 0.3s;
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+    
+    document.getElementById('logout-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        localStorage.removeItem('adminLoggedIn');
+        window.location.href = 'login.html';
+    });
+    
+    // Initialize
+    loadStaff();
+</script>
 </body>
 </html>
