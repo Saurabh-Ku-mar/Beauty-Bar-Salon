@@ -96,20 +96,26 @@
         </div>
     </section>
 
-    <!-- Video Tour -->
-    <section class="video-tour">
-        <h2 class="section-title">Take a Tour of Our Salon</h2>
-        <div class="video-container">
-            <video poster="https://images.unsplash.com/photo-1522337660859-02fbefca4700?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80">
-                <source src="https://www.instagram.com/reel/DNlUMGSPXST/?igsh=MTl6ZzhwOHVmeTU0Yg==" type="video/mp4">
-            </video>
-            <div class="video-overlay">
-                <div class="play-button" onclick="playVideo()">
-                    <i class="fas fa-play"></i>
-                </div>
+    <!-- Video Tour Section -->
+<section class="video-tour">
+    <h2 class="section-title">Take a Tour of Our Salon</h2>
+    <p style="text-align: center; margin-bottom: 2rem; color: #666;">Watch our 45-second salon tour</p>
+    <div class="video-container">
+        <video id="salonVideo" poster="assets/images/video-poster.jpg" controls>
+            <source src="assets/tour.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="video-overlay" id="videoOverlay">
+            <div class="play-button" onclick="playVideo()">
+                <i class="fas fa-play"></i>
             </div>
         </div>
-    </section>
+    </div>
+    <div class="video-info" style="text-align: center; margin-top: 1rem;">
+        <p>✨ Experience the luxury of Beauty Bar Salon in just 45 seconds</p>
+        <p style="font-size: 0.9rem; color: #666;">Watch our salon tour to see our premium facilities</p>
+    </div>
+</section>
 
     <!-- Meet Our Team -->
     <section class="team-section" id="team">
@@ -438,6 +444,88 @@
         cursor: pointer;
         margin-top: 10px;
     }
+    /* Video Tour Section Styles */
+.video-tour {
+    padding: 5rem 5%;
+    background: var(--white);
+}
+
+.video-container {
+    position: relative;
+    max-width: 1000px;
+    margin: 2rem auto 0;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-hover);
+    background: #000;
+}
+
+.video-container video {
+    width: 100%;
+    display: block;
+    cursor: pointer;
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.video-overlay.hide {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.play-button {
+    width: 80px;
+    height: 80px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.play-button:hover {
+    transform: scale(1.1);
+    background: var(--primary-dark);
+}
+
+.video-info {
+    margin-top: 1.5rem;
+}
+
+/* Video Controls Customization */
+video::-webkit-media-controls {
+    background-color: rgba(0,0,0,0.7);
+}
+
+video::-webkit-media-controls-play-button {
+    background-color: var(--primary);
+    border-radius: 50%;
+}
+
+@media (max-width: 768px) {
+    .play-button {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+}
     
     @keyframes slideIn {
         from {
