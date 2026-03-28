@@ -250,41 +250,48 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
-// Video Player Functionality
+// Video Player Functionality - Fixed Version
 function playVideo() {
     const video = document.getElementById('salonVideo');
-    const overlay = document.getElementById('videoOverlay');
     
     if (video) {
-        video.play();
-        if (overlay) {
-            overlay.classList.add('hide');
+        // Try to play the video
+        const playPromise = video.play();
+        
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                console.log('Video playing successfully');
+                // Hide any overlay if exists
+                const overlay = document.getElementById('videoOverlay');
+                if (overlay) overlay.style.display = 'none';
+            }).catch(error => {
+                console.log('Playback failed:', error);
+                // Show user-friendly message
+                alert('Please click the video play button to watch. Autoplay is blocked by your browser.');
+            });
         }
+    } else {
+        console.error('Video element not found');
+        alert('Video not found. Please check if the video file exists in assets/videos/');
     }
 }
 
-// Auto-hide overlay when video plays
-function setupVideoPlayer() {
+function downloadVideo() {
+    const videoUrl = 'assets/tour.mp4';
+    const link = document.createElement('a');
+    link.href = videoUrl;
+    link.download = 'assets/tour.mp4';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Alternative: Show play button overlay on video
+function setupVideoWithControls() {
     const video = document.getElementById('salonVideo');
-    const overlay = document.getElementById('videoOverlay');
     
     if (video) {
-        // Hide overlay when video starts playing
-        video.addEventListener('play', () => {
-            if (overlay) overlay.classList.add('hide');
-        });
-        
-        // Show overlay when video is paused
-        video.addEventListener('pause', () => {
-            if (overlay && !video.ended) overlay.classList.remove('hide');
-        });
-        
-        // Show overlay when video ends
-        video.addEventListener('ended', () => {
-            if (overlay) overlay.classList.remove('hide');
-        });
-        
-        // Also hide overlay when user clicks on video directly
+        // Add click-to-play functionality
         video.addEventListener('click', () => {
             if (video.paused) {
                 video.play();
@@ -292,10 +299,75 @@ function setupVideoPlayer() {
                 video.pause();
             }
         });
+        
+        // Log when video starts playing
+        video.addEventListener('play', () => {
+            console.log('Video started playing');
+        });
+        
+        // Log when video ends
+        video.addEventListener('ended', () => {
+            console.log('Video finished');
+        });
+        
+        // Handle errors
+        video.addEventListener('error', (e) => {
+            console.error('Video error:', e);
+            const errorMessage = document.createElement('div');
+            errorMessage.style.cssText = `
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0,0,0,0.8);
+                color: white;
+                padding: 20px;
+                border-radius: 10px;
+                text-align: center;
+            `;
+            errorMessage.innerHTML = `
+                <i class="fas fa-exclamation-circle" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                <p>Video cannot be played.</p>
+                <p>Please <a href="assets/tour.mp4" download style="color: var(--primary);">download the video</a> to watch.</p>
+            `;
+            video.parentElement.appendChild(errorMessage);
+        });
     }
 }
 
-// Make sure DOM is loaded before setting up video
+// Initialize when page loads
 document.addEventListener('DOMContentLoaded', () => {
-    setupVideoPlayer();
+    setupVideoWithControls();
+    
+    // Check if video exists
+    const video = document.getElementById('salonVideo');
+    if (video) {
+        // Test if video source loads
+        video.addEventListener('loadeddata', () => {
+            console.log('Video loaded successfully');
+        });
+        
+        video.addEventListener('error', () => {
+            console.error('Video failed to load');
+            // Show download link if video fails
+            const container = video.parentElement;
+            const errorDiv = document.createElement('div');
+            errorDiv.style.cssText = `
+                text-align: center;
+                padding: 40px;
+                background: #f8f9fa;
+                border-radius: 20px;
+                margin-top: 20px;
+            `;
+            errorDiv.innerHTML = `
+                <i class="fas fa-video-slash" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                <h3>Video Preview Not Available</h3>
+                <p>Click below to download and watch our salon tour</p>
+                <a href="assets/videos/salon-tour.mp4" download class="btn btn-primary" style="margin-top: 1rem;">
+                    <i class="fas fa-download"></i> Download Video (45 sec)
+                </a>
+            `;
+            container.parentElement.appendChild(errorDiv);
+        });
+    }
 });
