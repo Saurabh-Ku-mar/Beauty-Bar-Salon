@@ -1,5 +1,127 @@
 // frontend/js/main.js
 // Complete Main JavaScript for Beauty Bar Salon
+// frontend/js/main.js - Add these functions
+
+function initMobileMenu() {
+    const menuToggle = document.getElementById('mobileMenuToggle');
+    const navLinks = document.getElementById('navLinks');
+    const mobileLoginBtn = document.getElementById('loginBtnMobile');
+    const desktopLoginBtn = document.getElementById('loginBtn');
+    
+    // Mobile menu toggle
+    if (menuToggle && navLinks) {
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            // Change icon when menu is open
+            const icon = menuToggle.querySelector('i');
+            if (navLinks.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+    }
+    
+    // Mobile login button - open modal
+    if (mobileLoginBtn) {
+        mobileLoginBtn.addEventListener('click', () => {
+            if (window.auth && window.auth.isAuthenticated()) {
+                // If logged in, show logout option
+                if (confirm('Do you want to logout?')) {
+                    window.auth.logout();
+                }
+            } else {
+                // Open login modal
+                if (window.auth) {
+                    window.auth.openModal();
+                }
+                // Close mobile menu after clicking login
+                if (navLinks) navLinks.classList.remove('active');
+                if (menuToggle) {
+                    const icon = menuToggle.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            }
+        });
+    }
+    
+    // Desktop login button
+    if (desktopLoginBtn) {
+        desktopLoginBtn.addEventListener('click', () => {
+            if (window.auth && window.auth.isAuthenticated()) {
+                if (confirm('Do you want to logout?')) {
+                    window.auth.logout();
+                }
+            } else {
+                if (window.auth) window.auth.openModal();
+            }
+        });
+    }
+}
+
+// Update the login button UI based on auth state
+function updateLoginButtonUI() {
+    const desktopLoginBtn = document.getElementById('loginBtn');
+    const mobileLoginBtn = document.getElementById('loginBtnMobile');
+    
+    if (!window.auth) return;
+    
+    const isLoggedIn = window.auth.isAuthenticated();
+    const userName = window.auth.getUser()?.name?.split(' ')[0] || '';
+    
+    if (desktopLoginBtn) {
+        if (isLoggedIn) {
+            desktopLoginBtn.innerHTML = `<i class="fas fa-user-circle"></i> ${userName}`;
+            desktopLoginBtn.classList.remove('btn-outline');
+            desktopLoginBtn.classList.add('btn-primary');
+        } else {
+            desktopLoginBtn.innerHTML = 'Login';
+            desktopLoginBtn.classList.add('btn-outline');
+            desktopLoginBtn.classList.remove('btn-primary');
+        }
+    }
+    
+    if (mobileLoginBtn) {
+        if (isLoggedIn) {
+            mobileLoginBtn.innerHTML = `<i class="fas fa-user-circle"></i> ${userName}`;
+            mobileLoginBtn.classList.remove('btn-outline');
+            mobileLoginBtn.classList.add('btn-primary');
+        } else {
+            mobileLoginBtn.innerHTML = 'Login';
+            mobileLoginBtn.classList.add('btn-outline');
+            mobileLoginBtn.classList.remove('btn-primary');
+        }
+    }
+}
+
+// Add to your DOMContentLoaded event
+document.addEventListener('DOMContentLoaded', () => {
+    // ... existing code ...
+    
+    // Initialize mobile menu
+    initMobileMenu();
+    
+    // Update login button UI
+    updateLoginButtonUI();
+    
+    // Listen for auth changes
+    if (window.auth) {
+        // Create a custom event listener for auth changes
+        const originalUpdateUI = window.auth.updateUIForLoggedInUser;
+        window.auth.updateUIForLoggedInUser = function() {
+            if (originalUpdateUI) originalUpdateUI.call(window.auth);
+            updateLoginButtonUI();
+        };
+        
+        // Also check on interval for auth changes
+        setInterval(() => {
+            updateLoginButtonUI();
+        }, 1000);
+    }
+});
 
 // ============================================
 // VIDEO GALLERY SLIDER FUNCTIONALITY
