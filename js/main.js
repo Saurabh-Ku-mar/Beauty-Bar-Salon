@@ -1,5 +1,517 @@
 // frontend/js/main.js
 // Complete Main JavaScript for Beauty Bar Salon
+
+// ============================================
+// PWA INSTALL PROMPT & NOTIFICATIONS
+// ============================================
+
+let deferredPrompt;
+
+// Show install prompt
+function initInstallPrompt() {
+    window.addEventListener('beforeinstallprompt', (e) => {
+        console.log('Before install prompt triggered');
+        e.preventDefault();
+        deferredPrompt = e;
+        
+        // Show custom install button
+        showInstallButton();
+    });
+    
+    window.addEventListener('appinstalled', (evt) => {
+        console.log('App was installed');
+        hideInstallButton();
+        showToast('Beauty Bar Salon installed successfully! 🎉', 'success');
+        playNotificationSound();
+    });
+}
+
+function showInstallButton() {
+    let installBtn = document.getElementById('installAppBtn');
+    if (!installBtn) {
+        installBtn = document.createElement('button');
+        installBtn.id = 'installAppBtn';
+        installBtn.className = 'install-app-btn';
+        installBtn.innerHTML = '<i class="fas fa-download"></i> Install App';
+        installBtn.onclick = installApp;
+        document.body.appendChild(installBtn);
+    }
+    installBtn.style.display = 'flex';
+}
+
+function hideInstallButton() {
+    const installBtn = document.getElementById('installAppBtn');
+    if (installBtn) {
+        installBtn.style.display = 'none';
+    }
+}
+
+function installApp() {
+    if (!deferredPrompt) {
+        console.log('No install prompt available');
+        return;
+    }
+    
+    deferredPrompt.prompt();
+    
+    deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted install prompt');
+            playNotificationSound();
+        } else {
+            console.log('User dismissed install prompt');
+        }
+        deferredPrompt = null;
+    });
+}
+
+// ============================================
+// NOTIFICATION SOUND & PUSH NOTIFICATIONS
+// ============================================
+
+function playNotificationSound() {
+    const audio = document.getElementById('notificationSound');
+    if (audio) {
+        audio.play().catch(e => console.log('Sound play failed:', e));
+    }
+}
+
+// Request notification permission
+async function requestNotificationPermission() {
+    if (!('Notification' in window)) {
+        console.log('This browser does not support notifications');
+        return false;
+    }
+    
+    if (Notification.permission === 'granted') {
+        console.log('Notification permission already granted');
+        return true;
+    }
+    
+    if (Notification.permission !== 'denied') {
+        const permission = await Notification.requestPermission();
+        return permission === 'granted';
+    }
+    
+    return false;
+}
+
+// Show local notification
+function showLocalNotification(title, body, url = '/') {
+    if (!('Notification' in window) || Notification.permission !== 'granted') {
+        return;
+    }
+    
+    playNotificationSound();
+    
+    const options = {
+        body: body,
+        icon: '/icons/icon-192x192.png',
+        badge: '/icons/icon-72x72.png',
+        vibrate: [200, 100, 200],
+        data: { url: url },
+        actions: [
+            { action: 'view', title: 'View' },
+            { action: 'dismiss', title: 'Dismiss' }
+        ]
+    };
+    
+    const notification = new Notification(title, options);
+    
+    notification.onclick = (event) => {
+        event.preventDefault();
+        window.focus();
+        window.location.href = url;
+        notification.close();
+    };
+    
+    setTimeout(() => {
+        notification.close();
+    }, 10000);
+}
+
+// Booking reminder notification
+function scheduleBookingReminder(booking) {
+    const bookingDate = new Date(booking.date);
+    const reminderTime = new Date(bookingDate.getTime() - 24 * 60 * 60 * 1000);
+    
+    if (reminderTime > new Date()) {
+        const timeUntilReminder = reminderTime - new Date();
+        
+        setTimeout(() => {
+            showLocalNotification(
+                'Upcoming Appointment Reminder',
+                `You have a ${booking.serviceName} appointment tomorrow at ${booking.time}`,
+                '/history.html'
+            );
+        }, timeUntilReminder);
+    }
+}
+
+// Send push notification to server (for future use)
+async function sendPushNotification(subscription, payload) {
+    try {
+        const response = await fetch('/api/notifications/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ subscription, payload }),
+        });
+        return response.ok;
+    } catch (error) {
+        console.error('Failed to send push notification:', error);
+        return false;
+    }
+}
+
+// Subscribe to push notifications
+async function subscribeToPushNotifications() {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        console.log('Push notifications not supported');
+        return;
+    }
+    
+    try {
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array('YOUR_VAPID_PUBLIC_KEY')
+        });
+        
+        console.log('Push subscription:', subscription);
+        
+        // Send subscription to server
+        await fetch('/api/notifications/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(subscription),
+        });
+        
+        return subscription;
+    } catch (error) {
+        console.error('Failed to subscribe to push notifications:', error);
+    }
+}
+
+// Helper function to convert VAPID key
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+    
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
+
+// ============================================
+// PWA REGISTRATION
+// ============================================
+
+function registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+                console.log('Service Worker registered with scope:', registration.scope);
+                
+                // Check for updates
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    console.log('New service worker installing...');
+                    
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            console.log('New update available!');
+                            showUpdateNotification();
+                        }
+                    });
+                });
+                
+                // Check for existing push subscription
+                registration.pushManager.getSubscription().then(subscription => {
+                    if (subscription) {
+                        console.log('Already subscribed to push notifications');
+                    }
+                });
+            })
+            .catch((error) => {
+                console.log('Service Worker registration failed:', error);
+            });
+        
+        // Handle messages from service worker
+        navigator.serviceWorker.addEventListener('message', (event) => {
+            console.log('Message from service worker:', event.data);
+            if (event.data.type === 'SYNC_BOOKINGS') {
+                showLocalNotification(
+                    'Bookings Synced',
+                    'Your offline bookings have been synced successfully!',
+                    '/history.html'
+                );
+            }
+        });
+    }
+}
+
+function showUpdateNotification() {
+    const notification = document.createElement('div');
+    notification.className = 'update-notification';
+    notification.innerHTML = `
+        <div class="update-content">
+            <i class="fas fa-sync-alt"></i>
+            <span>New version available!</span>
+            <button onclick="location.reload()">Update Now</button>
+            <button onclick="this.parentElement.parentElement.remove()">Later</button>
+        </div>
+    `;
+    document.body.appendChild(notification);
+    
+    playNotificationSound();
+    
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 10000);
+}
+
+// ============================================
+// IOS INSTALL INSTRUCTION
+// ============================================
+
+function showIOSInstallInstructions() {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    
+    if (isIOS && !window.navigator.standalone) {
+        const iosPrompt = document.createElement('div');
+        iosPrompt.className = 'ios-install-prompt';
+        iosPrompt.innerHTML = `
+            <div class="ios-prompt-content">
+                <i class="fab fa-apple"></i>
+                <h4>Install Beauty Bar App</h4>
+                <ol>
+                    <li>Tap <i class="fas fa-square"></i> Share button</li>
+                    <li>Tap "Add to Home Screen"</li>
+                    <li>Tap "Add" to install</li>
+                </ol>
+                <button onclick="this.parentElement.parentElement.remove()">Got it</button>
+            </div>
+        `;
+        document.body.appendChild(iosPrompt);
+        
+        setTimeout(() => {
+            if (iosPrompt.parentElement) {
+                iosPrompt.remove();
+            }
+        }, 10000);
+    }
+}
+
+// ============================================
+// TOAST NOTIFICATION
+// ============================================
+
+function showToast(message, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+        <span>${message}</span>
+    `;
+    document.body.appendChild(toast);
+    
+    playNotificationSound();
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// ============================================
+// CSS STYLES FOR PWA ELEMENTS
+// ============================================
+
+const pwaStyles = document.createElement('style');
+pwaStyles.textContent = `
+    /* Install App Button */
+    .install-app-btn {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: var(--gradient);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 24px;
+        cursor: pointer;
+        z-index: 1000;
+        display: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        font-weight: 500;
+        font-size: 0.9rem;
+        gap: 8px;
+        align-items: center;
+        transition: all 0.3s;
+    }
+    
+    .install-app-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(183, 110, 121, 0.4);
+    }
+    
+    /* Update Notification */
+    .update-notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        z-index: 1000;
+        animation: slideIn 0.3s;
+        border-left: 4px solid var(--primary);
+    }
+    
+    .update-content {
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .update-content button {
+        padding: 6px 15px;
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+        background: var(--primary);
+        color: white;
+    }
+    
+    .update-content button:last-child {
+        background: #ddd;
+        color: #666;
+    }
+    
+    /* iOS Install Prompt */
+    .ios-install-prompt {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        z-index: 1000;
+        max-width: 320px;
+        animation: slideIn 0.3s;
+    }
+    
+    .ios-prompt-content {
+        padding: 15px;
+        text-align: center;
+    }
+    
+    .ios-prompt-content h4 {
+        margin: 10px 0;
+        color: var(--primary);
+    }
+    
+    .ios-prompt-content ol {
+        margin: 10px 0;
+        padding-left: 20px;
+        text-align: left;
+    }
+    
+    .ios-prompt-content button {
+        width: 100%;
+        padding: 8px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .install-app-btn {
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+        
+        .install-app-btn:hover {
+            transform: translateX(-50%) translateY(-2px);
+        }
+    }
+`;
+document.head.appendChild(pwaStyles);
+
+// ============================================
+// INITIALIZE PWA FEATURES
+// ============================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Register Service Worker
+    registerServiceWorker();
+    
+    // Initialize install prompt
+    initInstallPrompt();
+    
+    // Show iOS install instructions
+    showIOSInstallInstructions();
+    
+    // Request notification permission
+    setTimeout(() => {
+        requestNotificationPermission();
+    }, 5000);
+    
+    // Add install button to floating WhatsApp button area
+    const whatsappFloat = document.querySelector('.whatsapp-float');
+    if (whatsappFloat) {
+        const installHint = document.createElement('div');
+        installHint.className = 'install-hint';
+        installHint.innerHTML = '<i class="fas fa-download"></i> Install App';
+        installHint.style.cssText = `
+            position: fixed;
+            bottom: 100px;
+            left: 20px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            z-index: 997;
+            cursor: pointer;
+        `;
+        installHint.onclick = installApp;
+        document.body.appendChild(installHint);
+        
+        setTimeout(() => {
+            installHint.remove();
+        }, 5000);
+    }
+});
 // ============================================
 // HAMBURGER MENU FUNCTIONALITY
 // ============================================
