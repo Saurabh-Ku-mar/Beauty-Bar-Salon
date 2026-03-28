@@ -2,46 +2,330 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=0.4">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Services - Beauty Bar Salon</title>
     <link rel="stylesheet" href="../css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .admin-container { display: flex; min-height: 100vh; }
-        .admin-sidebar { width: 280px; background: var(--dark); color: white; padding: 2rem; position: fixed; height: 100vh; overflow-y: auto; }
-        .admin-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 2rem; text-align: center; }
-        .admin-nav { list-style: none; }
-        .admin-nav li { margin-bottom: 0.5rem; }
-        .admin-nav a { display: flex; align-items: center; gap: 1rem; padding: 12px 15px; color: #ccc; text-decoration: none; border-radius: 10px; transition: all 0.3s; }
-        .admin-nav a:hover, .admin-nav a.active { background: rgba(255,255,255,0.1); color: white; }
-        .admin-main { flex: 1; margin-left: 280px; padding: 2rem; background: var(--light); }
-        
-        .add-service-btn { margin-bottom: 2rem; }
-        .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
-        .service-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: var(--shadow); }
-        .service-card img { width: 100%; height: 180px; object-fit: cover; }
-        .service-info { padding: 1rem; }
-        .service-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
-        .service-actions button { flex: 1; padding: 8px; border: none; border-radius: 8px; cursor: pointer; }
-        .btn-edit { background: #2196F3; color: white; }
-        .btn-delete { background: #F44336; color: white; }
-        
-        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
-        .modal.active { display: flex; }
-        .modal-content { background: white; padding: 2rem; border-radius: 15px; max-width: 500px; width: 90%; }
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--light);
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .admin-sidebar {
+            width: 280px;
+            background: var(--dark);
+            color: white;
+            padding: 2rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .admin-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .admin-nav {
+            list-style: none;
+        }
+
+        .admin-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-nav a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 12px 15px;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .admin-nav a:hover,
+        .admin-nav a.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .admin-nav a i {
+            width: 24px;
+        }
+
+        .admin-main {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+            background: var(--light);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-header h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--dark);
+        }
+
+        .btn-add {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .service-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .service-info {
+            padding: 1.5rem;
+        }
+
+        .service-info h3 {
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .service-price {
+            color: var(--primary);
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .service-category {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--secondary);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .service-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .service-actions button {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #F44336;
+            color: white;
+        }
+
+        .btn-edit:hover, .btn-delete:hover {
+            opacity: 0.8;
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem;
+            background: white;
+            border-radius: 15px;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 1.5rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-save {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-cancel {
+            background: #ddd;
+            color: #666;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            z-index: 2000;
+            animation: slideIn 0.3s;
+        }
+
+        .toast.success { background: #4CAF50; }
+        .toast.error { background: #F44336; }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
         @media (max-width: 768px) {
-            .admin-sidebar { width: 70px; padding: 1rem; }
-            .admin-logo span, .admin-nav a span { display: none; }
-            .admin-main { margin-left: 70px; }
+            .admin-sidebar {
+                width: 70px;
+                padding: 1rem;
+            }
+            .admin-logo span,
+            .admin-nav a span {
+                display: none;
+            }
+            .admin-main {
+                margin-left: 70px;
+            }
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
     <div class="admin-container">
         <div class="admin-sidebar">
-            <div class="admin-logo"><i class="fas fa-crown"></i><span>Beauty Bar</span></div>
+            <div class="admin-logo">
+                <i class="fas fa-crown"></i>
+                <span>Beauty Bar</span>
+            </div>
             <ul class="admin-nav">
                 <li><a href="dashboard.html"><i class="fas fa-chart-line"></i><span>Dashboard</span></a></li>
                 <li><a href="bookings.html"><i class="fas fa-calendar-check"></i><span>Bookings</span></a></li>
@@ -50,172 +334,226 @@
                 <li><a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
             </ul>
         </div>
-        
+
         <div class="admin-main">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <h2>Manage Services</h2>
-                <button class="btn btn-primary" onclick="openModal()">+ Add New Service</button>
+            <div class="page-header">
+                <h2><i class="fas fa-cut"></i> Manage Services</h2>
+                <button class="btn-add" onclick="openAddModal()">
+                    <i class="fas fa-plus"></i> Add New Service
+                </button>
             </div>
-            
-            <div id="services-grid" class="services-grid"></div>
+
+            <div id="services-container">
+                <div class="empty-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading services...</p>
+                </div>
+            </div>
         </div>
     </div>
-    
+
     <!-- Add/Edit Modal -->
-    <div id="service-modal" class="modal">
+    <div id="serviceModal" class="modal">
         <div class="modal-content">
-            <h3 id="modal-title">Add New Service</h3>
-            <form id="service-form">
-                <input type="hidden" id="service-id">
-                <div class="form-group"><label>Service Name</label><input type="text" id="service-name" class="form-control" required></div>
-                <div class="form-group"><label>Category</label>
-                    <select id="service-category" class="form-control">
-                        <option>Bridal</option><option>Hair</option><option>Makeup</option><option>Nails</option><option>Skincare</option>
+            <h3 id="modalTitle">Add New Service</h3>
+            <form id="serviceForm">
+                <input type="hidden" id="serviceId">
+                <div class="form-group">
+                    <label>Service Name *</label>
+                    <input type="text" id="serviceName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Category *</label>
+                    <select id="serviceCategory" class="form-control" required>
+                        <option value="Bridal">Bridal</option>
+                        <option value="Hair">Hair</option>
+                        <option value="Makeup">Makeup</option>
+                        <option value="Nails">Nails</option>
+                        <option value="Skincare">Skincare</option>
                     </select>
                 </div>
-                <div class="form-group"><label>Price (₹)</label><input type="number" id="service-price" class="form-control" required></div>
-                <div class="form-group"><label>Duration (minutes)</label><input type="number" id="service-duration" class="form-control" required></div>
-                <div class="form-group"><label>Description</label><textarea id="service-description" class="form-control" rows="3"></textarea></div>
-                <div class="form-group"><label>Image URL</label><input type="text" id="service-image" class="form-control" placeholder="https://..."></div>
-                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                    <button type="submit" class="btn btn-primary">Save Service</button>
-                    <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                <div class="form-group">
+                    <label>Price (₹) *</label>
+                    <input type="number" id="servicePrice" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Duration (minutes) *</label>
+                    <input type="number" id="serviceDuration" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="serviceDescription" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Image URL</label>
+                    <input type="text" id="serviceImage" class="form-control" placeholder="https://images.unsplash.com/...">
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-save">Save Service</button>
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
                 </div>
             </form>
         </div>
     </div>
-    
-<!-- Add this script at the bottom of services.html, replacing the existing script -->
-<script src="../js/data-service.js"></script>
-<script>
-    if (!localStorage.getItem('adminLoggedIn')) window.location.href = 'login.html';
-    
-    let services = [];
-    
-    function loadServices() {
-        if (window.dataService) {
-            services = window.dataService.getAllServices();
-            displayServices();
-        } else {
-            setTimeout(loadServices, 100);
+
+    <script src="../js/data-service.js"></script>
+    <script>
+        // Check admin authentication
+        if (!localStorage.getItem('adminLoggedIn')) {
+            window.location.href = 'login.html';
         }
-    }
-    
-    function displayServices() {
-        const grid = document.getElementById('services-grid');
-        if (!grid) return;
-        
-        grid.innerHTML = services.map(s => `
-            <div class="service-card">
-                <img src="${s.image}" alt="${s.name}">
-                <div class="service-info">
-                    <h3>${s.name}</h3>
-                    <p style="color: var(--primary); font-weight: bold;">₹${s.price}</p>
-                    <p>⏱️ ${s.duration} mins</p>
-                    <p>📂 ${s.category}</p>
-                    <p style="font-size: 0.9rem; color: #666;">${s.description || ''}</p>
-                    <div class="service-actions">
-                        <button class="btn-edit" onclick="editService(${s.id})">Edit</button>
-                        <button class="btn-delete" onclick="deleteService(${s.id})">Delete</button>
+
+        let currentServices = [];
+
+        // Load services from data service
+        function loadServices() {
+            const container = document.getElementById('services-container');
+            
+            if (!window.dataService) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>Data service not loaded. Please refresh the page.</p>
                     </div>
+                `;
+                return;
+            }
+
+            currentServices = window.dataService.getAllServices();
+            
+            if (currentServices.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-cut"></i>
+                        <h3>No Services Yet</h3>
+                        <p>Click "Add New Service" to get started.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="services-grid">
+                    ${currentServices.map(service => `
+                        <div class="service-card">
+                            <img src="${service.image || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400'}" alt="${service.name}">
+                            <div class="service-info">
+                                <span class="service-category">${service.category}</span>
+                                <h3>${service.name}</h3>
+                                <div class="service-price">₹${service.price}</div>
+                                <p>⏱️ ${service.duration} minutes</p>
+                                <p style="color: #666; font-size: 0.9rem;">${service.description || 'No description'}</p>
+                                <div class="service-actions">
+                                    <button class="btn-edit" onclick="editService(${service.id})">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn-delete" onclick="deleteService(${service.id})">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
                 </div>
-            </div>
-        `).join('');
-    }
-    
-    function openModal(service = null) {
-        const modal = document.getElementById('service-modal');
-        modal.style.display = 'flex';
-        
-        if (service) {
-            document.getElementById('modal-title').textContent = 'Edit Service';
-            document.getElementById('service-id').value = service.id;
-            document.getElementById('service-name').value = service.name;
-            document.getElementById('service-category').value = service.category;
-            document.getElementById('service-price').value = service.price;
-            document.getElementById('service-duration').value = service.duration;
-            document.getElementById('service-description').value = service.description || '';
-            document.getElementById('service-image').value = service.image;
-        } else {
-            document.getElementById('modal-title').textContent = 'Add New Service';
-            document.getElementById('service-form').reset();
-            document.getElementById('service-id').value = '';
+            `;
         }
-    }
-    
-    function closeModal() {
-        document.getElementById('service-modal').style.display = 'none';
-    }
-    
-    function editService(id) {
-        const service = services.find(s => s.id === id);
-        if (service) openModal(service);
-    }
-    
-    function deleteService(id) {
-        if (confirm('Delete this service? This will affect all bookings.')) {
-            if (window.dataService) {
+
+        // Open modal for adding new service
+        function openAddModal() {
+            document.getElementById('modalTitle').textContent = 'Add New Service';
+            document.getElementById('serviceForm').reset();
+            document.getElementById('serviceId').value = '';
+            document.getElementById('serviceModal').classList.add('active');
+        }
+
+        // Edit existing service
+        function editService(id) {
+            const service = currentServices.find(s => s.id === id);
+            if (service) {
+                document.getElementById('modalTitle').textContent = 'Edit Service';
+                document.getElementById('serviceId').value = service.id;
+                document.getElementById('serviceName').value = service.name;
+                document.getElementById('serviceCategory').value = service.category;
+                document.getElementById('servicePrice').value = service.price;
+                document.getElementById('serviceDuration').value = service.duration;
+                document.getElementById('serviceDescription').value = service.description || '';
+                document.getElementById('serviceImage').value = service.image || '';
+                document.getElementById('serviceModal').classList.add('active');
+            }
+        }
+
+        // Delete service
+        function deleteService(id) {
+            if (confirm('Are you sure you want to delete this service? This action cannot be undone.')) {
                 window.dataService.deleteService(id);
                 loadServices();
                 showToast('Service deleted successfully!', 'success');
             }
         }
-    }
-    
-    document.getElementById('service-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        const id = document.getElementById('service-id').value;
-        const serviceData = {
-            name: document.getElementById('service-name').value,
-            category: document.getElementById('service-category').value,
-            price: parseInt(document.getElementById('service-price').value),
-            duration: parseInt(document.getElementById('service-duration').value),
-            description: document.getElementById('service-description').value,
-            image: document.getElementById('service-image').value,
-            isActive: true
-        };
-        
-        if (window.dataService) {
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('serviceModal').classList.remove('active');
+        }
+
+        // Show toast notification
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Handle form submission
+        document.getElementById('serviceForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('serviceId').value;
+            const serviceData = {
+                name: document.getElementById('serviceName').value,
+                category: document.getElementById('serviceCategory').value,
+                price: parseInt(document.getElementById('servicePrice').value),
+                duration: parseInt(document.getElementById('serviceDuration').value),
+                description: document.getElementById('serviceDescription').value,
+                image: document.getElementById('serviceImage').value,
+                isActive: true
+            };
+            
             if (id) {
+                // Update existing service
                 window.dataService.updateService(id, serviceData);
                 showToast('Service updated successfully!', 'success');
             } else {
+                // Add new service
                 window.dataService.addService(serviceData);
                 showToast('Service added successfully!', 'success');
             }
+            
             closeModal();
             loadServices();
-        }
-    });
-    
-    function showToast(message, type) {
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.innerHTML = `<span>${message}</span>`;
-        toast.style.cssText = `
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: ${type === 'success' ? '#4CAF50' : '#2196F3'};
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            z-index: 2000;
-            animation: slideIn 0.3s;
-        `;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
-    }
-    
-    document.getElementById('logout-btn').addEventListener('click', (e) => {
-        e.preventDefault();
-        localStorage.removeItem('adminLoggedIn');
-        window.location.href = 'login.html';
-    });
-    
-    // Initialize
-    loadServices();
-</script>
+        });
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('adminLoggedIn');
+            localStorage.removeItem('adminEmail');
+            window.location.href = 'login.html';
+        });
+
+        // Wait for data service to load
+        const checkDataService = setInterval(() => {
+            if (window.dataService) {
+                clearInterval(checkDataService);
+                loadServices();
+                
+                // Listen for data changes
+                window.dataService.subscribe(() => {
+                    loadServices();
+                });
+            }
+        }, 100);
+    </script>
 </body>
 </html>
