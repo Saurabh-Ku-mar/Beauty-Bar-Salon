@@ -583,27 +583,65 @@ video::-webkit-media-controls-volume-slider {
 }
 
 /* Quality indicator */
-.video-quality-indicator {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(0,0,0,0.7);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    z-index: 10;
-    pointer-events: none;
+/* Video Gallery Slider Styles */
+.video-gallery-section {
+    padding: 5rem 5%;
+    background: linear-gradient(135deg, var(--light) 0%, white 100%);
 }
 
-/* Video controls buttons */
-.video-controls button {
-    transition: all 0.3s;
+.video-slider-container {
+    position: relative;
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
 
-.video-controls button:hover {
-    transform: translateY(-2px);
+.video-slider {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    min-height: 500px;
 }
+
+.video-slide {
+    display: none;
+    animation: fadeIn 0.5s ease;
+}
+
+.video-slide.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.video-wrapper {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    background: #000;
+    cursor: pointer;
+}
+
+.video-wrapper video {
+    width: 100%;
+    height: auto;
+    display: block;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
 .video-overlay {
     position: absolute;
     top: 0;
@@ -615,7 +653,7 @@ video::-webkit-media-controls-volume-slider {
     align-items: center;
     justify-content: center;
     transition: all 0.3s;
-    cursor: pointer;
+    opacity: 1;
 }
 
 .video-overlay.hide {
@@ -623,30 +661,126 @@ video::-webkit-media-controls-volume-slider {
     visibility: hidden;
 }
 
-.play-button {
-    width: 80px;
-    height: 80px;
+.play-btn {
+    width: 70px;
+    height: 70px;
     background: var(--primary);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 2rem;
+    font-size: 1.8rem;
     cursor: pointer;
     transition: all 0.3s;
     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
-.play-button:hover {
+.play-btn:hover {
     transform: scale(1.1);
     background: var(--primary-dark);
 }
 
 .video-info {
     margin-top: 1.5rem;
+    text-align: center;
 }
 
+.video-info h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    color: var(--dark);
+}
+
+.video-info p {
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.video-duration {
+    display: inline-block;
+    background: var(--secondary);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: var(--primary);
+    font-weight: 500;
+}
+
+/* Slider Navigation Buttons */
+.slider-nav {
+    width: 50px;
+    height: 50px;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    color: var(--primary);
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slider-nav:hover {
+    background: var(--primary);
+    color: white;
+    transform: scale(1.1);
+}
+
+/* Slider Indicators */
+.slider-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ddd;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.indicator.active {
+    background: var(--primary);
+    width: 30px;
+    border-radius: 10px;
+}
+
+.indicator:hover {
+    background: var(--primary);
+    transform: scale(1.2);
+}
+
+/* Touch Swipe Support */
+@media (max-width: 768px) {
+    .video-slider-container {
+        gap: 0.5rem;
+    }
+    
+    .slider-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    
+    .play-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+    
+    .video-info h3 {
+        font-size: 1.1rem;
+    }
+}
 /* Video Controls Customization */
 
 @media (max-width: 768px) {
