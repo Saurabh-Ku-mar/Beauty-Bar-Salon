@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - Beauty Bar Salon</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #B76E79, #F8D7DA);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .offline-container {
+            background: white;
+            border-radius: 28px;
+            padding: 2.5rem;
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            animation: fadeInUp 0.5s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .offline-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.8rem;
+            color: #B76E79;
+            margin-bottom: 0.75rem;
+        }
+        
+        p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #B76E79, #F8D7DA);
+            color: white;
+            text-decoration: none;
+            border-radius: 40px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(183, 110, 121, 0.4);
+        }
+        
+        .features {
+            margin-top: 2rem;
+            text-align: left;
+            border-top: 1px solid #eee;
+            padding-top: 1.5rem;
+        }
+        
+        .features h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        
+        .features ul {
+            list-style: none;
+        }
+        
+        .features li {
+            padding: 0.5rem 0;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+        }
+        
+        .features li:before {
+            content: "✓";
+            color: #B76E79;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .retry-btn {
+            margin-top: 0.5rem;
+        }
+        
+        @media (max-width: 480px) {
+            .offline-container {
+                padding: 1.8rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon">📱✨</div>
+        <h1>You're Offline</h1>
+        <p>Don't worry! You can still access previously viewed pages. Your bookings will be saved when you're back online.</p>
+        
+        <button class="btn retry-btn" onclick="window.location.reload()">
+            🔄 Try Again
+        </button>
+        
+        <div class="features">
+            <h3>✨ You can still:</h3>
+            <ul>
+                <li>Browse previously viewed services</li>
+                <li>View your saved bookings</li>
+                <li>Fill booking form (syncs when online)</li>
+                <li>Access salon information</li>
+            </ul>
+        </div>
+        
+        <div style="margin-top: 1.5rem; font-size: 0.75rem; color: #999;">
+            <i class="fas fa-wifi"></i> Connect to internet for full experience
+        </div>
+    </div>
+    
+    <script>
+        // Check if online and reload
+        window.addEventListener('online', () => {
+            window.location.reload();
+        });
+    </script>
+</body>
+</html>
