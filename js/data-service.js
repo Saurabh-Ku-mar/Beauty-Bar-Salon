@@ -1,5 +1,5 @@
 // frontend/js/data-service.js
-// Central data management for all services, staff, and bookings
+// Central Data Management System
 
 class DataService {
     constructor() {
@@ -16,13 +16,12 @@ class DataService {
         // Load from localStorage or use defaults
         this.loadData();
         
-        // Setup auto-save
-        this.setupAutoSave();
-        
-        // Initialize with default data if empty
+        // If no data, load defaults
         if (this.data.services.length === 0) {
             this.loadDefaultData();
         }
+        
+        console.log('DataService initialized with', this.data.services.length, 'services and', this.data.staff.length, 'staff');
     }
 
     loadData() {
@@ -34,12 +33,13 @@ class DataService {
                 console.log('Data loaded from localStorage');
             } catch (e) {
                 console.error('Failed to parse saved data:', e);
-                this.loadDefaultData();
             }
         }
     }
 
     loadDefaultData() {
+        console.log('Loading default data...');
+        
         // Default services
         this.data.services = [
             {
@@ -162,36 +162,16 @@ class DataService {
             }
         ];
 
-        // Default bookings (sample)
-        this.data.bookings = [
-            {
-                id: 1001,
-                serviceId: 1,
-                staffId: 1,
-                customerName: "Neha Gupta",
-                customerEmail: "neha@example.com",
-                customerPhone: "9876543210",
-                date: "2024-12-20",
-                time: "10:00 AM",
-                amount: 4999,
-                advancePaid: 1500,
-                status: "confirmed",
-                createdAt: new Date().toISOString()
-            }
-        ];
-
+        this.data.bookings = [];
         this.saveData();
     }
 
     saveData() {
         localStorage.setItem('beautyBarData', JSON.stringify(this.data));
         console.log('Data saved to localStorage');
-        
-        // Notify all listeners
         this.notifyListeners();
     }
 
-    // Subscribe to data changes
     subscribe(callback) {
         this.listeners.push(callback);
         return () => {
@@ -201,13 +181,6 @@ class DataService {
 
     notifyListeners() {
         this.listeners.forEach(callback => callback(this.data));
-    }
-
-    setupAutoSave() {
-        // Auto-save every 5 seconds (for safety)
-        setInterval(() => {
-            this.saveData();
-        }, 5000);
     }
 
     // Service Methods
@@ -259,10 +232,6 @@ class DataService {
         return this.data.staff.find(s => s.id === parseInt(id));
     }
 
-    getStaffByService(serviceId) {
-        return this.data.staff.filter(s => s.services.includes(parseInt(serviceId)) && s.isActive !== false);
-    }
-
     addStaff(staff) {
         const newId = Math.max(...this.data.staff.map(s => s.id), 0) + 1;
         const newStaff = { ...staff, id: newId, createdAt: new Date().toISOString() };
@@ -299,17 +268,6 @@ class DataService {
         return newBooking;
     }
 
-    updateBookingStatus(id, status) {
-        const index = this.data.bookings.findIndex(b => b.id === parseInt(id));
-        if (index !== -1) {
-            this.data.bookings[index].status = status;
-            this.data.bookings[index].updatedAt = new Date().toISOString();
-            this.saveData();
-            return this.data.bookings[index];
-        }
-        return null;
-    }
-
     // Dashboard Stats
     getStats() {
         const services = this.getServices();
@@ -318,46 +276,22 @@ class DataService {
         
         const totalRevenue = bookings
             .filter(b => b.status === 'confirmed' || b.status === 'completed')
-            .reduce((sum, b) => sum + b.advancePaid, 0);
+            .reduce((sum, b) => sum + (b.advancePaid || 0), 0);
         
         const pendingBookings = bookings.filter(b => b.status === 'pending').length;
-        const confirmedBookings = bookings.filter(b => b.status === 'confirmed').length;
-        const completedBookings = bookings.filter(b => b.status === 'completed').length;
-        
-        // Monthly revenue
-        const currentMonth = new Date().getMonth();
-        const monthlyRevenue = bookings
-            .filter(b => {
-                const bookingDate = new Date(b.date);
-                return bookingDate.getMonth() === currentMonth && 
-                       (b.status === 'confirmed' || b.status === 'completed');
-            })
-            .reduce((sum, b) => sum + b.advancePaid, 0);
         
         return {
             totalServices: services.length,
             totalStaff: staff.length,
             totalBookings: bookings.length,
-            totalRevenue,
-            monthlyRevenue,
-            pendingBookings,
-            confirmedBookings,
-            completedBookings
+            totalRevenue: totalRevenue,
+            monthlyRevenue: totalRevenue,
+            pendingBookings: pendingBookings,
+            confirmedBookings: bookings.filter(b => b.status === 'confirmed').length,
+            completedBookings: bookings.filter(b => b.status === 'completed').length
         };
-    }
-
-    // Reset to default (for testing)
-    resetToDefault() {
-        this.loadDefaultData();
-        this.saveData();
-        window.location.reload();
     }
 }
 
 // Create global instance
 window.dataService = new DataService();
-
-// Export for modules
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = DataService;
-                    };
