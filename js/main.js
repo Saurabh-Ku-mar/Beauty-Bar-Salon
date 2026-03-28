@@ -400,3 +400,209 @@ function forceHighQuality() {
         console.log('Video source:', currentSrc);
     }
 });
+// Video Gallery Slider Functionality
+let currentSlide = 0;
+let totalSlides = 0;
+let videos = [];
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.addEventListener('DOMContentLoaded', () => {
+    initVideoSlider();
+    setupSwipeGestures();
+});
+
+function initVideoSlider() {
+    const slides = document.querySelectorAll('.video-slide');
+    totalSlides = slides.length;
+    
+    // Store video elements
+    slides.forEach((slide, index) => {
+        const video = slide.querySelector('video');
+        if (video) {
+            videos[index] = video;
+            setupVideoEvents(video, index);
+        }
+    });
+    
+    updateIndicators();
+}
+
+function setupVideoEvents(video, index) {
+    // Handle video play
+    video.addEventListener('play', () => {
+        // Pause other videos
+        videos.forEach((v, i) => {
+            if (i !== index && v && !v.paused) {
+                v.pause();
+            }
+        });
+        
+        // Hide overlay when playing
+        const overlay = video.parentElement.querySelector('.video-overlay');
+        if (overlay) overlay.classList.add('hide');
+    });
+    
+    // Handle video pause
+    video.addEventListener('pause', () => {
+        const overlay = video.parentElement.querySelector('.video-overlay');
+        if (overlay && video.currentTime < video.duration && !video.ended) {
+            overlay.classList.remove('hide');
+        }
+    });
+    
+    // Handle video end
+    video.addEventListener('ended', () => {
+        const overlay = video.parentElement.querySelector('.video-overlay');
+        if (overlay) overlay.classList.remove('hide');
+    });
+    
+    // Ensure video plays at best quality
+    video.style.transform = 'translateZ(0)';
+    video.style.backfaceVisibility = 'hidden';
+    
+    // Autoplay first video muted
+    if (index === 0) {
+        video.muted = true;
+        video.play().catch(e => console.log('Autoplay blocked:', e));
+    }
+}
+
+function playVideo(videoId) {
+    const video = document.getElementById(videoId);
+    if (video) {
+        // Pause all other videos
+        videos.forEach(v => {
+            if (v && v !== video && !v.paused) {
+                v.pause();
+            }
+        });
+        
+        if (video.paused) {
+            video.play();
+        } else {
+            video.pause();
+        }
+    }
+}
+
+function nextVideo() {
+    if (currentSlide < totalSlides - 1) {
+        // Pause current video
+        if (videos[currentSlide] && !videos[currentSlide].paused) {
+            videos[currentSlide].pause();
+        }
+        
+        currentSlide++;
+        updateSlide();
+    }
+}
+
+function prevVideo() {
+    if (currentSlide > 0) {
+        // Pause current video
+        if (videos[currentSlide] && !videos[currentSlide].paused) {
+            videos[currentSlide].pause();
+        }
+        
+        currentSlide--;
+        updateSlide();
+    }
+}
+
+function goToSlide(index) {
+    if (index !== currentSlide && index >= 0 && index < totalSlides) {
+        // Pause current video
+        if (videos[currentSlide] && !videos[currentSlide].paused) {
+            videos[currentSlide].pause();
+        }
+        
+        currentSlide = index;
+        updateSlide();
+    }
+}
+
+function updateSlide() {
+    const slides = document.querySelectorAll('.video-slide');
+    const indicators = document.querySelectorAll('.indicator');
+    
+    // Update slides
+    slides.forEach((slide, index) => {
+        if (index === currentSlide) {
+            slide.classList.add('active');
+        } else {
+            slide.classList.remove('active');
+        }
+    });
+    
+    // Update indicators
+    indicators.forEach((indicator, index) => {
+        if (index === currentSlide) {
+            indicator.classList.add('active');
+        } else {
+            indicator.classList.remove('active');
+        }
+    });
+    
+    // Update download button
+    updateDownloadButton();
+    
+    // Auto-play current video if it was playing before
+    if (videos[currentSlide] && videos[currentSlide].paused && videos[currentSlide].currentTime === 0) {
+        videos[currentSlide].play().catch(e => console.log('Play blocked:', e));
+    }
+}
+
+function updateDownloadButton() {
+    const currentVideo = videos[currentSlide];
+    if (currentVideo) {
+        const source = currentVideo.querySelector('source');
+        if (source) {
+            const downloadBtn = document.querySelector('.video-gallery-section .btn-outline');
+            if (downloadBtn) {
+                downloadBtn.href = source.src;
+            }
+        }
+    }
+}
+
+// Swipe gestures for mobile
+function setupSwipeGestures() {
+    const slider = document.querySelector('.video-slider');
+    if (!slider) return;
+    
+    slider.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+    
+    slider.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    });
+}
+
+function handleSwipe() {
+    const swipeThreshold = 50;
+    const diff = touchEndX - touchStartX;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+            // Swipe right - previous video
+            prevVideo();
+        } else {
+            // Swipe left - next video
+            nextVideo();
+        }
+    }
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+    if (document.querySelector('.video-slider-container')) {
+        if (e.key === 'ArrowLeft') {
+            prevVideo();
+        } else if (e.key === 'ArrowRight') {
+            nextVideo();
+        }
+    }
+});
