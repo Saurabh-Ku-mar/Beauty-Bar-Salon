@@ -1283,3 +1283,235 @@ body {
         order: 1;
     }
 }
+/* ============================================
+   HAMBURGER MENU STYLES
+   ============================================ */
+
+/* Navbar Base Styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 5%;
+    background: var(--white);
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    flex-wrap: wrap;
+}
+
+/* Logo */
+.logo {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration: none;
+}
+
+/* Hamburger Menu Button */
+.hamburger {
+    display: none;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 10px;
+    z-index: 1001;
+}
+
+.hamburger .bar {
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    background-color: var(--primary);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+/* Hamburger Animation (when open) */
+.hamburger.active .bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.hamburger.active .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active .bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+/* Mobile Login Button */
+.login-mobile {
+    display: none;
+}
+
+.login-mobile .btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+}
+
+/* Navigation Links Container */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    transition: all 0.3s ease;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--dark);
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--primary);
+}
+
+/* Social Icons */
+.social-nav {
+    display: flex;
+    gap: 1rem;
+    margin-left: 1rem;
+}
+
+.social-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--secondary);
+    color: var(--primary);
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.social-icon:hover {
+    background: var(--primary);
+    color: var(--white);
+    transform: translateY(-2px);
+}
+
+/* ============================================
+   MOBILE RESPONSIVE STYLES
+   ============================================ */
+
+@media (max-width: 768px) {
+    /* Show hamburger menu on mobile */
+    .hamburger {
+        display: block;
+        order: 2;
+    }
+    
+    /* Show mobile login button */
+    .login-mobile {
+        display: block;
+        order: 3;
+        margin-left: auto;
+    }
+    
+    /* Logo stays on left */
+    .logo {
+        order: 1;
+        font-size: 1.4rem;
+    }
+    
+    /* Navigation Links - Hidden by default */
+    .nav-links {
+        position: fixed;
+        top: 70px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 70px);
+        background: var(--white);
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 2rem;
+        transition: left 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        z-index: 999;
+        overflow-y: auto;
+    }
+    
+    /* Show menu when active */
+    .nav-links.active {
+        left: 0;
+    }
+    
+    /* Navigation links styling on mobile */
+    .nav-links a {
+        font-size: 1.2rem;
+        padding: 0.5rem;
+        width: 100%;
+        text-align: center;
+    }
+    
+    /* Social icons on mobile */
+    .social-nav {
+        margin: 1rem 0;
+        justify-content: center;
+    }
+    
+    /* Hide desktop login button on mobile */
+    .nav-links .btn-outline,
+    .nav-links .btn-primary {
+        display: none !important;
+    }
+    
+    /* Menu overlay background when open */
+    .nav-links.active::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: -1;
+    }
+}
+
+/* ============================================
+   DESKTOP STYLES
+   ============================================ */
+
+@media (min-width: 769px) {
+    /* Hide hamburger on desktop */
+    .hamburger {
+        display: none !important;
+    }
+    
+    /* Hide mobile login on desktop */
+    .login-mobile {
+        display: none !important;
+    }
+    
+    /* Show navigation links normally */
+    .nav-links {
+        display: flex !important;
+        position: static;
+        width: auto;
+        height: auto;
+        background: transparent;
+        flex-direction: row;
+        padding: 0;
+        box-shadow: none;
+        gap: 2rem;
+    }
+    
+    /* Show desktop login button */
+    .nav-links .btn-outline,
+    .nav-links .btn-primary {
+        display: inline-block !important;
+    }
+}
