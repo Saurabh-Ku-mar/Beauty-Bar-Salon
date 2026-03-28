@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=0.6">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Appointment - Beauty Bar Salon</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Additional booking page styles */
+        /* Booking page specific styles */
         .booking-steps {
             display: flex;
             justify-content: space-between;
@@ -80,7 +80,7 @@
             display: block;
         }
         
-        .service-card {
+        .service-card, .staff-card {
             border: 2px solid #eee;
             border-radius: 12px;
             padding: 1rem;
@@ -89,12 +89,12 @@
             transition: all 0.3s;
         }
         
-        .service-card.selected {
+        .service-card.selected, .staff-card.selected {
             border-color: var(--primary);
             background: var(--secondary);
         }
         
-        .service-card:hover {
+        .service-card:hover, .staff-card:hover {
             transform: translateX(5px);
             border-color: var(--primary);
         }
@@ -103,17 +103,6 @@
             display: flex;
             align-items: center;
             gap: 1rem;
-            border: 2px solid #eee;
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .staff-card.selected {
-            border-color: var(--primary);
-            background: var(--secondary);
         }
         
         .staff-card img {
@@ -198,6 +187,11 @@
         .calendar-day.available {
             background: var(--secondary);
             border-color: var(--primary);
+        }
+        
+        .loading-spinner {
+            text-align: center;
+            padding: 2rem;
         }
         
         @media (max-width: 768px) {
@@ -348,270 +342,67 @@
         </div>
     </section>
 
+        <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
                 <h3>Beauty Bar Salon</h3>
-                <p>Experience luxury beauty services in the heart of the city.</p>
+                <p>Experience luxury beauty services in the heart of the city. Our expert stylists are here to make you feel beautiful.</p>
+                <div class="footer-social">
+                    <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-youtube"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-pinterest"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <p><a href="#services" style="color: #ccc; text-decoration: none;">Services</a></p>
+                <p><a href="#gallery" style="color: #ccc; text-decoration: none;">Gallery</a></p>
+                <p><a href="#team" style="color: #ccc; text-decoration: none;">Our Team</a></p>
+                <p><a href="booking.html" style="color: #ccc; text-decoration: none;">Book Now</a></p>
             </div>
             <div class="footer-section">
                 <h3>Contact Info</h3>
-                <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+                <p><i class="fas fa-phone"></i> +91 7052206406</p>
                 <p><i class="fas fa-envelope"></i> info@beautybarsalon.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Akbarpur, Uttar Pradesh - 224132</p>
             </div>
             <div class="footer-section">
                 <h3>Working Hours</h3>
-                <p>Mon-Fri: 10am - 8pm</p>
-                <p>Sat-Sun: 10am - 6pm</p>
+                <p>Monday - Friday: 10am - 8pm</p>
+                <p>Saturday: 10am - 6pm</p>
+                <p>Sunday: 11am - 5pm</p>
+                <p style="color: var(--primary); margin-top: 1rem;">Emergency: +91 7052206406</p>
             </div>
         </div>
         <div class="copyright">
-            <p>&copy; 2024 Beauty Bar Salon. All rights reserved.</p>
+            <p>&copy; 2026 Beauty Bar Salon. All rights reserved. | Designed with ❤️ for luxury beauty</p>
         </div>
     </footer>
 
-    <script>
-        // Sample Data
-        const services = [
-            { id: 1, name: "Bridal Makeup", category: "Bridal", price: 4999, duration: 120, image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400" },
-            { id: 2, name: "Hair Styling", category: "Hair", price: 1999, duration: 60, image: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=400" },
-            { id: 3, name: "Facial Treatment", category: "Skincare", price: 2499, duration: 75, image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400" },
-            { id: 4, name: "Nail Art", category: "Nails", price: 999, duration: 45, image: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400" },
-            { id: 5, name: "Party Makeup", category: "Makeup", price: 2999, duration: 90, image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400" },
-            { id: 6, name: "Hair Color", category: "Hair", price: 3499, duration: 120, image: "https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=400" }
-        ];
 
-        const staff = [
-            { id: 1, name: "Priya Sharma", position: "Senior Makeup Artist", specialty: "Bridal", image: "https://images.unsplash.com/photo-1494790108777-223fd4f5603d?w=200", services: [1, 5] },
-            { id: 2, name: "Anjali Desai", position: "Hair Stylist", specialty: "Hair Color", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200", services: [2, 6] },
-            { id: 3, name: "Meera Kapoor", position: "Skincare Expert", specialty: "Facial", image: "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?w=200", services: [3] },
-            { id: 4, name: "Riya Mehta", position: "Nail Artist", specialty: "Nail Art", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200", services: [4] }
-        ];
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2 style="text-align: center; margin-bottom: 2rem;">Welcome to Beauty Bar ✨</h2>
+            <div id="googleSignInButton" style="display: flex; justify-content: center; margin: 2rem 0;"></div>
+            <div class="divider" style="text-align: center; margin: 1rem 0;">
+                <span style="background: white; padding: 0 10px;">or</span>
+            </div>
+            <div class="google-login" id="googleLogin">
+                <img src="https://www.google.com/favicon.ico" alt="Google">
+                <span>Continue with Google</span>
+            </div>
+            <p style="text-align: center; color: #666; margin-top: 1rem;">Only Gmail accounts are accepted for booking</p>
+        </div>
+    </div>
 
-        let bookingData = {
-            service: null,
-            staff: null,
-            date: null,
-            time: null,
-            customer: null
-        };
-
-        let currentStep = 1;
-
-        // Load services
-        function loadServices(category = 'all') {
-            const filtered = category === 'all' ? services : services.filter(s => s.category === category);
-            const container = document.getElementById('services-list');
-            container.innerHTML = filtered.map(service => `
-                <div class="service-card" onclick="selectService(${service.id})" data-id="${service.id}">
-                    <img src="${service.image}" alt="${service.name}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">
-                    <h4 style="margin: 0.5rem 0;">${service.name}</h4>
-                    <p style="color: #666;">${service.duration} mins</p>
-                    <p style="color: var(--primary); font-weight: bold;">₹${service.price}</p>
-                </div>
-            `).join('');
-        }
-
-        function selectService(serviceId) {
-            bookingData.service = services.find(s => s.id === serviceId);
-            document.querySelectorAll('.service-card').forEach(card => {
-                card.classList.remove('selected');
-                if (card.dataset.id == serviceId) card.classList.add('selected');
-            });
-        }
-
-        // Load staff
-        function loadStaff() {
-            const container = document.getElementById('staff-list');
-            container.innerHTML = staff.map(s => `
-                <div class="staff-card" onclick="selectStaff(${s.id})" data-id="${s.id}">
-                    <img src="${s.image}" alt="${s.name}">
-                    <div>
-                        <h4>${s.name}</h4>
-                        <p>${s.position}</p>
-                        <p style="color: var(--primary);">Specialty: ${s.specialty}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function selectStaff(staffId) {
-            bookingData.staff = staff.find(s => s.id === staffId);
-            document.querySelectorAll('.staff-card').forEach(card => {
-                card.classList.remove('selected');
-                if (card.dataset.id == staffId) card.classList.add('selected');
-            });
-        }
-
-        // Load calendar
-        function loadCalendar() {
-            const today = new Date();
-            const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1).getDay();
-            
-            let calendarHTML = '';
-            const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            weekdays.forEach(day => {
-                calendarHTML += `<div style="text-align: center; font-weight: bold;">${day}</div>`;
-            });
-            
-            for (let i = 0; i < firstDay; i++) {
-                calendarHTML += `<div></div>`;
-            }
-            
-            for (let day = 1; day <= daysInMonth; day++) {
-                const date = new Date(today.getFullYear(), today.getMonth(), day);
-                const isPast = date < new Date().setHours(0,0,0,0);
-                calendarHTML += `
-                    <div class="calendar-day ${isPast ? 'disabled' : 'available'}" onclick="${!isPast ? `selectDate(${day})` : ''}">
-                        ${day}
-                    </div>
-                `;
-            }
-            
-            document.getElementById('calendar').innerHTML = calendarHTML;
-        }
-
-        function selectDate(day) {
-            bookingData.date = new Date(new Date().getFullYear(), new Date().getMonth(), day);
-            document.querySelectorAll('.calendar-day').forEach(dayEl => {
-                dayEl.classList.remove('selected');
-                if (dayEl.innerText == day) dayEl.classList.add('selected');
-            });
-            loadTimeSlots();
-        }
-
-        // Load time slots
-        function loadTimeSlots() {
-            const slots = ['10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM', '7:00 PM'];
-            const container = document.getElementById('time-slots');
-            container.innerHTML = slots.map(slot => `
-                <div class="time-slot available" onclick="selectTime('${slot}')">${slot}</div>
-            `).join('');
-        }
-
-        function selectTime(time) {
-            bookingData.time = time;
-            document.querySelectorAll('.time-slot').forEach(slot => {
-                slot.classList.remove('selected');
-                if (slot.innerText === time) slot.classList.add('selected');
-            });
-        }
-
-        // Update summary
-        function updateSummary() {
-            const summary = document.getElementById('booking-summary');
-            if (!bookingData.service) return;
-            
-            const advanceAmount = bookingData.service.price * 0.3;
-            summary.innerHTML = `
-                <h4>Booking Details</h4>
-                <p><strong>Service:</strong> ${bookingData.service.name}</p>
-                <p><strong>Staff:</strong> ${bookingData.staff?.name || 'Not selected'}</p>
-                <p><strong>Date:</strong> ${bookingData.date?.toLocaleDateString() || 'Not selected'}</p>
-                <p><strong>Time:</strong> ${bookingData.time || 'Not selected'}</p>
-                <hr>
-                <p><strong>Total Amount:</strong> ₹${bookingData.service.price}</p>
-                <p><strong>Advance (30%):</strong> ₹${advanceAmount}</p>
-                <p><strong>Balance at Salon:</strong> ₹${bookingData.service.price - advanceAmount}</p>
-            `;
-        }
-
-        // Navigation
-        function updateSteps() {
-            document.querySelectorAll('.step').forEach((step, index) => {
-                if (index + 1 === currentStep) {
-                    step.classList.add('active');
-                    step.classList.remove('completed');
-                } else if (index + 1 < currentStep) {
-                    step.classList.add('completed');
-                    step.classList.remove('active');
-                } else {
-                    step.classList.remove('active', 'completed');
-                }
-            });
-            
-            document.querySelectorAll('.step-panel').forEach((panel, index) => {
-                if (index + 1 === currentStep) {
-                    panel.classList.add('active');
-                } else {
-                    panel.classList.remove('active');
-                }
-            });
-            
-            document.getElementById('prev-btn').style.display = currentStep === 1 ? 'none' : 'inline-block';
-            document.getElementById('next-btn').innerText = currentStep === 6 ? 'Complete Booking' : 'Next';
-        }
-
-        function nextStep() {
-            // Validate current step
-            if (currentStep === 1 && !bookingData.service) {
-                alert('Please select a service');
-                return;
-            }
-            if (currentStep === 2 && !bookingData.staff) {
-                alert('Please select a stylist');
-                return;
-            }
-            if (currentStep === 3 && !bookingData.date) {
-                alert('Please select a date');
-                return;
-            }
-            if (currentStep === 4 && !bookingData.time) {
-                alert('Please select a time');
-                return;
-            }
-            if (currentStep === 5) {
-                const name = document.getElementById('customer-name').value;
-                const email = document.getElementById('customer-email').value;
-                const phone = document.getElementById('customer-phone').value;
-                if (!name || !email || !phone) {
-                    alert('Please fill all details');
-                    return;
-                }
-                bookingData.customer = { name, email, phone, notes: document.getElementById('customer-notes').value };
-                updateSummary();
-            }
-            
-            if (currentStep < 6) {
-                currentStep++;
-                updateSteps();
-            } else {
-                // Process payment
-                const terms = document.getElementById('terms').checked;
-                if (!terms) {
-                    alert('Please accept terms and conditions');
-                    return;
-                }
-                alert('Proceeding to payment with Razorpay...');
-                // Here you would integrate Razorpay
-            }
-        }
-
-        function prevStep() {
-            if (currentStep > 1) {
-                currentStep--;
-                updateSteps();
-            }
-        }
-
-        // Category filters
-        document.querySelectorAll('.category-filter').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.category-filter').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                loadServices(btn.dataset.category);
-            });
-        });
-
-        // Initialize
-        loadServices();
-        loadStaff();
-        loadCalendar();
-        updateSteps();
-        
-        document.getElementById('next-btn').onclick = nextStep;
-        document.getElementById('prev-btn').onclick = prevStep;
-    </script>
+    <!-- Scripts - Order is important -->
+    <script src="js/data-service.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/booking.js"></script>
 </body>
 </html>
