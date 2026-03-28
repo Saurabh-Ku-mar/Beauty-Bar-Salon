@@ -1,11 +1,18 @@
-// frontend/js/main.js - Updated to use DataService
+// frontend/js/main.js
+// Main JavaScript for Beauty Bar Salon - Now using DataService
 
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log('Main.js loaded - waiting for data service...');
+    
     // Wait for data service to be ready
-    if (window.dataService) {
-        await loadServicesFromData();
-        await loadTeamFromData();
-    }
+    const waitForData = setInterval(() => {
+        if (window.dataService) {
+            clearInterval(waitForData);
+            console.log('Data service found, loading content...');
+            loadServicesFromData();
+            loadTeamFromData();
+        }
+    }, 100);
     
     initNavigation();
     initSmoothScroll();
@@ -13,20 +20,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     initFloatingWhatsApp();
     initBackToTop();
     
-    // Listen for data changes
-    window.dataService.subscribe((data) => {
-        console.log('Data updated, refreshing UI...');
-        loadServicesFromData();
-        loadTeamFromData();
-    });
+    // Listen for data changes from admin panel
+    if (window.dataService) {
+        window.dataService.subscribe((data) => {
+            console.log('Data updated, refreshing homepage...');
+            loadServicesFromData();
+            loadTeamFromData();
+        });
+    }
 });
 
 // Load services from central data
-async function loadServicesFromData() {
+function loadServicesFromData() {
     const servicesGrid = document.getElementById('services-grid');
-    if (!servicesGrid) return;
+    if (!servicesGrid) {
+        console.log('Services grid not found on this page');
+        return;
+    }
+    
+    if (!window.dataService) {
+        console.error('Data service not available');
+        servicesGrid.innerHTML = '<p style="text-align: center; color: red;">Error loading services. Please refresh.</p>';
+        return;
+    }
     
     const services = window.dataService.getServices();
+    console.log('Loading', services.length, 'services');
     
     if (services.length === 0) {
         servicesGrid.innerHTML = '<p style="text-align: center;">Loading services...</p>';
@@ -35,7 +54,7 @@ async function loadServicesFromData() {
     
     servicesGrid.innerHTML = services.map(service => `
         <div class="service-card">
-            <img src="${service.image}" alt="${service.name}" class="service-image" loading="lazy">
+            <img src="${service.image || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400'}" alt="${service.name}" class="service-image" loading="lazy">
             <div class="service-content">
                 <span class="service-category">${service.category}</span>
                 <h3 class="service-title">${service.name}</h3>
@@ -49,11 +68,20 @@ async function loadServicesFromData() {
 }
 
 // Load team from central data
-async function loadTeamFromData() {
+function loadTeamFromData() {
     const teamGrid = document.getElementById('team-grid');
-    if (!teamGrid) return;
+    if (!teamGrid) {
+        console.log('Team grid not found on this page');
+        return;
+    }
+    
+    if (!window.dataService) {
+        console.error('Data service not available');
+        return;
+    }
     
     const staff = window.dataService.getStaff();
+    console.log('Loading', staff.length, 'staff members');
     
     if (staff.length === 0) {
         teamGrid.innerHTML = '<p style="text-align: center;">Loading team...</p>';
@@ -62,7 +90,7 @@ async function loadTeamFromData() {
     
     teamGrid.innerHTML = staff.map(member => `
         <div class="team-card">
-            <img src="${member.image}" alt="${member.name}" class="team-image" loading="lazy">
+            <img src="${member.image || 'https://images.unsplash.com/photo-1494790108777-223fd4f5603d?w=200'}" alt="${member.name}" class="team-image" loading="lazy">
             <div class="team-info">
                 <h3>${member.name}</h3>
                 <div class="position">${member.position}</div>
@@ -77,23 +105,148 @@ async function loadTeamFromData() {
     `).join('');
 }
 
-// Rest of your existing functions...
+// Navigation functions
 function initNavigation() {
-    // ... existing code
+    const navbar = document.querySelector('.navbar');
+    if (!navbar) return;
+    
+    // Mobile menu toggle
+    const menuToggle = document.createElement('button');
+    menuToggle.className = 'menu-toggle';
+    menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+    menuToggle.style.display = 'none';
+    
+    if (window.innerWidth <= 768) {
+        menuToggle.style.display = 'block';
+        const navLinks = document.querySelector('.nav-links');
+        if (navLinks) {
+            navLinks.style.display = 'none';
+            menuToggle.addEventListener('click', () => {
+                navLinks.style.display = navLinks.style.display === 'none' ? 'flex' : 'none';
+                navLinks.style.flexDirection = 'column';
+            });
+        }
+        if (navbar) navbar.appendChild(menuToggle);
+    }
+    
+    window.addEventListener('resize', () => {
+        const navLinks = document.querySelector('.nav-links');
+        if (window.innerWidth <= 768) {
+            menuToggle.style.display = 'block';
+            if (navLinks) navLinks.style.display = 'none';
+        } else {
+            menuToggle.style.display = 'none';
+            if (navLinks) navLinks.style.display = 'flex';
+        }
+    });
 }
 
 function initSmoothScroll() {
-    // ... existing code
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href !== '#' && href !== '') {
+                const target = document.querySelector(href);
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        });
+    });
 }
 
 function initNewsletterForm() {
-    // ... existing code
+    const form = document.querySelector('.newsletter-form');
+    if (form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = form.querySelector('input').value;
+            alert(`Thank you for subscribing! You'll receive exclusive offers at ${email}`);
+            form.reset();
+        });
+    }
 }
 
 function initFloatingWhatsApp() {
-    // ... existing code
+    const whatsappBtn = document.querySelector('.whatsapp-float');
+    if (whatsappBtn) {
+        whatsappBtn.addEventListener('mouseenter', () => {
+            whatsappBtn.style.transform = 'scale(1.1)';
+        });
+        whatsappBtn.addEventListener('mouseleave', () => {
+            whatsappBtn.style.transform = 'scale(1)';
+        });
+    }
 }
 
 function initBackToTop() {
-    // ... existing code
-);
+    const btn = document.createElement('button');
+    btn.innerHTML = '<i class="fas fa-arrow-up"></i>';
+    btn.className = 'back-to-top';
+    btn.style.cssText = `
+        position: fixed;
+        bottom: 100px;
+        right: 30px;
+        background: var(--primary);
+        color: white;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        display: none;
+        z-index: 998;
+        transition: all 0.3s;
+    `;
+    
+    document.body.appendChild(btn);
+    
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            btn.style.display = 'block';
+        } else {
+            btn.style.display = 'none';
+        }
+    });
+    
+    btn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+// Add CSS for mobile menu
+const style = document.createElement('style');
+style.textContent = `
+    .menu-toggle {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--primary);
+        cursor: pointer;
+    }
+    
+    .back-to-top:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 12px rgba(183, 110, 121, 0.3);
+    }
+    
+    @media (max-width: 768px) {
+        .nav-links {
+            position: absolute;
+            top: 70px;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 999;
+        }
+        
+        .social-nav {
+            margin-left: 0;
+            justify-content: center;
+        }
+    }
+`;
+document.head.appendChild(style);
