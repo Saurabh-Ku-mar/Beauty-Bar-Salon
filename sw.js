@@ -1,5 +1,5 @@
-// Service Worker for Beauty Bar Salon PWA
-const CACHE_NAME = 'beauty-bar-v1';
+// Service Worker for Beauty Bar Salon
+const CACHE_NAME = 'beauty-bar-v2';
 const OFFLINE_URL = '/offline.html';
 
 // Files to cache for offline access
@@ -15,16 +15,11 @@ const urlsToCache = [
   '/js/auth.js',
   '/js/booking.js',
   '/js/gallery.js',
+  '/js/data-service.js',
   '/manifest.json',
-  // Add icons
-  '/icons/icon-72x72.png',
-  '/icons/icon-96x96.png',
-  '/icons/icon-128x128.png',
-  '/icons/icon-144x144.png',
-  '/icons/icon-152x152.png',
-  '/icons/icon-192x192.png',
-  '/icons/icon-384x384.png',
-  '/icons/icon-512x512.png'
+  '/assets/icons/icon-192x192.png',
+  '/assets/icons/icon-512x512.png',
+  '/sounds/notification.mp3'
 ];
 
 // Install event - cache essential files
@@ -65,8 +60,6 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event - serve from cache or network
 self.addEventListener('fetch', (event) => {
-  console.log('[Service Worker] Fetching:', event.request.url);
-  
   // Skip cross-origin requests
   if (!event.request.url.startsWith(self.location.origin)) {
     return;
@@ -77,87 +70,78 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(event.request)
         .then((response) => {
-          // Clone the response
           const responseClone = response.clone();
-          
-          // Update cache
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseClone);
           });
-          
           return response;
         })
         .catch(() => {
-          // If network fails, serve offline page
           return caches.match(OFFLINE_URL);
         })
     );
     return;
   }
   
-  // For other requests (images, CSS, JS)
+  // For other requests
   event.respondWith(
     caches.match(event.request)
       .then((cachedResponse) => {
         if (cachedResponse) {
-          // Return cached version
           return cachedResponse;
         }
-        
-        // If not in cache, fetch from network
         return fetch(event.request)
           .then((response) => {
-            // Don't cache non-successful responses
             if (!response || response.status !== 200) {
               return response;
             }
-            
-            // Clone the response
             const responseClone = response.clone();
-            
-            // Cache the new response
             caches.open(CACHE_NAME).then((cache) => {
               cache.put(event.request, responseClone);
             });
-            
             return response;
-          })
-          .catch(() => {
-            // If image fails to load, return placeholder
-            if (event.request.destination === 'image') {
-              return caches.match('/icons/icon-192x192.png');
-            }
-            return new Response('Offline', {
-              status: 503,
-              statusText: 'Service Unavailable'
-            });
           });
       })
   );
 });
 
-// Push notification event (for future use)
+// Push Notification Event
 self.addEventListener('push', (event) => {
-  const data = event.data.json();
+  console.log('[Service Worker] Push Received:', event);
   
-  const options = {
-    body: data.body,
+  let data = {
+    title: 'Beauty Bar Salon',
+    body: 'New update from Beauty Bar!',
     icon: '/icons/icon-192x192.png',
     badge: '/icons/icon-72x72.png',
     vibrate: [200, 100, 200],
-    data: {
-      url: data.url
-    },
+    sound: '/sounds/notification.mp3',
     actions: [
-      {
-        action: 'view',
-        title: 'View'
-      },
-      {
-        action: 'dismiss',
-        title: 'Dismiss'
-      }
+      { action: 'view', title: 'View Now' },
+      { action: 'dismiss', title: 'Dismiss' }
     ]
+  };
+  
+  if (event.data) {
+    try {
+      data = { ...data, ...event.data.json() };
+    } catch (e) {
+      data.body = event.data.text();
+    }
+  }
+  
+  const options = {
+    body: data.body,
+    icon: data.icon,
+    badge: data.badge,
+    vibrate: data.vibrate,
+    data: {
+      url: data.url || '/',
+      dateOfArrival: Date.now()
+    },
+    actions: data.actions,
+    requireInteraction: true,
+    tag: 'beauty-bar-notification'
   };
   
   event.waitUntil(
@@ -165,23 +149,38 @@ self.addEventListener('push', (event) => {
   );
 });
 
-// Notification click event
+// Notification Click Event
 self.addEventListener('notificationclick', (event) => {
+  console.log('[Service Worker] Notification click:', event);
+  
   event.notification.close();
   
-  if (event.action === 'view' && event.notification.data.url) {
-    event.waitUntil(
-      clients.openWindow(event.notification.data.url)
-    );
-  } else {
-    event.waitUntil(
-      clients.openWindow('/')
-    );
-  }
+  const urlToOpen = event.notification.data?.url || '/';
+  
+  event.waitUntil(
+    clients.matchAll({
+      type: 'window',
+      includeUncontrolled: true
+    }).then((windowClients) => {
+      // Check if there's already a window/tab open with the target URL
+      for (let i = 0; i < windowClients.length; i++) {
+        const client = windowClients[i];
+        if (client.url === urlToOpen && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      // If not, open a new window/tab
+      if (clients.openWindow) {
+        return clients.openWindow(urlToOpen);
+      }
+    })
+  );
 });
 
-// Background sync for offline bookings
+// Background Sync for offline bookings
 self.addEventListener('sync', (event) => {
+  console.log('[Service Worker] Sync event:', event.tag);
+  
   if (event.tag === 'sync-bookings') {
     event.waitUntil(syncBookings());
   }
@@ -189,36 +188,14 @@ self.addEventListener('sync', (event) => {
 
 async function syncBookings() {
   try {
-    const pendingBookings = await getPendingBookings();
-    
-    for (const booking of pendingBookings) {
-      const response = await fetch('/api/bookings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(booking)
+    const clients = await self.clients.matchAll();
+    if (clients.length > 0) {
+      clients[0].postMessage({
+        type: 'SYNC_BOOKINGS',
+        data: { timestamp: Date.now() }
       });
-      
-      if (response.ok) {
-        await removePendingBooking(booking.id);
-      }
     }
   } catch (error) {
     console.error('Background sync failed:', error);
   }
-}
-
-// Helper functions for IndexedDB (for offline booking storage)
-function getPendingBookings() {
-  return new Promise((resolve) => {
-    // Implementation using IndexedDB
-    resolve([]);
-  });
-}
-
-function removePendingBooking(id) {
-  return new Promise((resolve) => {
-    resolve();
-  });
 }
