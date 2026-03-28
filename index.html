@@ -119,23 +119,50 @@
     
     <div class="video-controls" style="text-align: center; margin-top: 1.5rem;">
         <button onclick="togglePlayPause()" class="btn btn-primary" style="margin-right: 1rem;">
-            <i class="fas fa-play"></i> Play/Pause
+            <i class="fas fa-play"></i>
         </button>
         <button onclick="toggleLoop()" class="btn btn-outline" id="loopBtn" style="margin-right: 1rem;">
-            <i class="fas fa-repeat"></i> Loop: ON
+            <i class="fas fa-repeat"></i>
         </button>
-        <a href="assets/videos/salon-tour.mp4" download class="btn btn-outline">
+        <a href="assets/tour.mp4" download class="btn btn-outline">
             <i class="fas fa-download"></i> Download Video
         </a>
     </div>
-    
-    <div class="video-quality-info" style="text-align: center; margin-top: 1rem;">
-        <p style="font-size: 0.9rem; color: #666;">
-            <i class="fas fa-info-circle"></i> 
-            For best quality, click the settings gear ⚙️ and select highest quality (720p or 1080p)
-        </p>
-    </div>
 </section>
+	<!-- Video Tour Section 1-->
+	<section class="video-tour">
+    <h2 class="section-title">Take a Tour of Our Salon</h2>
+    <p style="text-align: center; margin-bottom: 2rem; color: #666;">Watch our 45-second salon tour</p>
+    
+    <div class="video-container" style="max-width: 1000px; margin: 0 auto;">
+        <video 
+            id="salonVideo"
+            controls
+            playsinline
+            autoplay
+            loop
+            muted
+            preload="auto"
+            style="width: 100%; height: auto; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); background: #000;">
+            <source src="assets/tour1.mp4" type="video/mp4">
+            <source src="assets/tour1.webm" type="video/webm">
+            Your browser does not support the video tag. 
+            <a href="assets/tour1.mp4" download>Download the video</a>
+        </video>
+    </div>
+    
+    <div class="video-controls" style="text-align: center; margin-top: 1.5rem;">
+        <button onclick="togglePlayPause()" class="btn btn-primary" style="margin-right: 1rem;">
+            <i class="fas fa-play"></i>
+        </button>
+        <button onclick="toggleLoop()" class="btn btn-outline" id="loopBtn" style="margin-right: 1rem;">
+            <i class="fas fa-repeat"></i>
+        </button>
+        <a href="assets/tour1.mp4" download class="btn btn-outline">
+            <i class="fas fa-download"></i> Download Video
+        </a>
+    </div>
+	</section>
     <!-- Meet Our Team -->
     <section class="team-section" id="team">
         <h2 class="section-title">Meet Our Expert Stylists</h2>
