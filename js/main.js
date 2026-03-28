@@ -96,4 +96,4 @@ function initFloatingWhatsApp() {
 
 function initBackToTop() {
     // ... existing code
-}
+);
