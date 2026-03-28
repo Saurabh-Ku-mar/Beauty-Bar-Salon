@@ -281,7 +281,7 @@ class GalleryManager {
         ];
         
         feed.innerHTML = instagramPosts.map(post => `
-            <div class="instagram-item" onclick="window.open('https://instagram.com/beautybarsalon', '_blank')">
+            <div class="instagram-item" onclick="window.open('https://www.instagram.com/sandhya.rathi6921', '_blank')">
                 <img src="${post}" alt="Instagram Post" loading="lazy">
                 <div class="instagram-overlay">
                     <i class="fab fa-instagram"></i>
