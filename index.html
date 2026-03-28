@@ -95,28 +95,34 @@
             <!-- Before/After sliders will be loaded here -->
         </div>
     </section>
-
-    <!-- Video Tour Section -->
+<!-- Video Tour Section -->
 <section class="video-tour">
     <h2 class="section-title">Take a Tour of Our Salon</h2>
     <p style="text-align: center; margin-bottom: 2rem; color: #666;">Watch our 45-second salon tour</p>
+    
     <div class="video-container">
-        <video id="salonVideo" poster="assets/images/video-poster.jpg" controls>
+        <video id="salonVideo" 
+               poster="assets/tour.jpg" 
+               preload="metadata"
+               controls
+               playsinline
+               style="width: 100%; border-radius: 20px;">
             <source src="assets/tour.mp4" type="video/mp4">
-            Your browser does not support the video tag.
+            <source src="assets/tour.webm" type="video/webm">
+            <source src="assets/tour.ogg" type="video/ogg">
+            Your browser does not support the video tag. Please <a href="assets/tour.mp4" download>download the video</a> to watch.
         </video>
-        <div class="video-overlay" id="videoOverlay">
-            <div class="play-button" onclick="playVideo()">
-                <i class="fas fa-play"></i>
-            </div>
-        </div>
     </div>
-    <div class="video-info" style="text-align: center; margin-top: 1rem;">
-        <p>✨ Experience the luxury of Beauty Bar Salon in just 45 seconds</p>
-        <p style="font-size: 0.9rem; color: #666;">Watch our salon tour to see our premium facilities</p>
+    
+    <div style="text-align: center; margin-top: 1.5rem;">
+        <button onclick="playVideo()" class="btn btn-primary" style="margin-right: 1rem;">
+            <i class="fas fa-play"></i> Play Video
+        </button>
+        <button onclick="downloadVideo()" class="btn btn-outline">
+            <i class="fas fa-download"></i> Download Video
+        </button>
     </div>
 </section>
-
     <!-- Meet Our Team -->
     <section class="team-section" id="team">
         <h2 class="section-title">Meet Our Expert Stylists</h2>
