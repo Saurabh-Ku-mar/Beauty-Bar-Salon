@@ -513,7 +513,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 // ============================================
-// HAMBURGER MENU FUNCTIONALITY
+// HAMBURGER MENU FUNCTIONALITY - FIXED
 // ============================================
 
 function initHamburgerMenu() {
@@ -522,7 +522,12 @@ function initHamburgerMenu() {
     const mobileLoginBtn = document.getElementById('loginBtnMobile');
     const desktopLoginBtn = document.getElementById('loginBtn');
     
-    if (!hamburger || !navLinks) return;
+    if (!hamburger || !navLinks) {
+        console.log('Hamburger or navLinks not found');
+        return;
+    }
+    
+    console.log('Hamburger menu initialized');
     
     // Toggle menu when hamburger is clicked
     hamburger.addEventListener('click', (e) => {
@@ -539,8 +544,8 @@ function initHamburgerMenu() {
     });
     
     // Close menu when clicking a link
-    const navLinksItems = navLinks.querySelectorAll('a');
-    navLinksItems.forEach(link => {
+    const allLinks = navLinks.querySelectorAll('a');
+    allLinks.forEach(link => {
         link.addEventListener('click', () => {
             hamburger.classList.remove('active');
             navLinks.classList.remove('active');
@@ -559,7 +564,7 @@ function initHamburgerMenu() {
         }
     });
     
-    // Mobile login button functionality
+    // Mobile login button
     if (mobileLoginBtn) {
         mobileLoginBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -567,27 +572,25 @@ function initHamburgerMenu() {
                 if (window.auth.isAuthenticated()) {
                     if (confirm('Do you want to logout?')) {
                         window.auth.logout();
-                        updateLoginButtonUI();
                     }
                 } else {
                     window.auth.openModal();
                 }
             }
-            // Close menu after clicking login
+            // Close menu
             hamburger.classList.remove('active');
             navLinks.classList.remove('active');
             document.body.style.overflow = '';
         });
     }
     
-    // Desktop login button functionality
+    // Desktop login button
     if (desktopLoginBtn) {
         desktopLoginBtn.addEventListener('click', () => {
             if (window.auth) {
                 if (window.auth.isAuthenticated()) {
                     if (confirm('Do you want to logout?')) {
                         window.auth.logout();
-                        updateLoginButtonUI();
                     }
                 } else {
                     window.auth.openModal();
@@ -597,61 +600,55 @@ function initHamburgerMenu() {
     }
 }
 
-// Update login buttons when auth state changes
-function updateLoginButtonUI() {
-    const desktopLoginBtn = document.getElementById('loginBtn');
-    const mobileLoginBtn = document.getElementById('loginBtnMobile');
+// Update login button UI
+function updateLoginButtons() {
+    const desktopBtn = document.getElementById('loginBtn');
+    const mobileBtn = document.getElementById('loginBtnMobile');
     
     if (!window.auth) return;
     
     const isLoggedIn = window.auth.isAuthenticated();
     const userName = window.auth.getUser()?.name?.split(' ')[0] || '';
     
-    if (desktopLoginBtn) {
+    if (desktopBtn) {
         if (isLoggedIn) {
-            desktopLoginBtn.innerHTML = `<i class="fas fa-user-circle"></i> ${userName}`;
-            desktopLoginBtn.classList.remove('btn-outline');
-            desktopLoginBtn.classList.add('btn-primary');
+            desktopBtn.innerHTML = `<i class="fas fa-user-circle"></i> ${userName}`;
+            desktopBtn.classList.remove('btn-outline');
+            desktopBtn.classList.add('btn-primary');
         } else {
-            desktopLoginBtn.innerHTML = 'Login';
-            desktopLoginBtn.classList.add('btn-outline');
-            desktopLoginBtn.classList.remove('btn-primary');
+            desktopBtn.innerHTML = 'Login';
+            desktopBtn.classList.add('btn-outline');
+            desktopBtn.classList.remove('btn-primary');
         }
     }
     
-    if (mobileLoginBtn) {
+    if (mobileBtn) {
         if (isLoggedIn) {
-            mobileLoginBtn.innerHTML = `<i class="fas fa-user-circle"></i> ${userName}`;
-            mobileLoginBtn.classList.remove('btn-outline');
-            mobileLoginBtn.classList.add('btn-primary');
+            mobileBtn.innerHTML = `<i class="fas fa-user-circle"></i> ${userName}`;
+            mobileBtn.classList.remove('btn-outline');
+            mobileBtn.classList.add('btn-primary');
         } else {
-            mobileLoginBtn.innerHTML = 'Login';
-            mobileLoginBtn.classList.add('btn-outline');
-            mobileLoginBtn.classList.remove('btn-primary');
+            mobileBtn.innerHTML = 'Login';
+            mobileBtn.classList.add('btn-outline');
+            mobileBtn.classList.remove('btn-primary');
         }
     }
 }
 
-// Add to your DOMContentLoaded event
+// Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    // ... existing initialization code ...
-    
-    // Initialize hamburger menu
     initHamburgerMenu();
+    updateLoginButtons();
     
-    // Update login buttons
-    updateLoginButtonUI();
-    
-    // Listen for auth changes
+    // Update login buttons when auth changes
     if (window.auth) {
-        // Override the updateUI method to also update mobile button
-        const originalUpdateUI = window.auth.updateUIForLoggedInUser;
-        if (originalUpdateUI) {
-            window.auth.updateUIForLoggedInUser = function() {
-                originalUpdateUI.call(window.auth);
-                updateLoginButtonUI();
-            };
-        }
+        const originalUpdate = window.auth.updateUIForLoggedInUser;
+        window.auth.updateUIForLoggedInUser = function() {
+            if (originalUpdate) originalUpdate.call(window.auth);
+            updateLoginButtons();
+        };
+    }
+});
         
         // Also check periodically for auth changes
         setInterval(() => {
