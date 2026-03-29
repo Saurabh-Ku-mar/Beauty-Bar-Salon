@@ -112,26 +112,80 @@ if (googleLogin) {
 }
 
 // ============================================
-// VIDEO PLAYER
+// VIDEO GALLERY - MULTIPLE VIDEOS
 // ============================================
-let video = null;
-let isLooping = true;
 
-function initVideoPlayer() {
-    video = document.getElementById('salonVideo');
-    if (!video) return;
+let currentVideoSlide = 0;
+let totalVideoSlides = 3;
+let allVideos = [];
+let videoIntervals = [];
+
+function initVideoGallery() {
+    // Get all video elements
+    for (let i = 1; i <= totalVideoSlides; i++) {
+        const video = document.getElementById(`video${i}`);
+        if (video) {
+            allVideos.push(video);
+            setupVideoEvents(video, i - 1);
+        }
+    }
     
-    video.loop = true;
-    video.muted = false;
-    
-    const loopBtn = document.getElementById('loopBtn');
-    if (loopBtn) {
-        loopBtn.innerHTML = '<i class="fas fa-repeat"></i> Loop: ON';
+    // Set current slide from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const videoParam = urlParams.get('video');
+    if (videoParam && parseInt(videoParam) <= totalVideoSlides) {
+        currentVideoSlide = parseInt(videoParam) - 1;
+        updateVideoSlide();
     }
 }
 
-function togglePlayPause() {
+function setupVideoEvents(video, index) {
+    video.addEventListener('play', () => {
+        // Pause all other videos
+        allVideos.forEach((v, i) => {
+            if (i !== index && v && !v.paused) {
+                v.pause();
+            }
+        });
+        
+        // Hide overlay when playing
+        const slide = document.querySelectorAll('.video-slide')[index];
+        const overlay = slide?.querySelector('.video-play-overlay');
+        if (overlay) overlay.classList.add('hide');
+    });
+    
+    video.addEventListener('pause', () => {
+        const slide = document.querySelectorAll('.video-slide')[index];
+        const overlay = slide?.querySelector('.video-play-overlay');
+        if (overlay && video.currentTime < video.duration && !video.ended) {
+            overlay.classList.remove('hide');
+        }
+    });
+    
+    video.addEventListener('ended', () => {
+        const slide = document.querySelectorAll('.video-slide')[index];
+        const overlay = slide?.querySelector('.video-play-overlay');
+        if (overlay) overlay.classList.remove('hide');
+    });
+    
+    // Quality fix
+    video.style.transform = 'translateZ(0)';
+    video.style.backfaceVisibility = 'hidden';
+}
+
+function playVideo(videoId) {
+    const video = document.getElementById(videoId);
     if (!video) return;
+    
+    const index = parseInt(videoId.replace('video', '')) - 1;
+    
+    // Pause all other videos
+    allVideos.forEach((v, i) => {
+        if (i !== index && v && !v.paused) {
+            v.pause();
+        }
+    });
+    
     if (video.paused) {
         video.play();
     } else {
@@ -139,24 +193,149 @@ function togglePlayPause() {
     }
 }
 
-function toggleLoop() {
-    if (!video) return;
-    isLooping = !isLooping;
-    video.loop = isLooping;
+function nextVideo() {
+    if (currentVideoSlide < totalVideoSlides - 1) {
+        // Pause current video
+        if (allVideos[currentVideoSlide] && !allVideos[currentVideoSlide].paused) {
+            allVideos[currentVideoSlide].pause();
+        }
+        currentVideoSlide++;
+        updateVideoSlide();
+    }
+}
+
+function prevVideo() {
+    if (currentVideoSlide > 0) {
+        if (allVideos[currentVideoSlide] && !allVideos[currentVideoSlide].paused) {
+            allVideos[currentVideoSlide].pause();
+        }
+        currentVideoSlide--;
+        updateVideoSlide();
+    }
+}
+
+function goToSlide(index) {
+    if (index !== currentVideoSlide && index >= 0 && index < totalVideoSlides) {
+        if (allVideos[currentVideoSlide] && !allVideos[currentVideoSlide].paused) {
+            allVideos[currentVideoSlide].pause();
+        }
+        currentVideoSlide = index;
+        updateVideoSlide();
+    }
+}
+
+function updateVideoSlide() {
+    const slides = document.querySelectorAll('.video-slide');
+    const indicators = document.querySelectorAll('.indicator');
     
-    const loopBtn = document.getElementById('loopBtn');
-    if (loopBtn) {
-        if (isLooping) {
-            loopBtn.innerHTML = '<i class="fas fa-repeat"></i> Loop: ON';
-            loopBtn.classList.add('btn-primary');
-            loopBtn.classList.remove('btn-outline');
+    // Update slides
+    slides.forEach((slide, index) => {
+        if (index === currentVideoSlide) {
+            slide.classList.add('active');
         } else {
-            loopBtn.innerHTML = '<i class="fas fa-repeat"></i> Loop: OFF';
-            loopBtn.classList.remove('btn-primary');
-            loopBtn.classList.add('btn-outline');
+            slide.classList.remove('active');
+        }
+    });
+    
+    // Update indicators
+    indicators.forEach((indicator, index) => {
+        if (index === currentVideoSlide) {
+            indicator.classList.add('active');
+        } else {
+            indicator.classList.remove('active');
+        }
+    });
+    
+    // Update download button
+    updateDownloadButton();
+}
+
+function updateDownloadButton() {
+    const downloadBtn = document.getElementById('downloadCurrentVideoBtn');
+    if (!downloadBtn) return;
+    
+    const videoFiles = ['tour.mp4', 'tour1.mp4', 'tour2.mp4'];
+    const currentVideo = videoFiles[currentVideoSlide];
+    downloadBtn.onclick = () => downloadCurrentVideo(currentVideo);
+}
+
+function downloadCurrentVideo(videoFile) {
+    const link = document.createElement('a');
+    link.href = `assets/videos/${videoFile}`;
+    link.download = `beauty-bar-${videoFile}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function playAllVideos() {
+    allVideos.forEach(video => {
+        if (video.paused) {
+            video.play();
+        }
+    });
+}
+
+function pauseAllVideos() {
+    allVideos.forEach(video => {
+        if (!video.paused) {
+            video.pause();
+        }
+    });
+}
+
+// Swipe gestures for mobile
+let touchStartVideoX = 0;
+let touchEndVideoX = 0;
+
+function setupVideoSwipe() {
+    const slider = document.querySelector('.video-slider');
+    if (!slider) return;
+    
+    slider.addEventListener('touchstart', (e) => {
+        touchStartVideoX = e.changedTouches[0].screenX;
+    });
+    
+    slider.addEventListener('touchend', (e) => {
+        touchEndVideoX = e.changedTouches[0].screenX;
+        handleVideoSwipe();
+    });
+}
+
+function handleVideoSwipe() {
+    const swipeThreshold = 50;
+    const diff = touchEndVideoX - touchStartVideoX;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+            prevVideo();
+        } else {
+            nextVideo();
         }
     }
 }
+
+// Keyboard navigation for videos
+document.addEventListener('keydown', (e) => {
+    if (document.querySelector('.video-slider-container')) {
+        if (e.key === 'ArrowLeft') {
+            prevVideo();
+        } else if (e.key === 'ArrowRight') {
+            nextVideo();
+        }
+    }
+});
+
+// Initialize video gallery when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    initVideoGallery();
+    setupVideoSwipe();
+    
+    // Update indicators when clicking
+    document.querySelectorAll('.indicator').forEach((indicator, index) => {
+        indicator.onclick = () => goToSlide(index);
+    });
+});
 
 // ============================================
 // COUNTER ANIMATION
