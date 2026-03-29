@@ -27,7 +27,7 @@ class GoogleAuth {
     initializeGoogleSignIn() {
         if (typeof google !== 'undefined') {
             google.accounts.id.initialize({
-                client_id: 'YOUR_GOOGLE_CLIENT_ID', // Replace with your Google Client ID
+                client_id: '423661409014-d6hoe794pmudjfnv9enq19mblhuv724j.apps.googleusercontent.com', // Replace with your Google Client ID
                 callback: this.handleCredentialResponse.bind(this),
                 auto_select: false,
                 cancel_on_tap_outside: true
