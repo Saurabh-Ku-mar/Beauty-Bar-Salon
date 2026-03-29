@@ -295,7 +295,7 @@
             <!-- Instagram feed will be loaded dynamically -->
         </div>
         <div class="instagram-view-more">
-            <a href="https://instagram.com/beautybarsalon" target="_blank" class="btn btn-outline">
+            <a href="https://www.instagram.com/sandhya.rathi6921" target="_blank" class="btn btn-outline">
                 <i class="fab fa-instagram"></i> View More on Instagram
             </a>
         </div>
@@ -318,45 +318,7 @@
     <!-- ============================================
          FOOTER
     ============================================ -->
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Beauty Bar Salon</h3>
-                <p>Experience luxury beauty services in the heart of the city. Our expert stylists are here to make you feel beautiful.</p>
-                <div class="footer-social">
-                    <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
-                    <a href="#" target="_blank"><i class="fab fa-youtube"></i></a>
-                    <a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" target="_blank"><i class="fab fa-pinterest"></i></a>
-                    <a href="#" target="_blank"><i class="fab fa-tiktok"></i></a>
-                </div>
-            </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <p><a href="#services" style="color: #ccc; text-decoration: none;">Services</a></p>
-                <p><a href="#gallery" style="color: #ccc; text-decoration: none;">Gallery</a></p>
-                <p><a href="#team" style="color: #ccc; text-decoration: none;">Our Team</a></p>
-                <p><a href="booking.html" style="color: #ccc; text-decoration: none;">Book Now</a></p>
-            </div>
-            <div class="footer-section">
-                <h3>Contact Info</h3>
-                <p><i class="fas fa-phone"></i> +91 7052206406</p>
-                <p><i class="fas fa-envelope"></i> info@beautybarsalon.com</p>
-                <p><i class="fas fa-map-marker-alt"></i> Akbarpur, Uttar Pradesh - 224132</p>
-            </div>
-            <div class="footer-section">
-                <h3>Working Hours</h3>
-                <p>Monday - Friday: 10am - 8pm</p>
-                <p>Saturday: 10am - 6pm</p>
-                <p>Sunday: 11am - 5pm</p>
-                <p style="color: var(--primary); margin-top: 1rem;">Emergency: +91 7052206406</p>
-            </div>
-        </div>
-        <div class="copyright">
-            <p>&copy; 2026 Beauty Bar Salon. All rights reserved. | Designed with ❤️ for luxury beauty</p>
-        </div>
-    </footer>
+    <div id="footer-placeholder"></div>
 
     <!-- ============================================
          LOGIN MODAL
@@ -377,6 +339,14 @@
         </div>
     </div>
 
+    <script>
+        // Load footer
+        fetch('/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+    </script>
     <!-- ============================================
          SCRIPTS (Load in correct order)
     ============================================ -->
