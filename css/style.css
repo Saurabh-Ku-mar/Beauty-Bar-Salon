@@ -1220,11 +1220,37 @@ body {
         order: 1;
     }
 }
+k.nav-links a:hover {
+    color: #B76E79;
+}
+
+/* Social Icons */
+.social-nav {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.social-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F8D7DA;
+    color: #B76E79;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.social-icon:hover {
+    background: #B76E79;
+    color: white;
+    transform: translateY(-2px);
+}
+
 /* ============================================
-   HAMBURGER MENU STYLES
-   ============================================ */
-/* ============================================
-   HAMBURGER MENU - FIXED 3 LINES
+   NAVBAR - HAMBURGER ON LEFT SIDE
    ============================================ */
 
 /* Navbar Base */
@@ -1238,20 +1264,9 @@ body {
     position: sticky;
     top: 0;
     z-index: 1000;
-    flex-wrap: wrap;
 }
 
-.logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, #B76E79, #F8D7DA);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-decoration: none;
-}
-
-/* Hamburger Menu Button - 3 LINES */
+/* Hamburger Menu - LEFT SIDE */
 .hamburger {
     display: none;
     flex-direction: column;
@@ -1264,6 +1279,7 @@ body {
     border: none;
     padding: 0;
     z-index: 1001;
+    order: 1;
 }
 
 /* The 3 lines (bars) */
@@ -1275,17 +1291,29 @@ body {
     transition: all 0.3s ease-in-out;
 }
 
-/* Make sure all 3 bars are visible */
-.hamburger .bar:nth-child(1) {
-    transform-origin: 0% 0%;
+/* Logo - CENTER */
+.logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #B76E79, #F8D7DA);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration: none;
+    order: 2;
+    text-align: center;
+    flex: 1;
 }
 
-.hamburger .bar:nth-child(2) {
-    transform-origin: 50% 50%;
+/* Mobile Login Button - RIGHT SIDE */
+.login-mobile {
+    display: none;
+    order: 3;
 }
 
-.hamburger .bar:nth-child(3) {
-    transform-origin: 0% 100%;
+.login-mobile .btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
 }
 
 /* Animation when menu is open - turns into X */
@@ -1302,17 +1330,7 @@ body {
     transform: rotate(-45deg) translate(7px, -6px);
 }
 
-/* Mobile Login Button */
-.login-mobile {
-    display: none;
-}
-
-.login-mobile .btn {
-    padding: 8px 16px;
-    font-size: 0.9rem;
-}
-
-/* Navigation Links */
+/* Navigation Links Container */
 .nav-links {
     display: flex;
     align-items: center;
@@ -1357,71 +1375,82 @@ body {
 }
 
 /* ============================================
-   MOBILE RESPONSIVE (FIXED)
+   MOBILE RESPONSIVE - HAMBURGER LEFT SIDE
    ============================================ */
 
 @media (max-width: 768px) {
-    /* Show hamburger on mobile */
+    /* Show hamburger on left */
     .hamburger {
         display: flex !important;
-        order: 2;
     }
     
-    /* Show mobile login button */
+    /* Logo centered */
+    .logo {
+        font-size: 1.2rem;
+        flex: 1;
+        text-align: center;
+    }
+    
+    /* Show mobile login button on right */
     .login-mobile {
         display: block !important;
-        order: 3;
-        margin-left: auto;
     }
     
-    /* Logo stays left */
-    .logo {
-        order: 1;
-        font-size: 1.3rem;
-    }
-    
-    /* Navigation menu - hidden by default */
+    /* Navigation menu - slides from LEFT side */
     .nav-links {
         position: fixed;
-        top: 70px;
-        left: -100%;
-        width: 80%;
-        height: calc(100vh - 70px);
+        top: 0;
+        left: -280px;
+        width: 280px;
+        height: 100vh;
         background: white;
         flex-direction: column;
         justify-content: flex-start;
-        align-items: center;
-        gap: 1.5rem;
-        padding: 2rem 1rem;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 80px 2rem 2rem;
         transition: left 0.3s ease;
         box-shadow: 2px 0 20px rgba(0,0,0,0.1);
         z-index: 999;
         overflow-y: auto;
     }
     
-    /* Show menu when active */
+    /* Show menu when active - slides from LEFT */
     .nav-links.active {
         left: 0;
     }
     
-    /* Navigation links styling */
+    /* Navigation links styling on mobile */
     .nav-links a {
         font-size: 1.1rem;
-        padding: 0.5rem;
+        padding: 0.5rem 0;
         width: 100%;
-        text-align: center;
+        text-align: left;
+        border-bottom: 1px solid #eee;
     }
     
     /* Social icons on mobile */
     .social-nav {
         margin: 1rem 0;
-        justify-content: center;
+        justify-content: flex-start;
     }
     
     /* Hide desktop login button on mobile */
     .nav-links .btn-outline,
     .nav-links .btn-primary {
         display: none !important;
+    }
+    
+    /* Overlay when menu is open */
+    .nav-links.active::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 280px;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: -1;
     }
 }
 
@@ -1447,6 +1476,11 @@ body {
         flex-direction: row;
         padding: 0;
         box-shadow: none;
+    }
+    
+    .logo {
+        text-align: left;
+        flex: 0;
     }
     
     .nav-links .btn-outline,
