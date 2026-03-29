@@ -1,5 +1,25 @@
 // ============================================
 // BEAUTY BAR SALON - COMPLETE MAIN.JS
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+
+                document.getElementById("locationText").innerText =
+                    "Latitude: " + lat + ", Longitude: " + lon;
+
+                console.log(lat, lon);
+            },
+            (error) => {
+                alert("Location access denied!");
+            }
+        );
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+});
 // All Features: Hamburger Menu, Video Player, PWA, Dynamic Content
 // ============================================
 
