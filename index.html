@@ -141,30 +141,129 @@
         </div>
     </section>
 
-    <!-- ============================================
-         VIDEO TOUR SECTION
-    ============================================ -->
-    <section class="video-tour">
-        <h2 class="section-title">Take a Tour of Our Salon</h2>
-        <p class="section-subtitle">Watch our 45-second salon tour</p>
-        <div class="video-container">
-            <video id="salonVideo" poster="https://images.unsplash.com/photo-1522337660859-02fbefca4700?w=800&h=450&fit=crop" preload="metadata" controls playsinline>
+    <!-- Video Gallery Section -->
+<section class="video-gallery-section">
+    <h2 class="section-title">Watch Our Salon Videos</h2>
+    <p class="section-subtitle">Explore our salon tours and transformations</p>
+    
+    <!-- Video Slider Container -->
+    <div class="video-slider-container">
+        <button class="slider-nav prev" onclick="prevVideo()">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        
+        <div class="video-slider" id="videoSlider">
+            <!-- Video 1 - Main Tour -->
+            <div class="video-slide active">
+                <div class="video-wrapper">
+                    <video id="video1" controls playsinline preload="metadata" poster="assets/images/video-poster-1.jpg">
+                        <source src="assets/tour.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="video-play-overlay" onclick="playVideo('video1')">
+                        <div class="play-btn">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <h3>Main Salon Tour</h3>
+                    <p>Experience our luxurious main salon area</p>
+                    <div class="video-meta">
+                        <span><i class="fas fa-clock"></i> 0:45</span>
+                        <span><i class="fas fa-eye"></i> Salon Tour</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Video 2 - Tour 1 -->
+            <div class="video-slide">
+                <div class="video-wrapper">
+                    <video id="video2" controls playsinline preload="metadata" poster="assets/images/video-poster-2.jpg">
+                        <source src="assets/tour1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="video-play-overlay" onclick="playVideo('video2')">
+                        <div class="play-btn">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <h3>Bridal Makeup Studio</h3>
+                    <p>Watch our expert bridal makeup artists at work</p>
+                    <div class="video-meta">
+                        <span><i class="fas fa-clock"></i> 0:30</span>
+                        <span><i class="fas fa-brush"></i> Bridal Special</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Video 3 - Tour 2 -->
+            <div class="video-slide">
+                <div class="video-wrapper">
+                    <video id="video3" controls playsinline preload="metadata" poster="assets/images/video-poster-3.jpg">
+                        <source src="assets/tour2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="video-play-overlay" onclick="playVideo('video3')">
+                        <div class="play-btn">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <h3>Hair & Nail Studio</h3>
+                    <p>Professional hair styling and nail art services</p>
+                    <div class="video-meta">
+                        <span><i class="fas fa-clock"></i> 0:35</span>
+                        <span><i class="fas fa-cut"></i> Hair & Nails</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <button class="slider-nav next" onclick="nextVideo()">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+    
+    <!-- Slider Indicators -->
+    <div class="slider-indicators" id="videoIndicators">
+        <span class="indicator active" onclick="goToSlide(0)"></span>
+        <span class="indicator" onclick="goToSlide(1)"></span>
+        <span class="indicator" onclick="goToSlide(2)"></span>
+    </div>
+    
+    <!-- Video Controls -->
+
+<!-- Alternative: Grid View for Videos (Optional) -->
+<section class="video-grid-section" style="display: none;">
+    <h2 class="section-title">All Videos</h2>
+    <div class="video-grid">
+        <div class="video-card">
+            <video controls preload="metadata">
                 <source src="assets/tour.mp4" type="video/mp4">
-                Your browser does not support the video tag.
             </video>
+            <h4>Main Salon Tour</h4>
+            <p>Experience our luxurious main salon area</p>
         </div>
-        <div class="video-controls">
-            <button onclick="togglePlayPause()" class="btn btn-outline">
-                <i class="fas fa-play"></i>
-            </button>
-            <button onclick="toggleLoop()" class="btn btn-outline" id="loopBtn">
-                <i class="fas fa-repeat"></i>
-            </button>
-            <a href="assets/videos/salon-tour.mp4" download class="btn btn-outline">
-                <i class="fas fa-download"></i>
-            </a>
+        <div class="video-card">
+            <video controls preload="metadata">
+                <source src="assets/tour1.mp4" type="video/mp4">
+            </video>
+            <h4>Bridal Makeup Studio</h4>
+            <p>Watch our expert bridal makeup artists at work</p>
         </div>
-    </section>
+        <div class="video-card">
+            <video controls preload="metadata">
+                <source src="assets/tour2.mp4" type="video/mp4">
+            </video>
+            <h4>Hair & Nail Studio</h4>
+            <p>Professional hair styling and nail art services</p>
+        </div>
+    </div>
+</section>
 
     <!-- ============================================
          TEAM SECTION
