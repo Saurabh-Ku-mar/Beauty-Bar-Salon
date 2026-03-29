@@ -1,10 +1,6 @@
 // frontend/js/main.js
 // Complete Main JavaScript for Beauty Bar Salon
-
-// ============================================
-// HAMBURGER MENU FUNCTIONALITY
-// ============================================
-
+// Hamburger Menu Functionality
 function initHamburgerMenu() {
     const hamburger = document.getElementById('hamburgerMenu');
     const navLinks = document.getElementById('navLinks');
@@ -15,8 +11,6 @@ function initHamburgerMenu() {
         console.log('Hamburger or navLinks not found');
         return;
     }
-    
-    console.log('Hamburger menu initialized');
     
     // Toggle menu when hamburger is clicked
     hamburger.addEventListener('click', (e) => {
@@ -66,7 +60,6 @@ function initHamburgerMenu() {
                     window.auth.openModal();
                 }
             }
-            // Close menu
             hamburger.classList.remove('active');
             navLinks.classList.remove('active');
             document.body.style.overflow = '';
@@ -88,6 +81,11 @@ function initHamburgerMenu() {
         });
     }
 }
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    initHamburgerMenu();
+});
 
 // Update login button UI
 function updateLoginButtons() {
