@@ -1,6 +1,6 @@
 // ============================================
 // BEAUTY BAR SALON - COMPLETE MAIN.JS
-// All Features Working: Hamburger Menu, Video Slider, Services, etc.
+// All Features: Hamburger Menu, Video Slider, Services, Team, Gallery, etc.
 // ============================================
 
 // Wait for DOM to load
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize hamburger menu FIRST
     initHamburgerMenu();
     
-    // Load services and team
+    // Load services and team from DataService
     loadServices();
     loadTeam();
     loadTestimonials();
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ============================================
-// HAMBURGER MENU - FIXED WORKING VERSION
+// HAMBURGER MENU - WORKING VERSION
 // ============================================
 
 function initHamburgerMenu() {
@@ -171,6 +171,8 @@ function initVideoSlider() {
     indicators.forEach((indicator, index) => {
         indicator.onclick = () => goToSlide(index);
     });
+    
+    console.log(`Video slider initialized with ${allVideos.length} videos`);
 }
 
 function setupVideoEvents(video, index) {
@@ -275,16 +277,29 @@ function updateVideoSlide() {
 }
 
 // ============================================
-// SERVICE LOADING
+// SERVICE LOADING FROM DATA SERVICE
 // ============================================
 
 function loadServices() {
     const container = document.getElementById('services-grid');
-    if (!container) return;
+    if (!container) {
+        console.log('Services container not found');
+        return;
+    }
     
     console.log('Loading services...');
     
-    const services = [
+    // Try to get services from DataService
+    if (window.dataService) {
+        const services = window.dataService.getServices();
+        if (services && services.length > 0) {
+            displayServices(services);
+            return;
+        }
+    }
+    
+    // Fallback services data
+    const fallbackServices = [
         {
             id: 1,
             name: "Bridal Makeup",
@@ -341,9 +356,16 @@ function loadServices() {
         }
     ];
     
+    displayServices(fallbackServices);
+}
+
+function displayServices(services) {
+    const container = document.getElementById('services-grid');
+    if (!container) return;
+    
     container.innerHTML = services.map(service => `
         <div class="service-card">
-            <img src="${service.image}" alt="${service.name}" class="service-image" loading="lazy">
+            <img src="${service.image}" alt="${service.name}" class="service-image" loading="lazy" onerror="this.src='https://placehold.co/400x300/B76E79/white?text=${service.name}'">
             <div class="service-content">
                 <span class="service-category">${service.category}</span>
                 <h3 class="service-title">${service.name}</h3>
@@ -366,7 +388,19 @@ function loadTeam() {
     const container = document.getElementById('team-grid');
     if (!container) return;
     
-    const team = [
+    console.log('Loading team...');
+    
+    // Try to get staff from DataService
+    if (window.dataService) {
+        const staff = window.dataService.getStaff();
+        if (staff && staff.length > 0) {
+            displayTeam(staff);
+            return;
+        }
+    }
+    
+    // Fallback team data
+    const fallbackTeam = [
         {
             name: "Priya Sharma",
             position: "Senior Makeup Artist",
@@ -397,6 +431,13 @@ function loadTeam() {
         }
     ];
     
+    displayTeam(fallbackTeam);
+}
+
+function displayTeam(team) {
+    const container = document.getElementById('team-grid');
+    if (!container) return;
+    
     container.innerHTML = team.map(member => `
         <div class="team-card">
             <img src="${member.image}" alt="${member.name}" class="team-image" loading="lazy">
@@ -419,9 +460,9 @@ function loadTestimonials() {
     if (!container) return;
     
     const testimonials = [
-        { name: "Neha Gupta", role: "Bridal Client", image: "https://randomuser.me/api/portraits/women/1.jpg", text: "Absolutely amazing experience! The bridal makeup was perfect.", rating: 5 },
-        { name: "Kavita Singh", role: "Regular Client", image: "https://randomuser.me/api/portraits/women/2.jpg", text: "Best salon in town! The staff is professional and friendly.", rating: 5 },
-        { name: "Pooja Patel", role: "Celebrity Client", image: "https://randomuser.me/api/portraits/women/3.jpg", text: "The hair coloring service is exceptional!", rating: 5 }
+        { name: "Neha Gupta", role: "Bridal Client", image: "https://randomuser.me/api/portraits/women/1.jpg", text: "Absolutely amazing experience! The bridal makeup was perfect and the team made me feel like a princess on my special day.", rating: 5 },
+        { name: "Kavita Singh", role: "Regular Client", image: "https://randomuser.me/api/portraits/women/2.jpg", text: "Best salon in town! The staff is professional, and the hygiene standards are top-notch. My go-to place for all beauty needs.", rating: 5 },
+        { name: "Pooja Patel", role: "Celebrity Client", image: "https://randomuser.me/api/portraits/women/3.jpg", text: "The hair coloring service is exceptional! They understood exactly what I wanted and delivered beyond expectations.", rating: 5 }
     ];
     
     container.innerHTML = testimonials.map(t => `
@@ -529,7 +570,7 @@ function animateCounter(el, target) {
 }
 
 // ============================================
-// NEWSLETTER
+// NEWSLETTER SUBSCRIPTION
 // ============================================
 
 function initNewsletter() {
@@ -547,7 +588,7 @@ function initNewsletter() {
 }
 
 // ============================================
-// WHATSAPP FLOAT
+// FLOATING WHATSAPP BUTTON
 // ============================================
 
 function initFloatingWhatsApp() {
@@ -559,14 +600,13 @@ function initFloatingWhatsApp() {
 }
 
 // ============================================
-// BACK TO TOP
+// BACK TO TOP BUTTON
 // ============================================
 
 function initBackToTop() {
     const btn = document.createElement('button');
     btn.innerHTML = '<i class="fas fa-arrow-up"></i>';
     btn.className = 'back-to-top';
-    btn.style.cssText = `position:fixed;bottom:100px;right:30px;background:#B76E79;color:white;width:45px;height:45px;border-radius:50%;border:none;cursor:pointer;display:none;z-index:998;box-shadow:0 2px 10px rgba(0,0,0,0.2);`;
     document.body.appendChild(btn);
     
     window.addEventListener('scroll', () => {
@@ -577,7 +617,7 @@ function initBackToTop() {
 }
 
 // ============================================
-// PWA INSTALL
+// PWA INSTALL PROMPT
 // ============================================
 
 let deferredPrompt;
@@ -585,4 +625,57 @@ let deferredPrompt;
 function initPWA() {
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
- 
+        deferredPrompt = e;
+        const installBtn = document.getElementById('installBtn');
+        if (installBtn) installBtn.style.display = 'flex';
+    });
+    
+    const installBtn = document.getElementById('installBtn');
+    if (installBtn) {
+        installBtn.addEventListener('click', installApp);
+    }
+}
+
+function installApp() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => deferredPrompt = null);
+        const installBtn = document.getElementById('installBtn');
+        if (installBtn) installBtn.style.display = 'none';
+    }
+}
+
+// ============================================
+// UTILITY FUNCTIONS
+// ============================================
+
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `<span>${message}</span>`;
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        z-index: 9999;
+        animation: fadeIn 0.3s;
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+// ============================================
+// MAKE FUNCTIONS GLOBALLY AVAILABLE
+// ============================================
+
+window.playVideo = playVideo;
+window.nextVideo = nextVideo;
+window.prevVideo = prevVideo;
+window.goToSlide = goToSlide;
+window.installApp = installApp;
+window.showLoginModal = showLoginModal;
+window.showToast = showToast;
