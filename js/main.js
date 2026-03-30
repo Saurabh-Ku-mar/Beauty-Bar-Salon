@@ -1,7 +1,76 @@
 // BEAUTY BAR SALON - COMPLETE MAIN.JS
 // All Features: Hamburger Menu, Video Player, PWA, Dynamic Content
 // ============================================
+// Wait for data service to be ready
+function initDataService() {
+    const checkInterval = setInterval(() => {
+        if (window.dataService) {
+            clearInterval(checkInterval);
+            console.log('DataService found, loading content...');
+            loadServicesFromData();
+            loadTeamFromData();
+        } else {
+            console.log('Waiting for DataService...');
+            // Fallback: load directly if data service takes too long
+            setTimeout(() => {
+                if (!window.dataService) {
+                    console.log('DataService timeout - loading direct');
+                    loadServices();
+                    loadTeam();
+                }
+            }, 3000);
+        }
+    }, 100);
+}
 
+function loadServicesFromData() {
+    const container = document.getElementById('services-grid');
+    if (!container) return;
+    
+    if (!window.dataService) {
+        loadServices(); // Fallback
+        return;
+    }
+    
+    const services = window.dataService.getServices();
+    
+    if (services.length === 0) {
+        loadServices(); // Fallback
+        return;
+    }
+    
+    container.innerHTML = services.map(service => `
+        <div class="service-card">
+            <img src="${service.image || 'https://via.placeholder.com/400x300?text=' + service.name}" alt="${service.name}" class="service-image" loading="lazy">
+            <div class="service-content">
+                <span class="service-category">${service.category}</span>
+                <h3 class="service-title">${service.name}</h3>
+                <p style="color: #666; margin: 0.5rem 0;">${service.description || 'Premium salon service'}</p>
+                <p>⏱️ ${service.duration} mins</p>
+                <div class="service-price">₹${service.price}</div>
+                <a href="booking.html?service=${service.id}" class="btn btn-primary" style="margin-top: 1rem;">Book Now</a>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Update DOMContentLoaded event
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded - Initializing...');
+    
+    // Load services and team
+    loadServices();
+    loadTeam();
+    
+    // Initialize other features
+    initHamburgerMenu();
+    initVideoPlayer();
+    initCounters();
+    initNewsletter();
+    initFloatingWhatsApp();
+    initBackToTop();
+    initPWA();
+});
 // Wait for DOM to load
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded - Initializing all features');
