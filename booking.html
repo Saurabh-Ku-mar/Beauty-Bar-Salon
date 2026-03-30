@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Booking page specific styles */
+        /* Booking Page Styles */
         .booking-steps {
             display: flex;
             justify-content: space-between;
@@ -23,7 +23,6 @@
             padding: 1rem;
             background: white;
             border-radius: 10px;
-            position: relative;
             cursor: pointer;
             transition: all 0.3s;
             opacity: 0.6;
@@ -138,13 +137,6 @@
             color: white;
         }
         
-        .time-slot.booked {
-            background: #f0f0f0;
-            color: #999;
-            cursor: not-allowed;
-            text-decoration: line-through;
-        }
-        
         .booking-summary {
             background: var(--secondary);
             padding: 1.5rem;
@@ -184,14 +176,34 @@
             color: white;
         }
         
-        .calendar-day.available {
-            background: var(--secondary);
-            border-color: var(--primary);
+        .selected-service-badge {
+            background: var(--primary);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-bottom: 1rem;
         }
         
-        .loading-spinner {
-            text-align: center;
-            padding: 2rem;
+        .service-filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        
+        .filter-btn {
+            padding: 6px 15px;
+            background: var(--secondary);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
         }
         
         @media (max-width: 768px) {
@@ -210,14 +222,303 @@
                 text-align: center;
             }
         }
+        /* ============================================
+   FOOTER
+   ============================================ */
+.footer {
+    background: var(--dark);
+    color: var(--white);
+    padding: 4rem 5% 0;
+    margin-top: 0;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2.5rem;
+    margin-bottom: 3rem;
+}
+
+.footer-title {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    margin-bottom: 1.2rem;
+    color: black solid;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.footer-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: var(--gradient);
+    border-radius: 2px;
+}
+
+.footer-description {
+    color: #888;
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+}
+
+/* Social Links */
+.footer-social {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.social-link {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.social-link:hover {
+    background: var(--primary);
+    transform: translateY(-3px);
+}
+
+/* Footer Links */
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.7rem;
+}
+
+.footer-links a {
+    color: #B76E79;
+    text-decoration: none;
+    transition: var(--transition);
+    display: inline-block;
+}
+
+.footer-links a:hover {
+    color: var(--primary);
+    transform: translateX(5px);
+}
+
+/* Contact Info */
+.footer-contact {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-contact li {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+}
+
+.footer-contact li i {
+    width: 35px;
+    height: 35px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 0.9rem;
+}
+
+.footer-contact li div {
+    flex: 1;
+}
+
+.footer-contact li span {
+    display: block;
+    font-size: 0.75rem;
+    color: #888;
+    margin-bottom: 0.2rem;
+}
+
+.footer-contact li a,
+.footer-contact li p {
+    color: #B76E79;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.footer-contact li a:hover {
+    color: var(--primary);
+}
+
+/* Working Hours */
+.footer-hours {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-hours li {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.footer-hours li span:first-child {
+    color: #B76E79;
+}
+
+.footer-hours li span:last-child {
+    color: #9e5a64;
+    font-weight: 500;
+}
+
+/* Emergency Contact */
+.footer-emergency {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: rgba(183, 110, 121, 0.15);
+    border-radius: 12px;
+    border-left: 3px solid var(--primary);
+}
+
+.footer-emergency i {
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.footer-emergency div span {
+    display: block;
+    font-size: 0.7rem;
+    color: #888;
+    margin-bottom: 0.2rem;
+}
+
+.footer-emergency a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+
+/* Bottom Bar */
+.footer-bottom {
+    padding: 1.5rem 0;
+}
+
+.footer-bottom-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.footer-bottom p {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.footer-bottom-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.footer-bottom-links a {
+    color: #888;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.3s;
+}
+
+.footer-bottom-links a:hover {
+    color: var(--primary);
+}
+
+/* Responsive Footer */
+@media (max-width: 768px) {
+    .footer {
+        padding: 3rem 5% 0;
+    }
+    
+    .footer-grid {
+        gap: 1.5rem;
+    }
+    
+    .footer-newsletter-form {
+        flex-direction: column;
+    }
+    
+    .footer-newsletter-form button {
+        width: 100%;
+    }
+    
+    .footer-bottom-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .footer-bottom-links {
+        justify-content: center;
+    }
+    
+    .footer-contact li {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+    
+    .footer-contact li i {
+        margin: 0 auto;
+    }
+    
+    .footer-title::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .footer-section {
+        text-align: center;
+    }
+    
+    .footer-social {
+        justify-content: center;
+  }
+}
+        
     </style>
 </head>
 <body>
     <nav class="navbar">
+        <div class="hamburger" id="hamburgerMenu">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
         <a href="index.html" class="logo">Beauty Bar ✨</a>
-        <div class="nav-links">
+        <div class="login-mobile">
+            <button class="btn btn-outline" id="loginBtnMobile">Login</button>
+        </div>
+        <div class="nav-links" id="navLinks">
             <a href="index.html">Home</a>
             <a href="index.html#services">Services</a>
+            <a href="index.html#gallery">Gallery</a>
+            <a href="index.html#team">Our Team</a>
             <a href="booking.html">Book Now</a>
             <a href="gift-card.html">Gift Cards</a>
             <a href="history.html">My Bookings</a>
@@ -230,11 +531,11 @@
         </div>
     </nav>
 
-    <a href="https://wa.me/1234567890?text=Hello%20Beauty%20Bar%20Salon%2C%20I%20want%20to%20book%20an%20appointment" class="whatsapp-float" target="_blank">
+    <a href="https://wa.me/917052206406?text=Hello%20Beauty%20Bar%20Salon%2C%20I%20want%20to%20book%20an%20appointment" class="whatsapp-float" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <section class="booking-section">
+    <section class="booking-section" style="padding: 4rem 5%;">
         <h2 class="section-title">Book Your Appointment</h2>
         <p style="text-align: center; margin-bottom: 2rem;">Complete the steps below to reserve your spot</p>
 
@@ -269,13 +570,14 @@
             <!-- Step 1: Service Selection -->
             <div class="step-panel active" id="step1">
                 <h3>Choose Your Service</h3>
-                <div class="service-categories" style="display: flex; gap: 1rem; margin: 1rem 0; flex-wrap: wrap;">
-                    <button class="btn btn-outline category-filter active" data-category="all">All</button>
-                    <button class="btn btn-outline category-filter" data-category="Bridal">Bridal</button>
-                    <button class="btn btn-outline category-filter" data-category="Hair">Hair</button>
-                    <button class="btn btn-outline category-filter" data-category="Makeup">Makeup</button>
-                    <button class="btn btn-outline category-filter" data-category="Nails">Nails</button>
-                    <button class="btn btn-outline category-filter" data-category="Skincare">Skincare</button>
+                <div id="selectedServiceDisplay" style="margin-bottom: 1rem;"></div>
+                <div class="service-filter-buttons">
+                    <button class="filter-btn active" data-category="all">All</button>
+                    <button class="filter-btn" data-category="Bridal">Bridal</button>
+                    <button class="filter-btn" data-category="Hair">Hair</button>
+                    <button class="filter-btn" data-category="Makeup">Makeup</button>
+                    <button class="filter-btn" data-category="Nails">Nails</button>
+                    <button class="filter-btn" data-category="Skincare">Skincare</button>
                 </div>
                 <div id="services-list" class="services-grid"></div>
             </div>
@@ -342,67 +644,487 @@
         </div>
     </section>
 
-        <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
+        <!-- ============================================
+         FOOTER
+    ============================================ -->
+    <footer>
+    <div class="footer-container">
+        <div class="footer-grid">
+            <!-- About Section -->
             <div class="footer-section">
-                <h3>Beauty Bar Salon</h3>
-                <p>Experience luxury beauty services in the heart of the city. Our expert stylists are here to make you feel beautiful.</p>
+                <h3 class="footer-title">Beauty Bar ✨</h3>
+                <p class="footer-description">Experience luxury beauty services in the heart of the city. Our expert stylists are here to make you feel beautiful and confident.</p>
                 <div class="footer-social">
-                    <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
-                    <a href="#" target="_blank"><i class="fab fa-youtube"></i></a>
-                    <a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" target="_blank"><i class="fab fa-pinterest"></i></a>
-                    <a href="#" target="_blank"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.instagram.com/sandhya.rathi6921" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-link" target="_blank"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="social-link" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-link" target="_blank"><i class="fab fa-pinterest"></i></a>
+                    <a href="#" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
                 </div>
             </div>
+
+            <!-- Quick Links Section -->
             <div class="footer-section">
-                <h3>Quick Links</h3>
-                <p><a href="#services" style="color: #ccc; text-decoration: none;">Services</a></p>
-                <p><a href="#gallery" style="color: #ccc; text-decoration: none;">Gallery</a></p>
-                <p><a href="#team" style="color: #ccc; text-decoration: none;">Our Team</a></p>
-                <p><a href="booking.html" style="color: #ccc; text-decoration: none;">Book Now</a></p>
+                <h3 class="footer-title">Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#services">Services</a></li>
+                    <li><a href="index.html#gallery">Gallery</a></li>
+                    <li><a href="index.html#team">Our Team</a></li>
+                    <li><a href="booking.html">Book Appointment</a></li>
+                    <li><a href="gift-card.html">Gift Cards</a></li>
+                    <li><a href="history.html">My Bookings</a></li>
+                </ul>
             </div>
+
+            <!-- Contact Info Section -->
             <div class="footer-section">
-                <h3>Contact Info</h3>
-                <p><i class="fas fa-phone"></i> +91 7052206406</p>
-                <p><i class="fas fa-envelope"></i> info@beautybarsalon.com</p>
-                <p><i class="fas fa-map-marker-alt"></i> Akbarpur, Uttar Pradesh - 224132</p>
+                <h3 class="footer-title">Contact Info</h3>
+                <ul class="footer-contact">
+                    <li>
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <span>Phone Number</span>
+                            <a href="tel:+917052206406">+91 70522 06406</a>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <span>Email Address</span>
+                            <a href="mailto:sk2940012@gmail.com">info@beautybarsalon.com</a>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <span>Our Location</span>
+                            <p>Akbarpur, Uttar Pradesh - 224132</p>
+                        </div>
+                    </li>
+                </ul>
             </div>
+
+            <!-- Working Hours Section -->
             <div class="footer-section">
-                <h3>Working Hours</h3>
-                <p>Monday - Friday: 10am - 8pm</p>
-                <p>Saturday: 10am - 6pm</p>
-                <p>Sunday: 11am - 5pm</p>
-                <p style="color: var(--primary); margin-top: 1rem;">Emergency: +91 7052206406</p>
+                <h3 class="footer-title">Working Hours</h3>
+                <ul class="footer-hours">
+                    <li>
+                        <span>Monday - Friday:</span>
+                        <span>10:00 AM - 8:00 PM</span>
+                    </li>
+                    <li>
+                        <span>Saturday:</span>
+                        <span>10:00 AM - 6:00 PM</span>
+                    </li>
+                    <li>
+                        <span>Sunday:</span>
+                        <span>11:00 AM - 5:00 PM</span>
+                    </li>
+                </ul>
+                <div class="footer-emergency">
+                    <i class="fas fa-ambulance"></i>
+                    <div>
+                        <span>Emergency Contact</span>
+                        <a href="tel:+917052206406">+91 70522 06406</a>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="copyright">
-            <p>&copy; 2026 Beauty Bar Salon. All rights reserved. | Designed with ❤️ for luxury beauty</p>
+        <!-- Bottom Bar -->
+        <div class="footer-bottom">
+            <div class="footer-bottom-content">
+                <p>&copy; 2026 Beauty Bar Salon. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms & Conditions</a>
+                    <a href="#">Refund Policy</a>
+                </div>
+            </div>
         </div>
+    </div>
     </footer>
 
-
-    <!-- Login Modal -->
     <div class="modal" id="loginModal">
         <div class="modal-content">
             <span class="close-modal" id="closeModal">&times;</span>
-            <h2 style="text-align: center; margin-bottom: 2rem;">Welcome to Beauty Bar ✨</h2>
-            <div id="googleSignInButton" style="display: flex; justify-content: center; margin: 2rem 0;"></div>
-            <div class="divider" style="text-align: center; margin: 1rem 0;">
-                <span style="background: white; padding: 0 10px;">or</span>
-            </div>
+            <h2>Welcome to Beauty Bar ✨</h2>
             <div class="google-login" id="googleLogin">
                 <img src="https://www.google.com/favicon.ico" alt="Google">
                 <span>Continue with Google</span>
             </div>
-            <p style="text-align: center; color: #666; margin-top: 1rem;">Only Gmail accounts are accepted for booking</p>
         </div>
     </div>
 
-    <!-- Scripts - Order is important -->
-    <script src="js/data-service.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/booking.js"></script>
+    <script>
+        // ============================================
+        // BOOKING PAGE JAVASCRIPT
+        // ============================================
+        
+        let selectedService = null;
+        let selectedStaff = null;
+        let selectedDate = null;
+        let selectedTime = null;
+        let currentStep = 1;
+        let allServices = [];
+        let allStaff = [];
+        
+        // Service Data
+        const services = [
+            { id: 1, name: "Bridal Makeup", category: "Bridal", price: 4999, duration: 120, image: "https://images.pexels.com/photos/3992135/pexels-photo-3992135.jpeg?w=400&h=300&fit=crop", description: "Complete bridal makeup with premium products" },
+            { id: 2, name: "Hair Styling", category: "Hair", price: 1999, duration: 60, image: "https://images.pexels.com/photos/3993449/pexels-photo-3993449.jpeg?w=400&h=300&fit=crop", description: "Professional hair styling for any occasion" },
+            { id: 3, name: "Facial Treatment", category: "Skincare", price: 2499, duration: 75, image: "https://images.pexels.com/photos/3822600/pexels-photo-3822600.jpeg?w=400&h=300&fit=crop", description: "Deep cleansing and hydrating facial" },
+            { id: 4, name: "Nail Art", category: "Nails", price: 999, duration: 45, image: "https://images.pexels.com/photos/3992135/pexels-photo-3992135.jpeg?w=400&h=300&fit=crop", description: "Creative nail designs and care" },
+            { id: 5, name: "Party Makeup", category: "Makeup", price: 2999, duration: 90, image: "https://images.pexels.com/photos/3992135/pexels-photo-3992135.jpeg?w=400&h=300&fit=crop", description: "Glamorous party and event makeup" },
+            { id: 6, name: "Hair Color", category: "Hair", price: 3499, duration: 120, image: "https://images.pexels.com/photos/3993449/pexels-photo-3993449.jpeg?w=400&h=300&fit=crop", description: "Professional hair coloring and highlights" }
+        ];
+        
+        // Staff Data
+        const staff = [
+            { id: 1, name: "Priya Sharma", position: "Senior Makeup Artist", specialty: "Bridal Makeup", image: "https://images.pexels.com/photos/1494790108777-223fd4f5603d?w=200&h=200&fit=crop", services: [1, 5], rating: 4.9 },
+            { id: 2, name: "Anjali Desai", position: "Hair Stylist", specialty: "Hair Color", image: "https://images.pexels.com/photos/1534528741775-53994a69daeb?w=200&h=200&fit=crop", services: [2, 6], rating: 4.8 },
+            { id: 3, name: "Meera Kapoor", position: "Skincare Expert", specialty: "Facial", image: "https://images.pexels.com/photos/1517365830460-955ce3ccd263?w=200&h=200&fit=crop", services: [3], rating: 4.9 },
+            { id: 4, name: "Riya Mehta", position: "Nail Artist", specialty: "Nail Art", image: "https://images.pexels.com/photos/1438761681033-6461ffad8d80?w=200&h=200&fit=crop", services: [4], rating: 4.7 }
+        ];
+        
+        // Initialize page
+        function initBooking() {
+            allServices = [...services];
+            allStaff = [...staff];
+            
+            // Check for selected service from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const serviceId = urlParams.get('service');
+            
+            if (serviceId) {
+                selectedService = allServices.find(s => s.id == serviceId);
+                if (selectedService) {
+                    document.getElementById('selectedServiceDisplay').innerHTML = `
+                        <div class="selected-service-badge">
+                            <i class="fas fa-check-circle"></i> Selected: ${selectedService.name} - ₹${selectedService.price}
+                        </div>
+                    `;
+                }
+            }
+            
+            displayServices();
+            displayStaff();
+            loadCalendar();
+            setupEventListeners();
+            updateSteps();
+        }
+        
+        function displayServices() {
+            const container = document.getElementById('services-list');
+            if (!container) return;
+            
+            container.innerHTML = allServices.map(service => `
+                <div class="service-card ${selectedService?.id === service.id ? 'selected' : ''}" data-id="${service.id}" onclick="selectService(${service.id})">
+                    <img src="${service.image}" alt="${service.name}" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px;">
+                    <h4 style="margin: 0.5rem 0;">${service.name}</h4>
+                    <p>${service.duration} mins</p>
+                    <p style="color: var(--primary); font-weight: bold;">₹${service.price}</p>
+                    <p style="font-size: 0.8rem; color: #666;">${service.description}</p>
+                </div>
+            `).join('');
+        }
+        
+        function filterServices(category) {
+            if (category === 'all') {
+                allServices = [...services];
+            } else {
+                allServices = services.filter(s => s.category === category);
+            }
+            displayServices();
+        }
+        
+        function selectService(id) {
+            selectedService = allServices.find(s => s.id === id);
+            document.getElementById('selectedServiceDisplay').innerHTML = `
+                <div class="selected-service-badge">
+                    <i class="fas fa-check-circle"></i> Selected: ${selectedService.name} - ₹${selectedService.price}
+                </div>
+            `;
+            displayServices();
+            displayStaffForService(id);
+            showToast('Service selected!', 'success');
+        }
+        
+        function displayStaff() {
+            const container = document.getElementById('staff-list');
+            if (!container) return;
+            
+            container.innerHTML = allStaff.map(s => `
+                <div class="staff-card" data-id="${s.id}" onclick="selectStaff(${s.id})">
+                    <img src="${s.image}" alt="${s.name}">
+                    <div>
+                        <h4>${s.name}</h4>
+                        <p>${s.position}</p>
+                        <p style="color: var(--primary);">Specialty: ${s.specialty}</p>
+                        <p>⭐ ${s.rating}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function displayStaffForService(serviceId) {
+            const filteredStaff = allStaff.filter(s => s.services.includes(serviceId));
+            const container = document.getElementById('staff-list');
+            
+            if (container) {
+                if (filteredStaff.length > 0) {
+                    container.innerHTML = filteredStaff.map(s => `
+                        <div class="staff-card" data-id="${s.id}" onclick="selectStaff(${s.id})">
+                            <img src="${s.image}" alt="${s.name}">
+                            <div>
+                                <h4>${s.name}</h4>
+                                <p>${s.position}</p>
+                                <p style="color: var(--primary);">Specialty: ${s.specialty}</p>
+                                <p>⭐ ${s.rating}</p>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<p>No staff available for this service. Please select another service.</p>';
+                }
+            }
+        }
+        
+        function selectStaff(id) {
+            selectedStaff = allStaff.find(s => s.id === id);
+            document.querySelectorAll('.staff-card').forEach(card => {
+                card.classList.remove('selected');
+                if (card.dataset.id == id) card.classList.add('selected');
+            });
+            showToast('Stylist selected!', 'success');
+        }
+        
+        function loadCalendar() {
+            const calendar = document.getElementById('calendar');
+            if (!calendar) return;
+            
+            const today = new Date();
+            const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1).getDay();
+            
+            let html = '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; margin-bottom: 0.5rem;">';
+            const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            weekdays.forEach(day => {
+                html += `<div style="text-align: center; font-weight: bold;">${day}</div>`;
+            });
+            html += '</div><div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem;">';
+            
+            for (let i = 0; i < firstDay; i++) {
+                html += `<div></div>`;
+            }
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(today.getFullYear(), today.getMonth(), day);
+                const isPast = date < new Date(new Date().setHours(0,0,0,0));
+                html += `
+                    <div class="calendar-day ${isPast ? 'disabled' : 'available'}" 
+                         onclick="${!isPast ? `selectDate(${day})` : ''}"
+                         style="text-align: center; padding: 10px; border: 1px solid #ddd; border-radius: 8px; cursor: ${isPast ? 'not-allowed' : 'pointer'};">
+                        ${day}
+                    </div>
+                `;
+            }
+            html += '</div>';
+            calendar.innerHTML = html;
+        }
+        
+        function selectDate(day) {
+            selectedDate = new Date(new Date().getFullYear(), new Date().getMonth(), day);
+            document.querySelectorAll('.calendar-day').forEach(el => {
+                el.classList.remove('selected');
+                if (el.innerText == day && !el.classList.contains('disabled')) {
+                    el.classList.add('selected');
+                }
+            });
+            loadTimeSlots();
+            showToast('Date selected!', 'success');
+        }
+        
+        function loadTimeSlots() {
+            const slots = ['10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM', '7:00 PM'];
+            const container = document.getElementById('time-slots');
+            if (container) {
+                container.innerHTML = slots.map(slot => `
+                    <div class="time-slot available" onclick="selectTime('${slot}')">${slot}</div>
+                `).join('');
+            }
+        }
+        
+        function selectTime(time) {
+            selectedTime = time;
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+                if (slot.innerText === time) slot.classList.add('selected');
+            });
+            showToast('Time selected!', 'success');
+        }
+        
+        function updateSummary() {
+            const summary = document.getElementById('booking-summary');
+            if (!summary || !selectedService) return;
+            
+            const advanceAmount = selectedService.price * 0.3;
+            summary.innerHTML = `
+                <h4>Booking Summary</h4>
+                <p><strong>Service:</strong> ${selectedService.name}</p>
+                <p><strong>Staff:</strong> ${selectedStaff?.name || 'Not selected'}</p>
+                <p><strong>Date:</strong> ${selectedDate?.toLocaleDateString() || 'Not selected'}</p>
+                <p><strong>Time:</strong> ${selectedTime || 'Not selected'}</p>
+                <hr>
+                <p><strong>Total Amount:</strong> ₹${selectedService.price}</p>
+                <p><strong>Advance (30%):</strong> ₹${advanceAmount}</p>
+                <p><strong>Balance at Salon:</strong> ₹${selectedService.price - advanceAmount}</p>
+            `;
+            
+            const termsCheckbox = document.getElementById('terms');
+            const payBtn = document.getElementById('pay-btn');
+            if (termsCheckbox && payBtn) {
+                termsCheckbox.onchange = () => payBtn.disabled = !termsCheckbox.checked;
+            }
+        }
+        
+        function validateStep() {
+            switch(currentStep) {
+                case 1:
+                    if (!selectedService) {
+                        showToast('Please select a service', 'error');
+                        return false;
+                    }
+                    break;
+                case 2:
+                    if (!selectedStaff) {
+                        showToast('Please select a stylist', 'error');
+                        return false;
+                    }
+                    break;
+                case 3:
+                    if (!selectedDate) {
+                        showToast('Please select a date', 'error');
+                        return false;
+                    }
+                    break;
+                case 4:
+                    if (!selectedTime) {
+                        showToast('Please select a time', 'error');
+                        return false;
+                    }
+                    break;
+                case 5:
+                    const name = document.getElementById('customer-name')?.value;
+                    const email = document.getElementById('customer-email')?.value;
+                    const phone = document.getElementById('customer-phone')?.value;
+                    if (!name || !email || !phone) {
+                        showToast('Please fill all details', 'error');
+                        return false;
+                    }
+                    updateSummary();
+                    break;
+                case 6:
+                    const terms = document.getElementById('terms')?.checked;
+                    if (!terms) {
+                        showToast('Please accept terms and conditions', 'error');
+                        return false;
+                    }
+                    break;
+            }
+            return true;
+        }
+        
+        function nextStep() {
+            if (!validateStep()) return;
+            
+            if (currentStep < 6) {
+                currentStep++;
+                updateSteps();
+            } else {
+                processPayment();
+            }
+        }
+        
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateSteps();
+            }
+        }
+        
+        function updateSteps() {
+            document.querySelectorAll('.step').forEach((step, index) => {
+                const stepNum = index + 1;
+                if (stepNum === currentStep) {
+                    step.classList.add('active');
+                    step.classList.remove('completed');
+                } else if (stepNum < currentStep) {
+                    step.classList.add('completed');
+                    step.classList.remove('active');
+                } else {
+                    step.classList.remove('active', 'completed');
+                }
+            });
+            
+            document.querySelectorAll('.step-panel').forEach((panel, index) => {
+                if (index + 1 === currentStep) {
+                    panel.classList.add('active');
+                } else {
+                    panel.classList.remove('active');
+                }
+            });
+            
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            if (prevBtn) prevBtn.style.display = currentStep === 1 ? 'none' : 'inline-block';
+            if (nextBtn) nextBtn.textContent = currentStep === 6 ? 'Confirm & Pay' : 'Next';
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function processPayment() {
+            if (!selectedService) return;
+            const advanceAmount = selectedService.price * 0.3;
+            if (confirm(`Proceed to pay ₹${advanceAmount} advance?`)) {
+                showToast('Redirecting to payment...', 'info');
+                setTimeout(() => {
+                    alert('Booking confirmed! (Demo)');
+                    window.location.href = 'history.html';
+                }, 2000);
+            }
+        }
+        
+        function setupEventListeners() {
+            document.getElementById('next-btn').onclick = nextStep;
+            document.getElementById('prev-btn').onclick = prevStep;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.onclick = () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    filterServices(btn.dataset.category);
+                };
+            });
+        }
+        
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<span>${message}</span>`;
+            toast.style.cssText = `position:fixed;bottom:20px;right:20px;background:${type === 'success' ? '#4CAF50' : '#f44336'};color:white;padding:12px 20px;border-radius:8px;z-index:9999;`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        
+        // Initialize
+        initBooking();
+        
+        // Make functions global for onclick
+        window.selectService = selectService;
+        window.selectStaff = selectStaff;
+        window.selectDate = selectDate;
+        window.selectTime = selectTime;
+    </script>
 </body>
 </html>
