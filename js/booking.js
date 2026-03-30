@@ -1,4 +1,4 @@
-// frontend/js/booking.js - Complete with Real Razorpay Payment
+// frontend/js/booking.js - Complete Booking Manager with Real Razorpay Payment
 
 class BookingManager {
     constructor() {
@@ -10,6 +10,8 @@ class BookingManager {
             time: null,
             customer: null
         };
+        this.services = [];
+        this.staff = [];
         this.apiUrl = 'https://beauty-bar-backend.onrender.com/api';
         this.init();
     }
@@ -36,6 +38,10 @@ class BookingManager {
         }
     }
 
+    // ============================================
+    // SERVICE LOADING
+    // ============================================
+
     async loadServices() {
         const container = document.getElementById('services-list');
         if (!container) return;
@@ -47,7 +53,9 @@ class BookingManager {
             if (result.success && result.services) {
                 this.services = result.services;
                 this.displayServices(this.services);
+                console.log(`Loaded ${this.services.length} services from backend`);
             } else {
+                console.log('Backend fetch failed, using fallback services');
                 this.loadFallbackServices();
             }
         } catch (error) {
@@ -111,6 +119,10 @@ class BookingManager {
         this.showToast('Service selected!', 'success');
     }
 
+    // ============================================
+    // STAFF LOADING
+    // ============================================
+
     async loadStaff() {
         const container = document.getElementById('staff-list');
         if (!container) return;
@@ -122,6 +134,7 @@ class BookingManager {
             if (result.success && result.staff) {
                 this.staff = result.staff;
                 this.displayStaff(this.staff);
+                console.log(`Loaded ${this.staff.length} staff from backend`);
             } else {
                 this.loadFallbackStaff();
             }
@@ -168,6 +181,10 @@ class BookingManager {
         
         this.showToast('Stylist selected!', 'success');
     }
+
+    // ============================================
+    // DATE & TIME SELECTION
+    // ============================================
 
     loadCalendar() {
         const calendar = document.getElementById('calendar');
@@ -244,30 +261,9 @@ class BookingManager {
         this.showToast('Time selected!', 'success');
     }
 
-    updateSummary() {
-        const summary = document.getElementById('booking-summary');
-        if (!summary || !this.bookingData.service) return;
-        
-        const advanceAmount = this.bookingData.service.price * 0.3;
-        
-        summary.innerHTML = `
-            <h4>Booking Summary</h4>
-            <p><strong>Service:</strong> ${this.bookingData.service.name}</p>
-            <p><strong>Staff:</strong> ${this.bookingData.staff?.name || 'Not selected'}</p>
-            <p><strong>Date:</strong> ${this.bookingData.date?.toLocaleDateString() || 'Not selected'}</p>
-            <p><strong>Time:</strong> ${this.bookingData.time || 'Not selected'}</p>
-            <hr>
-            <p><strong>Total Amount:</strong> ₹${this.bookingData.service.price}</p>
-            <p><strong>Advance (30%):</strong> ₹${advanceAmount}</p>
-            <p><strong>Balance at Salon:</strong> ₹${this.bookingData.service.price - advanceAmount}</p>
-        `;
-        
-        const termsCheckbox = document.getElementById('terms');
-        const payBtn = document.getElementById('pay-btn');
-        if (termsCheckbox && payBtn) {
-            termsCheckbox.onchange = () => payBtn.disabled = !termsCheckbox.checked;
-        }
-    }
+    // ============================================
+    // PAYMENT INTEGRATION
+    // ============================================
 
     async createRazorpayOrder(amount) {
         try {
@@ -292,6 +288,7 @@ class BookingManager {
             
             const data = await response.json();
             if (data.success) {
+                console.log('Order created:', data.orderId);
                 return data;
             } else {
                 this.showToast('Failed to create order', 'error');
@@ -324,21 +321,28 @@ class BookingManager {
             
             if (!orderData) return;
             
-            // Initialize Razorpay
+            // ============================================
+            // REPLACE WITH YOUR ACTUAL RAZORPAY KEY ID
+            // ============================================
+            const RAZORPAY_KEY_ID = 'rzp_test_SXUMezQzqvDdPL';
+            // Example: 'rzp_live_abc123def456'
+            // ============================================
+            
             const options = {
-                key: 'YOUR_RAZORPAY_KEY_ID', // Replace with your actual Razorpay Key ID
+                key: RAZORPAY_KEY_ID,
                 amount: orderData.amount,
                 currency: orderData.currency,
                 name: 'Beauty Bar Salon',
                 description: `${this.bookingData.service.name} - 30% Advance`,
                 order_id: orderData.orderId,
                 handler: async (response) => {
+                    console.log('Payment response:', response);
                     await this.verifyPayment(response);
                 },
                 prefill: {
-                    name: this.bookingData.customer?.name || '',
-                    email: this.bookingData.customer?.email || '',
-                    contact: this.bookingData.customer?.phone || ''
+                    name: this.bookingData.customer?.name || document.getElementById('customer-name')?.value || '',
+                    email: this.bookingData.customer?.email || document.getElementById('customer-email')?.value || '',
+                    contact: this.bookingData.customer?.phone || document.getElementById('customer-phone')?.value || ''
                 },
                 theme: {
                     color: '#B76E79'
@@ -363,20 +367,14 @@ class BookingManager {
         try {
             const token = localStorage.getItem('token');
             
-            const bookingPayload = {
-                serviceId: this.bookingData.service.id,
-                staffId: this.bookingData.staff?.id,
-                date: this.bookingData.date?.toISOString().split('T')[0],
-                time: this.bookingData.time,
-                totalAmount: this.bookingData.service.price,
-                advanceAmount: this.bookingData.service.price * 0.3,
+            const verificationData = {
+                razorpay_order_id: paymentResponse.razorpay_order_id,
+                razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                razorpay_signature: paymentResponse.razorpay_signature,
+                bookingId: Date.now().toString(),
                 customerName: document.getElementById('customer-name')?.value,
                 customerEmail: document.getElementById('customer-email')?.value,
-                customerPhone: document.getElementById('customer-phone')?.value,
-                notes: document.getElementById('customer-notes')?.value,
-                razorpayOrderId: paymentResponse.razorpay_order_id,
-                razorpayPaymentId: paymentResponse.razorpay_payment_id,
-                razorpaySignature: paymentResponse.razorpay_signature
+                customerPhone: document.getElementById('customer-phone')?.value
             };
             
             const response = await fetch(`${this.apiUrl}/payments/verify`, {
@@ -385,16 +383,29 @@ class BookingManager {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({
-                    ...paymentResponse,
-                    bookingId: Date.now().toString()
-                })
+                body: JSON.stringify(verificationData)
             });
             
             const result = await response.json();
             
             if (result.success) {
                 // Save booking
+                const bookingPayload = {
+                    serviceId: this.bookingData.service.id,
+                    staffId: this.bookingData.staff?.id,
+                    date: this.bookingData.date?.toISOString().split('T')[0],
+                    time: this.bookingData.time,
+                    totalAmount: this.bookingData.service.price,
+                    advanceAmount: this.bookingData.service.price * 0.3,
+                    customerName: document.getElementById('customer-name')?.value,
+                    customerEmail: document.getElementById('customer-email')?.value,
+                    customerPhone: document.getElementById('customer-phone')?.value,
+                    notes: document.getElementById('customer-notes')?.value,
+                    razorpayOrderId: paymentResponse.razorpay_order_id,
+                    razorpayPaymentId: paymentResponse.razorpay_payment_id,
+                    razorpaySignature: paymentResponse.razorpay_signature
+                };
+                
                 await this.saveBooking(bookingPayload);
                 this.showToast('Payment successful! Booking confirmed.', 'success');
                 setTimeout(() => {
@@ -423,22 +434,61 @@ class BookingManager {
             });
             
             const result = await response.json();
+            console.log('Booking saved:', result);
             return result;
         } catch (error) {
             console.error('Save booking error:', error);
         }
     }
 
-    autoFillUserDetails() {
+    // ============================================
+    // CUSTOMER DETAILS
+    // ============================================
+
+     autoFillUserDetails() {
         const user = window.auth?.getUser();
         if (user) {
             const nameInput = document.getElementById('customer-name');
             const emailInput = document.getElementById('customer-email');
+            const phoneInput = document.getElementById('customer-phone');
             
             if (nameInput) nameInput.value = user.name;
             if (emailInput) emailInput.value = user.email;
+            if (phoneInput && user.phone) phoneInput.value = user.phone;
         }
     }
+
+    updateSummary() {
+        const summary = document.getElementById('booking-summary');
+        if (!summary || !this.bookingData.service) return;
+        
+        const advanceAmount = this.bookingData.service.price * 0.3;
+        
+        summary.innerHTML = `
+            <h4>Booking Summary</h4>
+            <p><strong>Service:</strong> ${this.bookingData.service.name}</p>
+            <p><strong>Duration:</strong> ${this.bookingData.service.duration} mins</p>
+            <p><strong>Staff:</strong> ${this.bookingData.staff?.name || 'Not selected'}</p>
+            <p><strong>Date:</strong> ${this.bookingData.date?.toLocaleDateString() || 'Not selected'}</p>
+            <p><strong>Time:</strong> ${this.bookingData.time || 'Not selected'}</p>
+            <hr>
+            <p><strong>Total Amount:</strong> ₹${this.bookingData.service.price}</p>
+            <p><strong>Advance (30%):</strong> ₹${advanceAmount}</p>
+            <p><strong>Balance at Salon:</strong> ₹${this.bookingData.service.price - advanceAmount}</p>
+        `;
+        
+        const termsCheckbox = document.getElementById('terms');
+        const payBtn = document.getElementById('pay-btn');
+        if (termsCheckbox && payBtn) {
+            termsCheckbox.onchange = () => payBtn.disabled = !termsCheckbox.checked;
+            // Initial state
+            payBtn.disabled = !termsCheckbox.checked;
+        }
+    }
+
+    // ============================================
+    // STEP NAVIGATION
+    // ============================================
 
     validateStep() {
         switch(this.currentStep) {
@@ -474,7 +524,12 @@ class BookingManager {
                     this.showToast('Please fill all details', 'error');
                     return false;
                 }
-                this.bookingData.customer = { name, email, phone, notes: document.getElementById('customer-notes')?.value };
+                this.bookingData.customer = { 
+                    name, 
+                    email, 
+                    phone, 
+                    notes: document.getElementById('customer-notes')?.value 
+                };
                 this.updateSummary();
                 break;
             case 6:
@@ -536,20 +591,9 @@ class BookingManager {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    setupEventListeners() {
-        document.getElementById('next-btn').onclick = () => this.nextStep();
-        document.getElementById('prev-btn').onclick = () => this.prevStep();
-        
-        // Category filters
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.onclick = () => {
-                const category = btn.dataset.category;
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                this.filterServices(category);
-            };
-        });
-    }
+    // ============================================
+    // CATEGORY FILTERS
+    // ============================================
 
     filterServices(category) {
         const container = document.getElementById('services-list');
@@ -562,6 +606,92 @@ class BookingManager {
         this.displayServices(filtered);
     }
 
+    // ============================================
+    // EVENT LISTENERS
+    // ============================================
+
+    setupEventListeners() {
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        
+        if (nextBtn) nextBtn.onclick = () => this.nextStep();
+        if (prevBtn) prevBtn.onclick = () => this.prevStep();
+        
+        // Category filters
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.onclick = () => {
+                const category = btn.dataset.category;
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.filterServices(category);
+            };
+        });
+    }
+
+    // ============================================
+    // TOAST NOTIFICATION
+    // ============================================
+
     showToast(message, type = 'info') {
+        // Remove existing toast
+        const existingToast = document.querySelector('.booking-toast');
+        if (existingToast) existingToast.remove();
+        
         const toast = document.createElement('div');
-       
+        toast.className = `booking-toast toast-${type}`;
+        toast.innerHTML = `
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+            <span>${message}</span>
+        `;
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s ease;
+        `;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+}
+
+// ============================================
+// INITIALIZATION
+// ============================================
+
+let bookingManager;
+document.addEventListener('DOMContentLoaded', () => {
+    // Add required CSS animations if not present
+    if (!document.querySelector('#booking-toast-styles')) {
+        const style = document.createElement('style');
+        style.id = 'booking-toast-styles';
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    bookingManager = new BookingManager();
+    window.bookingManager = bookingManager;
+});
