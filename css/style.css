@@ -857,10 +857,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .instagram-view-more {
-    text-align: center;
-}
-
-/* ============================================
+    text-align: centefooter-newsletter====================================
    NEWSLETTER
    ============================================ */
 .newsletter {
@@ -1098,68 +1095,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Newsletter Section */
-.footer-newsletter {
-    padding: 2rem 0;
-    margin-bottom: 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    text-align: center;
-}
-
-.footer-newsletter h4 {
-    font-family: var(--font-heading);
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-    color: var(--secondary);
-}
-
-.footer-newsletter p {
-    color: #aaa;
-    font-size: 0.9rem;
-    margin-bottom: 1.2rem;
-}
-
-.footer-newsletter-form {
-    display: flex;
-    max-width: 500px;
-    margin: 0 auto;
-    gap: 0.5rem;
-}
-
-.footer-newsletter-form input {
-    flex: 1;
-    padding: 12px 18px;
-    border: none;
-    border-radius: 50px;
-    font-size: 0.9rem;
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--white);
-}
-
-.footer-newsletter-form input::placeholder {
-    color: #888;
-}
-
-.footer-newsletter-form input:focus {
-    outline: none;
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.footer-newsletter-form button {
-    padding: 12px 24px;
-    background: var(--gradient);
-    color: var(--white);
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: var(--transition);
-}
-
-.footer-newsletter-form button:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-hover);
-}
 
 /* Bottom Bar */
 .footer-bottom {
@@ -1196,53 +1131,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Responsive Footer */
-@media (max-width: 768px) {
-    .footer {
-        padding: 3rem 5% 0;
-    }
-    
-    .footer-grid {
-        gap: 1.5rem;
-    }
-    
-    .footer-newsletter-form {
-        flex-direction: column;
-    }
-    
-    .footer-newsletter-form button {
-        width: 100%;
-    }
-    
-    .footer-bottom-content {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .footer-bottom-links {
-        justify-content: center;
-    }
-    
-    .footer-contact li {
-        flex-direction: column;
-        text-align: center;
-        gap: 0.5rem;
-    }
-    
-    .footer-contact li i {
-        margin: 0 auto;
-    }
-    
-    .footer-title::after {
-        left: 50%;
-        transform: translateX(-50%);
-    }
-    
-    .footer-section {
-        text-align: center;
-    }
-    
-    .footer-social {
-        justify-content: center;
+
    padding ============================================
    FLOATING WHATSAPP
    ============================================ */
