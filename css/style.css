@@ -1100,7 +1100,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .footer-contact li a,
 .footer-contact li p {
-    color: #ccc;
+    color: #B76E79;
     text-decoration: none;
     font-size: 0.9rem;
 }
@@ -1123,11 +1123,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .footer-hours li span:first-child {
-    color: #aaa;
+    color: #B76E79;
 }
 
 .footer-hours li span:last-child {
-    color: #ccc;
+    color: #9e5a64;
     font-weight: 500;
 }
 
