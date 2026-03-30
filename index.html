@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Beauty Bar Salon - Luxury Beauty Services</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Experience luxury salon services at Beauty Bar Salon. Book appointments for bridal makeup, hair styling, facials, and more. Get 30% off on first visit!">
+    <meta name="keywords" content="beauty salon, bridal makeup, hair styling, facial treatment, nail art, beauty bar">
+    <meta name="author" content="Beauty Bar Salon">
+    <meta name="theme-color" content="#B76E79">
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Beauty Bar">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512x512.png">
+    <link rel="shortcut icon" href="/icons/favicon.ico" type="image/x-icon">
+    
+    <!-- Fonts & Stylesheets -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- ============================================
+         NAVBAR SECTION
+    ============================================ -->
+    <nav class="navbar">
+        <!-- Hamburger Menu - LEFT SIDE -->
+        <div class="hamburger" id="hamburgerMenu">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        
+        <!-- Logo - CENTER -->
+        <a href="index.html" class="logo">Beauty Bar ✨</a>
+        
+        <!-- Mobile Login Button - RIGHT SIDE -->
+        <div class="login-mobile">
+            <button class="btn btn-outline" id="loginBtnMobile">Login</button>
+        </div>
+        
+        <!-- Navigation Links -->
+        <div class="nav-links" id="navLinks">
+            <a href="index.html">Home</a>
+            <a href="#services">Services</a>
+            <a href="#gallery">Gallery</a>
+            <a href="#team">Our Team</a>
+            <a href="booking.html">Book Now</a>
+            <a href="gift-card.html">Gift Cards</a>
+            <a href="history.html">My Bookings</a>
+            
+            <div class="social-nav">
+                <a href="#" class="social-icon" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="social-icon" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            </div>
+            
+            <button class="btn btn-outline" id="loginBtn">Login</button>
+        </div>
+    </nav>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/919876543210?text=Hello%20Beauty%20Bar%20Salon%2C%20I%20want%20to%20book%20an%20appointment" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Install App Button (PWA) -->
+    <button id="installBtn" class="install-btn">
+        <i class="fas fa-download"></i> Install App
+    </button>
+
+    <!-- ============================================
+         HERO SECTION
+    ============================================ -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Where Beauty <span>Meets Luxury</span></h1>
+            <p>Experience premium salon services in an elegant atmosphere. Book your appointment today and get 30% off on your first visit!</p>
+            <div class="hero-buttons">
+                <a href="booking.html" class="btn btn-primary">Book Appointment</a>
+                <a href="#gallery" class="btn btn-outline">View Gallery</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=400&fit=crop" alt="Beauty Bar Salon" loading="lazy">
+        </div>
+    </section>
+
+    <!-- ============================================
+         STATS COUNTER SECTION
+    ============================================ -->
+    <section class="love-counter">
+        <div class="counter-grid">
+            <div class="counter-item">
+                <div class="counter-number" id="happyClients">15,000+</div>
+                <div class="counter-label">Happy Clients</div>
+            </div>
+            <div class="counter-item">
+                <div class="counter-number" id="servicesDone">45,000+</div>
+                <div class="counter-label">Services Done</div>
+            </div>
+            <div class="counter-item">
+                <div class="counter-number" id="expertStylists">25+</div>
+                <div class="counter-label">Expert Stylists</div>
+            </div>
+            <div class="counter-item">
+                <div class="counter-number" id="awardsWon">12</div>
+                <div class="counter-label">Awards Won</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SERVICES SECTION
+    ============================================ -->
+    <section class="services" id="services">
+        <h2 class="section-title">Our Premium Services</h2>
+        <div class="services-grid" id="services-grid">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i> Loading services...
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         GALLERY SECTION
+    ============================================ -->
+    <section class="gallery-section" id="gallery">
+        <h2 class="section-title">Our Beautiful Studio</h2>
+        <p class="section-subtitle">Take a virtual tour of our luxury salon</p>
+        <div class="gallery-grid" id="gallery-grid">
+            <!-- Gallery will be loaded dynamically -->
+        </div>
+    </section>
+
+    <!-- ============================================
+         VIDEO TOUR SECTION
+    ============================================ -->
+    <!-- Video Gallery Section -->
+<section class="video-gallery-section">
+    <h2 class="section-title">Watch Our Salon Videos</h2>
+    <p class="section-subtitle">Explore our salon tours and transformations</p>
+    
+    <!-- Video Slider Container -->
+    <div class="video-slider-container">
+        <button class="slider-nav prev" onclick="prevVideo()">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        
+        <div class="video-slider" id="videoSlider">
+            <!-- Video 1 - Main Tour -->
+            <div class="video-slide active">
+                <div class="video-wrapper">
+                    <video id="video1" controls playsinline preload="metadata" poster="assets/images/video-poster-1.jpg">
+                        <source src="assets/videos/tour.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="video-play-overlay" onclick="playVideo('video1')">
+                        <div class="play-btn">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <h3>Main Salon Tour</h3>
+                    <p>Experience our luxurious main salon area</p>
+                    <div class="video-meta">
+                        <span><i class="fas fa-clock"></i> 0:45</span>
+                        <span><i class="fas fa-eye"></i> Salon Tour</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Video 2 - Tour 1 -->
+            <div class="video-slide">
+                <div class="video-wrapper">
+                    <video id="video2" controls playsinline preload="metadata" poster="assets/images/video-poster-2.jpg">
+                        <source src="assets/videos/tour1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="video-play-overlay" onclick="playVideo('video2')">
+                        <div class="play-btn">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <h3>Bridal Makeup Studio</h3>
+                    <p>Watch our expert bridal makeup artists at work</p>
+                    <div class="video-meta">
+                        <span><i class="fas fa-clock"></i> 0:30</span>
+                        <span><i class="fas fa-brush"></i> Bridal Special</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Video 3 - Tour 2 -->
+            <div class="video-slide">
+                <div class="video-wrapper">
+                    <video id="video3" controls playsinline preload="metadata" poster="assets/images/video-poster-3.jpg">
+                        <source src="assets/videos/tour2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="video-play-overlay" onclick="playVideo('video3')">
+                        <div class="play-btn">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <h3>Hair & Nail Studio</h3>
+                    <p>Professional hair styling and nail art services</p>
+                    <div class="video-meta">
+                        <span><i class="fas fa-clock"></i> 0:35</span>
+                        <span><i class="fas fa-cut"></i> Hair & Nails</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <button class="slider-nav next" onclick="nextVideo()">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+    
+    <!-- Slider Indicators -->
+    <div class="slider-indicators" id="videoIndicators">
+        <span class="indicator active" onclick="goToSlide(0)"></span>
+        <span class="indicator" onclick="goToSlide(1)"></span>
+        <span class="indicator" onclick="goToSlide(2)"></span>
+    </div>
+    
+    <!-- Video Controls -->
+    
+
+<!-- Alternative: Grid View for Videos (Optional) -->
+<section class="video-grid-section" style="display: none;">
+    <h2 class="section-title">All Videos</h2>
+    <div class="video-grid">
+        <div class="video-card">
+            <video controls preload="metadata">
+                <source src="assets/tour.mp4" type="video/mp4">
+            </video>
+            <h4>Main Salon Tour</h4>
+            <p>Experience our luxurious main salon area</p>
+        </div>
+        <div class="video-card">
+            <video controls preload="metadata">
+                <source src="assets/tour1.mp4" type="video/mp4">
+            </video>
+            <h4>Bridal Makeup Studio</h4>
+            <p>Watch our expert bridal makeup artists at work</p>
+        </div>
+        <div class="video-card">
+            <video controls preload="metadata">
+                <source src="assets/tour2.mp4" type="video/mp4">
+            </video>
+            <h4>Hair & Nail Studio</h4>
+            <p>Professional hair styling and nail art services</p>
+        </div>
+    </div>
+  </section>
+
+    <!-- ============================================
+         TEAM SECTION
+    ============================================ -->
+    <section class="team-section" id="team">
+        <h2 class="section-title">Meet Our Expert Stylists</h2>
+        <p class="section-subtitle">Award-winning professionals dedicated to your beauty</p>
+        <div class="team-grid" id="team-grid">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i> Loading team...
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         TESTIMONIALS SECTION
+    ============================================ -->
+    <section class="testimonials">
+        <h2 class="section-title">What Our Clients Say</h2>
+        <div class="testimonials-slider" id="testimonials-slider">
+            <!-- Testimonials will be loaded dynamically -->
+        </div>
+    </section>
+
+    <!-- ============================================
+         INSTAGRAM FEED
+    ============================================ -->
+    <section class="instagram-feed">
+        <h2 class="section-title">Follow Us on Instagram</h2>
+        <p class="section-subtitle">@beautybarsalon</p>
+        <div class="instagram-grid" id="instagram-feed">
+            <!-- Instagram feed will be loaded dynamically -->
+        </div>
+        <div class="instagram-view-more">
+            <a href="https://instagram.com/beautybarsalon" target="_blank" class="btn btn-outline">
+                <i class="fab fa-instagram"></i> View More on Instagram
+            </a>
+        </div>
+    </section>
+
+    <!-- ============================================
+         NEWSLETTER SECTION
+    ============================================ -->
+    <section class="newsletter">
+        <div class="newsletter-box">
+            <h3>Get Exclusive Offers</h3>
+            <p>Subscribe to receive special discounts and beauty tips</p>
+            <form class="newsletter-form" onsubmit="return false;">
+                <input type="email" class="newsletter-input" placeholder="Your email address" required>
+                <button type="submit" class="btn btn-primary">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- ============================================
+         FOOTER
+    ============================================ -->
+    <footer>
+    <div class="footer-container">
+        <div class="footer-grid">
+            <!-- About Section -->
+            <div class="footer-section">
+                <h3 class="footer-title">Beauty Bar ✨</h3>
+                <p class="footer-description">Experience luxury beauty services in the heart of the city. Our expert stylists are here to make you feel beautiful and confident.</p>
+                <div class="footer-social">
+                    <a href="#" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-link" target="_blank"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="social-link" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-link" target="_blank"><i class="fab fa-pinterest"></i></a>
+                    <a href="#" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+
+            <!-- Quick Links Section -->
+            <div class="footer-section">
+                <h3 class="footer-title">Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#services">Services</a></li>
+                    <li><a href="index.html#gallery">Gallery</a></li>
+                    <li><a href="index.html#team">Our Team</a></li>
+                    <li><a href="booking.html">Book Appointment</a></li>
+                    <li><a href="gift-card.html">Gift Cards</a></li>
+                    <li><a href="history.html">My Bookings</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact Info Section -->
+            <div class="footer-section">
+                <h3 class="footer-title">Contact Info</h3>
+                <ul class="footer-contact">
+                    <li>
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <span>Phone Number</span>
+                            <a href="tel:+917052206406">+91 70522 06406</a>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <span>Email Address</span>
+                            <a href="mailto:info@beautybarsalon.com">info@beautybarsalon.com</a>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <span>Our Location</span>
+                            <p>Akbarpur, Uttar Pradesh - 224132</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Working Hours Section -->
+            <div class="footer-section">
+                <h3 class="footer-title">Working Hours</h3>
+                <ul class="footer-hours">
+                    <li>
+                        <span>Monday - Friday:</span>
+                        <span>10:00 AM - 8:00 PM</span>
+                    </li>
+                    <li>
+                        <span>Saturday:</span>
+                        <span>10:00 AM - 6:00 PM</span>
+                    </li>
+                    <li>
+                        <span>Sunday:</span>
+                        <span>11:00 AM - 5:00 PM</span>
+                    </li>
+                </ul>
+                <div class="footer-emergency">
+                    <i class="fas fa-ambulance"></i>
+                    <div>
+                        <span>Emergency Contact</span>
+                        <a href="tel:+917052206406">+91 70522 06406</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Bottom Bar -->
+        <div class="footer-bottom">
+            <div class="footer-bottom-content">
+                <p>&copy; 2026 Beauty Bar Salon. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms & Conditions</a>
+                    <a href="#">Refund Policy</a>
+                </div>
+            </div>
+        </div>
+    </div>
+  </footer>
+    <!-- ============================================
+         LOGIN MODAL
+    ============================================ -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2 class="modal-title">Welcome to Beauty Bar ✨</h2>
+            <div id="googleSignInButton" class="google-signin-container"></div>
+            <div class="divider">
+                <span>or</span>
+            </div>
+            <div class="google-login" id="googleLogin">
+                <img src="https://www.google.com/favicon.ico" alt="Google">
+                <span>Continue with Google</span>
+            </div>
+            <p class="modal-note">Only Gmail accounts are accepted for booking</p>
+        </div>
+    </div>
+   <!-- ============================================
+         SCRIPTS (Load in correct order)
+    ============================================ -->
+    <script src="js/data-service.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/gallery.js"></script>
+    <script src="js/booking.js"></script>
+</body>
+</html>
