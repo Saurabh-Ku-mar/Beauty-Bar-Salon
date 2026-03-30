@@ -994,7 +994,7 @@ h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     font-size: 1.3rem;
     margin-bottom: 1.2rem;
-    color: var(--secondary);
+    color: black solid;
     position: relative;
     padding-bottom: 0.5rem;
 }
@@ -1011,7 +1011,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .footer-description {
-    color: #aaa;
+    color: #888;
     line-height: 1.6;
     margin-bottom: 1.2rem;
 }
@@ -1052,7 +1052,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .footer-links a {
-    color: #aaa;
+    color: #B76E79;
     text-decoration: none;
     transition: var(--transition);
     display: inline-block;
