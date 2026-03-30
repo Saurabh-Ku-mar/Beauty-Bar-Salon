@@ -229,25 +229,44 @@ h1, h2, h3, h4, h5, h6 {
     transform: translateY(-2px);
 }
 
-/* ============================================
-   HERO SECTION
-   ============================================ */
+/* Hero Section - Background Image Style */
 .hero {
     min-height: 85vh;
     display: flex;
     align-items: center;
+    justify-content: center;
+    text-align: center;
     padding: 2rem 5%;
-    gap: 3rem;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Dark overlay for better text readability */
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
 }
 
 .hero-content {
-    flex: 1;
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin: 0 auto;
+    color: var(--white);
 }
 
 .hero-content h1 {
     font-size: 3.5rem;
     margin-bottom: 1.5rem;
-    line-height: 1.2;
+    color: var(--white);
 }
 
 .hero-content h1 span {
@@ -255,28 +274,72 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .hero-content p {
-    font-size: 1.1rem;
-    color: var(--gray);
+    font-size: 1.2rem;
     margin-bottom: 2rem;
-    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .hero-buttons {
     display: flex;
     gap: 1rem;
+    justify-content: center;
     flex-wrap: wrap;
 }
 
-.hero-image {
-    flex: 1;
+/* Button styles for hero (white text on dark background) */
+.hero .btn-primary {
+    background: var(--gradient);
+    color: var(--white);
 }
 
-.hero-image img {
-    width: 100%;
-    border-radius: var(--border-radius-lg);
-    object-fit: cover;
+.hero .btn-outline {
+    background: transparent;
+    border: 2px solid var(--white);
+    color: var(--white);
 }
 
+.hero .btn-outline:hover {
+    background: var(--white);
+    color: var(--primary);
+    border-color: var(--white);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero {
+        min-height: 70vh;
+        padding: 3rem 5%;
+    }
+    
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+    
+    .hero-content p {
+        font-size: 1rem;
+    }
+    
+    .hero-buttons .btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-content h1 {
+        font-size: 1.6rem;
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .hero-buttons .btn {
+        width: 100%;
+        max-width: 250px;
+    }
+}
 /* ============================================
    COUNTER SECTION
    ============================================ */
