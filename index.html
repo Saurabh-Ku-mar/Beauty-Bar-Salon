@@ -419,21 +419,78 @@
         </div>
     </div>
   </footer>
-    <!-- ============================================
-         LOGIN MODAL
-    ============================================ -->
-    <div class="modal" id="loginModal">
-        <div class="modal-content">
-            <span class="close-modal" id="closeModal">&times;</span>
-            <h2 class="modal-title">Welcome to Beauty Bar ✨</h2>
+<!-- Login Modal -->
+<div class="modal" id="loginModal">
+    <div class="modal-content">
+        <span class="close-modal" id="closeModal">&times;</span>
+        
+        <!-- Tab Navigation -->
+        <div class="login-tabs">
+            <button class="login-tab active" data-tab="email">Email Login</button>
+            <button class="login-tab" data-tab="mobile">Mobile Login</button>
+            <button class="login-tab" data-tab="google">Google Login</button>
+        </div>
+        
+        <!-- Email/Password Login Form -->
+        <div class="login-panel active" id="email-panel">
+            <h3>Login with Email</h3>
+            <div class="form-group">
+                <input type="email" id="login-email" placeholder="Email address" class="form-control">
+            </div>
+            <div class="form-group">
+                <input type="password" id="login-password" placeholder="Password" class="form-control">
+            </div>
+            <button class="btn btn-primary" id="login-email-btn">Login</button>
+            <p class="switch-mode">New user? <a href="#" id="show-register">Create an account</a></p>
+        </div>
+        
+        <!-- Registration Form (hidden by default) -->
+        <div class="login-panel" id="register-panel" style="display: none;">
+            <h3>Create Account</h3>
+            <div class="form-group">
+                <input type="text" id="register-name" placeholder="Full Name" class="form-control">
+            </div>
+            <div class="form-group">
+                <input type="email" id="register-email" placeholder="Email address" class="form-control">
+            </div>
+            <div class="form-group">
+                <input type="password" id="register-password" placeholder="Password" class="form-control">
+            </div>
+            <div class="form-group">
+                <input type="tel" id="register-mobile" placeholder="Mobile Number (optional)" class="form-control">
+            </div>
+            <button class="btn btn-primary" id="register-btn">Register</button>
+            <p class="switch-mode">Already have an account? <a href="#" id="show-login">Login here</a></p>
+        </div>
+        
+        <!-- Mobile OTP Login Form -->
+        <div class="login-panel" id="mobile-panel" style="display: none;">
+            <h3>Login with Mobile</h3>
+            <div class="form-group">
+                <input type="tel" id="mobile-number" placeholder="Mobile Number" class="form-control">
+            </div>
+            <div class="form-group" id="otp-group" style="display: none;">
+                <input type="text" id="mobile-otp" placeholder="Enter OTP" class="form-control">
+            </div>
+            <button class="btn btn-primary" id="send-otp-btn">Send OTP</button>
+            <button class="btn btn-primary" id="verify-otp-btn" style="display: none;">Verify & Login</button>
+        </div>
+        
+        <!-- Google Login Panel -->
+        <div class="login-panel" id="google-panel" style="display: none;">
             <div id="googleSignInButton" class="google-signin-container"></div>
             <div class="divider">
                 <span>or</span>
             </div>
-            
-            <p class="modal-note">Only Gmail accounts are accepted for booking</p>
+            <div class="google-login" id="googleLogin">
+                <img src="https://www.google.com/favicon.ico" alt="Google">
+                <span>Continue with Google</span>
+            </div>
         </div>
+        
+        <p class="modal-note">Only Gmail accounts are accepted for Google login</p>
     </div>
+</div>
    <!-- ============================================
          SCRIPTS (Load in correct order)
     ============================================ -->
