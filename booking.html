@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - Beauty Bar Salon</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Booking Page Styles */
+        .booking-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .step {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 10px;
+            transition: all 0.3s;
+            opacity: 0.6;
+            cursor: pointer;
+        }
+        
+        .step.active {
+            opacity: 1;
+            background: var(--gradient);
+            color: white;
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .step.completed {
+            opacity: 1;
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .step.active .step-number {
+            background: white;
+            color: var(--primary);
+        }
+        
+        .booking-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .step-panel {
+            display: none;
+        }
+        
+        .step-panel.active {
+            display: block;
+        }
+        
+        .service-card, .staff-card {
+            border: 2px solid #eee;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .service-card.selected, .staff-card.selected {
+            border-color: var(--primary);
+            background: var(--secondary);
+        }
+        
+        .service-card:hover, .staff-card:hover {
+            transform: translateX(5px);
+            border-color: var(--primary);
+        }
+        
+        .staff-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .staff-card img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .time-slot {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .time-slot.available {
+            background: var(--secondary);
+            border-color: var(--primary);
+        }
+        
+        .time-slot.selected {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .booking-summary {
+            background: var(--secondary);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .calendar-day {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .calendar-day.disabled {
+            background: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .calendar-day.selected {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Paytm QR Section */
+        .paytm-section {
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .qr-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        
+        .qr-code {
+            max-width: 250px;
+            margin: 1rem auto;
+            border: 2px solid #eee;
+            border-radius: 20px;
+            padding: 1rem;
+        }
+        
+        .qr-code img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .payment-details {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            text-align: left;
+        }
+        
+        .payment-details p {
+            margin: 0.5rem 0;
+        }
+        
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: var(--secondary);
+        }
+        
+        .screenshot-preview {
+            margin-top: 1rem;
+            max-width: 200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .screenshot-preview img {
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        .payment-status {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        
+        .payment-status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .payment-status.confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        @media (max-width: 768px) {
+            .booking-steps {
+                flex-direction: column;
+            }
+            
+            .step {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .staff-card {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="hamburger" id="hamburgerMenu">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <a href="index.html" class="logo">Beauty Bar ✨</a>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html">Home</a>
+            <a href="index.html#services">Services</a>
+            <a href="index.html#gallery">Gallery</a>
+            <a href="index.html#team">Our Team</a>
+            <a href="booking.html">Book Now</a>
+            <a href="gift-card.html">Gift Cards</a>
+            <a href="history.html">My Bookings</a>
+            <div class="social-nav">
+                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <a href="https://wa.me/917052206406?text=Hello%20Beauty%20Bar%20Salon%2C%20I%20want%20to%20book%20an%20appointment" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <section class="booking-section" style="padding: 4rem 5%;">
+        <h2 class="section-title">Book Your Appointment</h2>
+        <p style="text-align: center; margin-bottom: 2rem;">Complete the steps below to reserve your spot</p>
+
+        <div class="booking-steps">
+            <div class="step active" data-step="1">
+                <div class="step-number">1</div>
+                <div class="step-title">Select Service</div>
+            </div>
+            <div class="step" data-step="2">
+                <div class="step-number">2</div>
+                <div class="step-title">Choose Stylist</div>
+            </div>
+            <div class="step" data-step="3">
+                <div class="step-number">3</div>
+                <div class="step-title">Pick Date</div>
+            </div>
+            <div class="step" data-step="4">
+                <div class="step-number">4</div>
+                <div class="step-title">Select Time</div>
+            </div>
+            <div class="step" data-step="5">
+                <div class="step-number">5</div>
+                <div class="step-title">Your Details</div>
+            </div>
+            <div class="step" data-step="6">
+                <div class="step-number">6</div>
+                <div class="step-title">Payment</div>
+            </div>
+        </div>
+
+        <div class="booking-content">
+            <!-- Step 1: Service Selection -->
+            <div class="step-panel active" id="step1">
+                <h3>Choose Your Service</h3>
+                <div class="service-filter-buttons" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                    <button class="filter-btn active" data-category="all">All</button>
+                    <button class="filter-btn" data-category="Bridal">Bridal</button>
+                    <button class="filter-btn" data-category="Hair">Hair</button>
+                    <button class="filter-btn" data-category="Makeup">Makeup</button>
+                    <button class="filter-btn" data-category="Nails">Nails</button>
+                    <button class="filter-btn" data-category="Skincare">Skincare</button>
+                </div>
+                <div id="services-list" class="services-grid"></div>
+            </div>
+
+            <!-- Step 2: Staff Selection -->
+            <div class="step-panel" id="step2">
+                <h3>Choose Your Stylist</h3>
+                <div id="staff-list"></div>
+            </div>
+
+            <!-- Step 3: Date Selection -->
+            <div class="step-panel" id="step3">
+                <h3>Select Date</h3>
+                <div id="calendar" class="calendar"></div>
+            </div>
+
+            <!-- Step 4: Time Selection -->
+            <div class="step-panel" id="step4">
+                <h3>Select Time Slot</h3>
+                <div id="time-slots" class="time-slots"></div>
+            </div>
+
+            <!-- Step 5: Customer Details -->
+            <div class="step-panel" id="step5">
+                <h3>Your Information</h3>
+                <form id="customer-form">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" class="form-control" id="customer-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" class="form-control" id="customer-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" class="form-control" id="customer-phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Special Requests (Optional)</label>
+                        <textarea class="form-control" id="customer-notes" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Step 6: Payment -->
+            <div class="step-panel" id="step6">
+                <h3>Complete Payment</h3>
+                <div id="booking-summary" class="booking-summary"></div>
+                
+                <div class="paytm-section">
+                    <div class="qr-container">
+                        <h4>Scan & Pay with Paytm</h4>
+                        <div class="qr-code">
+                            <!-- Replace with your actual Paytm QR code image -->
+                            <img src="assets/images/paytm-qr-code.png" alt="Paytm QR Code" id="paytmQR">
+                        </div>
+                        <div class="payment-details">
+                            <p><strong>📱 UPI ID:</strong> <span id="upi-id">your-salon@paytm</span></p>
+                            <p><strong>💰 Amount to Pay:</strong> <span id="payment-amount">₹0</span> (30% Advance)</p>
+                            <p><strong>📝 Note:</strong> Please add your name in payment description</p>
+                        </div>
+                        
+                        <div class="upload-area" id="uploadArea">
+                            <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--primary);"></i>
+                            <p>Click or drag to upload payment screenshot</p>
+                            <input type="file" id="screenshotInput" accept="image/*" style="display: none;">
+                        </div>
+                        
+                        <div id="screenshotPreview" class="screenshot-preview" style="display: none;">
+                            <img id="previewImage" src="" alt="Payment Screenshot">
+                            <button class="btn btn-outline" id="removeScreenshot" style="margin-top: 0.5rem;">Remove</button>
+                        </div>
+                        
+                        <div id="payment-status" class="payment-status pending" style="display: none;">
+                            <i class="fas fa-clock"></i> Payment verification pending
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-outline" id="prev-btn" style="display: none;">Previous</button>
+                <button class="btn btn-primary" id="next-btn">Next</button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3>Beauty Bar Salon</h3>
+                    <p>Experience luxury beauty services in the heart of the city.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p><i class="fas fa-phone"></i> +91 70522 06406</p>
+                    <p><i class="fas fa-envelope"></i> info@beautybarsalon.com</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2026 Beauty Bar Salon. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ============================================
+        // BOOKING MANAGER - Paytm QR Version
+        // ============================================
+        
+        let currentStep = 1;
+        let bookingData = {
+            service: null,
+            staff: null,
+            date: null,
+            time: null,
+            customer: null,
+            paymentScreenshot: null,
+            paymentStatus: 'pending'
+        };
+        
+        let services = [];
+        let staff = [];
+        
+        // Service Data
+        const defaultServices = [
+            { id: 1, name: "Bridal Makeup", category: "Bridal", price: 4999, duration: 120, image: "https://images.pexels.com/photos/3992135/pexels-photo-3992135.jpeg?w=400&h=300&fit=crop", description: "Complete bridal makeup with premium products" },
+            { id: 2, name: "Hair Styling", category: "Hair", price: 1999, duration: 60, image: "https://images.pexels.com/photos/3993449/pexels-photo-3993449.jpeg?w=400&h=300&fit=crop", description: "Professional hair styling for any occasion" },
+            { id: 3, name: "Facial Treatment", category: "Skincare", price: 2499, duration: 75, image: "https://images.pexels.com/photos/3822600/pexels-photo-3822600.jpeg?w=400&h=300&fit=crop", description: "Deep cleansing and hydrating facial" },
+            { id: 4, name: "Nail Art", category: "Nails", price: 999, duration: 45, image: "https://images.pexels.com/photos/3992135/pexels-photo-3992135.jpeg?w=400&h=300&fit=crop", description: "Creative nail designs and care" },
+            { id: 5, name: "Party Makeup", category: "Makeup", price: 2999, duration: 90, image: "https://images.pexels.com/photos/3992135/pexels-photo-3992135.jpeg?w=400&h=300&fit=crop", description: "Glamorous party and event makeup" },
+            { id: 6, name: "Hair Color", category: "Hair", price: 3499, duration: 120, image: "https://images.pexels.com/photos/3993449/pexels-photo-3993449.jpeg?w=400&h=300&fit=crop", description: "Professional hair coloring and highlights" }
+        ];
+        
+        // Staff Data
+        const defaultStaff = [
+            { id: 1, name: "Priya Sharma", position: "Senior Makeup Artist", specialty: "Bridal Makeup", image: "https://images.pexels.com/photos/1494790108777-223fd4f5603d?w=200&h=200&fit=crop", services: [1, 5], rating: 4.9 },
+            { id: 2, name: "Anjali Desai", position: "Senior Hair Stylist", specialty: "Hair Color", image: "https://images.pexels.com/photos/1534528741775-53994a69daeb?w=200&h=200&fit=crop", services: [2, 6], rating: 4.8 },
+            { id: 3, name: "Meera Kapoor", position: "Nail Art Expert", specialty: "Nail Art", image: "https://images.pexels.com/photos/1517365830460-955ce3ccd263?w=200&h=200&fit=crop", services: [4], rating: 4.7 },
+            { id: 4, name: "Riya Mehta", position: "Skincare Specialist", specialty: "Facial", image: "https://images.pexels.com/photos/1438761681033-6461ffad8d80?w=200&h=200&fit=crop", services: [3], rating: 4.9 }
+        ];
+        
+        // Initialize
+        function init() {
+            services = [...defaultServices];
+            staff = [...defaultStaff];
+            
+            displayServices();
+            displayStaff();
+            loadCalendar();
+            setupEventListeners();
+            updateSteps();
+            
+            // Check for selected service from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const serviceId = urlParams.get('service');
+            if (serviceId) {
+                setTimeout(() => selectService(parseInt(serviceId)), 500);
+            }
+        }
+        
+        function displayServices() {
+            const container = document.getElementById('services-list');
+            if (!container) return;
+            
+            container.innerHTML = services.map(service => `
+                <div class="service-card" data-id="${service.id}" onclick="selectService(${service.id})">
+                    <img src="${service.image}" alt="${service.name}" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px;">
+                    <h4 style="margin: 0.5rem 0;">${service.name}</h4>
+                    <p>⏱️ ${service.duration} mins</p>
+                    <p style="color: var(--primary); font-weight: bold;">₹${service.price}</p>
+                    <p style="font-size: 0.8rem; color: #666;">${service.description}</p>
+                </div>
+            `).join('');
+        }
+        
+        function selectService(serviceId) {
+            bookingData.service = services.find(s => s.id === serviceId);
+            
+            document.querySelectorAll('.service-card').forEach(card => {
+                card.classList.remove('selected');
+                if (card.dataset.id == serviceId) card.classList.add('selected');
+            });
+            
+            // Update payment amount
+            if (bookingData.service) {
+                const advanceAmount = bookingData.service.price * 0.3;
+                document.getElementById('payment-amount').innerHTML = `₹${advanceAmount} (30% Advance)`;
+            }
+            
+            showToast('Service selected!', 'success');
+        }
+        
+        function displayStaff() {
+            const container = document.getElementById('staff-list');
+            if (!container) return;
+            
+            container.innerHTML = staff.map(s => `
+                <div class="staff-card" data-id="${s.id}" onclick="selectStaff(${s.id})">
+                    <img src="${s.image}" alt="${s.name}">
+                    <div>
+                        <h4>${s.name}</h4>
+                        <p>${s.position}</p>
+                        <p style="color: var(--primary);">🎯 ${s.specialty}</p>
+                        <p>⭐ ${s.rating}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function selectStaff(staffId) {
+            bookingData.staff = staff.find(s => s.id === staffId);
+            
+            document.querySelectorAll('.staff-card').forEach(card => {
+                card.classList.remove('selected');
+                if (card.dataset.id == staffId) card.classList.add('selected');
+            });
+            
+            showToast('Stylist selected!', 'success');
+        }
+        
+        function loadCalendar() {
+            const calendar = document.getElementById('calendar');
+            if (!calendar) return;
+            
+            const today = new Date();
+            const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1).getDay();
+            
+            let html = '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; margin-bottom: 0.5rem;">';
+            const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            weekdays.forEach(day => {
+                html += `<div style="text-align: center; font-weight: bold;">${day}</div>`;
+            });
+            html += '</div><div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem;">';
+            
+            for (let i = 0; i < firstDay; i++) {
+                html += `<div></div>`;
+            }
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(today.getFullYear(), today.getMonth(), day);
+                const isPast = date < new Date(new Date().setHours(0,0,0,0));
+                html += `
+                    <div class="calendar-day ${isPast ? 'disabled' : 'available'}" 
+                         onclick="${!isPast ? `selectDate(${day})` : ''}"
+                         style="text-align: center; padding: 10px; border: 1px solid #ddd; border-radius: 8px; cursor: ${isPast ? 'not-allowed' : 'pointer'};">
+                        ${day}
+                    </div>
+                `;
+            }
+            html += '</div>';
+            calendar.innerHTML = html;
+        }
+        
+        function selectDate(day) {
+            bookingData.date = new Date(new Date().getFullYear(), new Date().getMonth(), day);
+            
+            document.querySelectorAll('.calendar-day').forEach(el => {
+                el.classList.remove('selected');
+                if (el.innerText == day && !el.classList.contains('disabled')) {
+                    el.classList.add('selected');
+                    el.style.background = 'var(--primary)';
+                    el.style.color = 'white';
+                }
+            });
+            
+            loadTimeSlots();
+            showToast('Date selected!', 'success');
+        }
+        
+        function loadTimeSlots() {
+            const slots = ['10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM', '7:00 PM'];
+            const container = document.getElementById('time-slots');
+            if (container) {
+                container.innerHTML = slots.map(slot => `
+                    <div class="time-slot available" onclick="selectTime('${slot}')">${slot}</div>
+                `).join('');
+            }
+        }
+        
+        function selectTime(time) {
+            bookingData.time = time;
+            
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+                if (slot.innerText === time) {
+                    slot.classList.add('selected');
+                    slot.style.background = 'var(--primary)';
+                    slot.style.color = 'white';
+                }
+            });
+            
+            showToast('Time selected!', 'success');
+        }
+        
+        function updateSummary() {
+            const summary = document.getElementById('booking-summary');
+            if (!summary || !bookingData.service) return;
+            
+            const advanceAmount = bookingData.service.price * 0.3;
+            
+            summary.innerHTML = `
+                <h4>📋 Booking Summary</h4>
+                <p><strong>💄 Service:</strong> ${bookingData.service.name}</p>
+                <p><strong>⏱️ Duration:</strong> ${bookingData.service.duration} mins</p>
+                <p><strong>👩‍💼 Staff:</strong> ${bookingData.staff?.name || 'Not selected'}</p>
+                <p><strong>📅 Date:</strong> ${bookingData.date?.toLocaleDateString() || 'Not selected'}</p>
+                <p><strong>⏰ Time:</strong> ${bookingData.time || 'Not selected'}</p>
+                <hr style="margin: 1rem 0;">
+                <p><strong>💰 Total Amount:</strong> ₹${bookingData.service.price}</p>
+                <p><strong>💳 Advance (30%):</strong> ₹${advanceAmount}</p>
+                <p><strong>🏦 Balance at Salon:</strong> ₹${bookingData.service.price - advanceAmount}</p>
+            `;
+        }
+        
+        function submitBooking() {
+            if (!bookingData.service || !bookingData.staff || !bookingData.date || !bookingData.time) {
+                showToast('Please complete all booking details', 'error');
+                return;
+            }
+            
+            const name = document.getElementById('customer-name')?.value;
+            const email = document.getElementById('customer-email')?.value;
+            const phone = document.getElementById('customer-phone')?.value;
+            
+            if (!name || !email || !phone) {
+                showToast('Please fill all customer details', 'error');
+                return;
+            }
+            
+            if (!bookingData.paymentScreenshot) {
+                showToast('Please upload payment screenshot', 'error');
+                return;
+            }
+            
+            bookingData.customer = { name, email, phone, notes: document.getElementById('customer-notes')?.value };
+            
+            // Save booking to localStorage
+            const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
+            const newBooking = {
+                id: Date.now(),
+                ...bookingData,
+                date: bookingData.date?.toISOString(),
+                createdAt: new Date().toISOString(),
+                status: 'pending',
+                paymentScreenshot: bookingData.paymentScreenshot
+            };
+            bookings.push(newBooking);
+            localStorage.setItem('bookings', JSON.stringify(bookings));
+            
+            // Send WhatsApp notification to admin
+            const message = `🆕 New Booking Request!\n\n` +
+                `👤 Customer: ${name}\n` +
+                `📞 Phone: ${phone}\n` +
+                `📧 Email: ${email}\n` +
+                `💄 Service: ${bookingData.service.name}\n` +
+                `👩‍💼 Stylist: ${bookingData.staff.name}\n` +
+                `📅 Date: ${bookingData.date.toLocaleDateString()}\n` +
+                `⏰ Time: ${bookingData.time}\n` +
+                `💰 Amount: ₹${bookingData.service.price} (Advance: ₹${bookingData.service.price * 0.3})\n\n` +
+                `Please verify payment screenshot and confirm booking.`;
+            
+            const whatsappUrl = `https://wa.me/917052206406?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+            
+            showToast('Booking submitted! You will receive confirmation shortly.', 'success');
+            
+            setTimeout(() => {
+                window.location.href = 'history.html';
+            }, 3000);
+        }
+        
+        // Payment Screenshot Upload
+        function setupScreenshotUpload() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('screenshotInput');
+            const previewDiv = document.getElementById('screenshotPreview');
+            const previewImage = document.getElementById('previewImage');
+            const removeBtn = document.getElementById('removeScreenshot');
+            
+            uploadArea.addEventListener('click', () => fileInput.click());
+            
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.style.borderColor = 'var(--primary)';
+                uploadArea.style.background = 'var(--secondary)';
+            });
+            
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.style.borderColor = '#ddd';
+                uploadArea.style.background = 'transparent';
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    handleScreenshotFile(file);
+                }
+            });
+            
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files[0]) {
+                    handleScreenshotFile(e.target.files[0]);
+                }
+            });
+            
+            removeBtn.addEventListener('click', () => {
+                bookingData.paymentScreenshot = null;
+                previewDiv.style.display = 'none';
+                uploadArea.style.display = 'block';
+                fileInput.value = '';
+            });
+        }
+        
+        function handleScreenshotFile(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                bookingData.paymentScreenshot = e.target.result;
+                document.getElementById('previewImage').src = e.target.result;
+                document.getElementById('screenshotPreview').style.display = 'block';
+                document.getElementById('uploadArea').style.display = 'none';
+                showToast('Screenshot uploaded!', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // Navigation Functions
+        function validateStep() {
+            switch(currentStep) {
+                case 1:
+                    if (!bookingData.service) {
+                        showToast('Please select a service', 'error');
+                        return false;
+                    }
+                    break;
+                case 2:
+                    if (!bookingData.staff) {
+                        showToast('Please select a stylist', 'error');
+                        return false;
+                    }
+                    break;
+                case 3:
+                    if (!bookingData.date) {
+                        showToast('Please select a date', 'error');
+                        return false;
+                    }
+                    break;
+                case 4:
+                    if (!bookingData.time) {
+                        showToast('Please select a time', 'error');
+                        return false;
+                    }
+                    break;
+                case 5:
+                    const name = document.getElementById('customer-name')?.value;
+                    const email = document.getElementById('customer-email')?.value;
+                    const phone = document.getElementById('customer-phone')?.value;
+                    if (!name || !email || !phone) {
+                        showToast('Please fill all details', 'error');
+                        return false;
+                    }
+                    bookingData.customer = { name, email, phone, notes: document.getElementById('customer-notes')?.value };
+                    updateSummary();
+                    break;
+                case 6:
+                    if (!bookingData.paymentScreenshot) {
+                        showToast('Please upload payment screenshot', 'error');
+                        return false;
+                    }
+                    break;
+            }
+            return true;
+        }
+        
+        function nextStep() {
+            if (!validateStep()) return;
+            
+            if (currentStep < 6) {
+                currentStep++;
+                updateSteps();
+            } else {
+                submitBooking();
+            }
+        }
+        
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateSteps();
+            }
+        }
+        
+        function updateSteps() {
+            document.querySelectorAll('.step').forEach((step, index) => {
+                const stepNum = index + 1;
+                if (stepNum === currentStep) {
+                    step.classList.add('active');
+                    step.classList.remove('completed');
+                } else if (stepNum < currentStep) {
+                    step.classList.add('completed');
+                    step.classList.remove('active');
+                } else {
+                    step.classList.remove('active', 'completed');
+                }
+            });
+            
+            document.querySelectorAll('.step-panel').forEach((panel, index) => {
+                if (index + 1 === currentStep) {
+                    panel.classList.add('active');
+                } else {
+                    panel.classList.remove('active');
+                }
+            });
+            
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            if (prevBtn) prevBtn.style.display = currentStep === 1 ? 'none' : 'inline-block';
+            if (nextBtn) nextBtn.textContent = currentStep === 6 ? 'Submit Booking' : 'Next';
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function filterServices(category) {
+            const filtered = category === 'all' 
+                ? defaultServices 
+                : defaultServices.filter(s => s.category === category);
+            displayServices(filtered);
+        }
+        
+        function setupEventListeners() {
+            document.getElementById('next-btn').onclick = nextStep;
+            document.getElementById('prev-btn').onclick = prevStep;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.onclick = () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    filterServices(btn.dataset.category);
+                };
+            });
+            
+            setupScreenshotUpload();
+        }
+        
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<span>${message}</span>`;
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                z-index: 9999;
+                animation: slideIn 0.3s;
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        
+        // Initialize
+        init();
+        
+        // Make functions global
+        window.selectService = selectService;
+        window.selectStaff = selectStaff;
+        window.selectDate = selectDate;
+        window.selectTime = selectTime;
+    </script>
+</body>
+</html>
