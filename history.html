@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - Beauty Bar Salon</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .history-container {
+            padding: 4rem 5%;
+            min-height: 60vh;
+        }
+        
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-controls input,
+        .filter-controls select {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .history-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            padding: 10px 25px;
+            background: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .bookings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .booking-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+        
+        .booking-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .booking-header {
+            background: var(--gradient);
+            padding: 1rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .booking-header h3 {
+            font-size: 1rem;
+            margin: 0;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        
+        .status-confirmed { background: #4CAF50; color: white; }
+        .status-pending { background: #FFC107; color: #333; }
+        .status-completed { background: #9E9E9E; color: white; }
+        .status-cancelled { background: #F44336; color: white; }
+        
+        .booking-body {
+            padding: 1rem;
+        }
+        
+        .booking-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+            color: #555;
+        }
+        
+        .booking-detail i {
+            width: 25px;
+            color: var(--primary);
+        }
+        
+        .booking-footer {
+            padding: 1rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .booking-footer button {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-cancel {
+            background: #F44336;
+            color: white;
+        }
+        
+        .btn-rebook {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-view {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem;
+            background: white;
+            border-radius: 15px;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .empty-state h3 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .empty-state p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .bookings-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-controls {
+                flex-direction: column;
+            }
+            
+            .filter-controls input,
+            .filter-controls select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="hamburger" id="hamburgerMenu">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <a href="index.html" class="logo">Beauty Bar ✨</a>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html">Home</a>
+            <a href="index.html#services">Services</a>
+            <a href="index.html#gallery">Gallery</a>
+            <a href="index.html#team">Our Team</a>
+            <a href="booking.html">Book Now</a>
+            <a href="gift-card.html">Gift Cards</a>
+            <a href="history.html">My Bookings</a>
+            <div class="social-nav">
+                <a href="https://www.instagram.com/sandhya.rathi6921" class="social-icon" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="social-icon" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/917052206406?text=Hello%20Beauty%20Bar%20Salon%2C%20I%20want%20to%20book%20an%20appointment" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- History Section -->
+    <section class="history-container">
+        <h2 class="section-title">My Bookings</h2>
+        
+        <div class="filter-bar">
+            <div class="filter-controls">
+                <input type="text" id="searchInput" placeholder="🔍 Search by service or staff...">
+                <select id="statusFilter">
+                    <option value="all">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="history-tabs">
+            <button class="tab-btn active" data-tab="upcoming">Upcoming</button>
+            <button class="tab-btn" data-tab="past">Past</button>
+            <button class="tab-btn" data-tab="cancelled">Cancelled</button>
+        </div>
+        
+        <div id="bookings-container" class="bookings-grid">
+            <div class="empty-state">
+                <i class="fas fa-calendar-alt"></i>
+                <h3>No Bookings Found</h3>
+                <p>You don't have any appointments yet.</p>
+                <a href="booking.html" class="btn btn-primary">Book an Appointment</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3 class="footer-title">Beauty Bar ✨</h3>
+                    <p class="footer-description">Experience luxury beauty services in the heart of the city. Our expert stylists are here to make you feel beautiful and confident.</p>
+                    <div class="footer-social">
+                        <a href="https://www.instagram.com/sandhya.rathi6921" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link" target="_blank"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-link" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link" target="_blank"><i class="fab fa-pinterest"></i></a>
+                        <a href="#" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3 class="footer-title">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#services">Services</a></li>
+                        <li><a href="index.html#gallery">Gallery</a></li>
+                        <li><a href="index.html#team">Our Team</a></li>
+                        <li><a href="booking.html">Book Appointment</a></li>
+                        <li><a href="gift-card.html">Gift Cards</a></li>
+                        <li><a href="history.html">My Bookings</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3 class="footer-title">Contact Info</h3>
+                    <ul class="footer-contact">
+                        <li>
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <span>Phone Number</span>
+                                <a href="tel:+917052206406">+91 70522 06406</a>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <span>Email Address</span>
+                                <a href="mailto:info@beautybarsalon.com">info@beautybarsalon.com</a>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <span>Our Location</span>
+                                <p>Akbarpur, Uttar Pradesh - 224132</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3 class="footer-title">Working Hours</h3>
+                    <ul class="footer-hours">
+                        <li><span>Monday - Friday:</span><span>10:00 AM - 8:00 PM</span></li>
+                        <li><span>Saturday:</span><span>10:00 AM - 6:00 PM</span></li>
+                        <li><span>Sunday:</span><span>11:00 AM - 5:00 PM</span></li>
+                    </ul>
+                    <div class="footer-emergency">
+                        <i class="fas fa-ambulance"></i>
+                        <div>
+                            <span>Emergency Contact</span>
+                            <a href="tel:+917052206406">+91 70522 06406</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <p>&copy; 2026 Beauty Bar Salon. All rights reserved.</p>
+                    <div class="footer-bottom-links">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms & Conditions</a>
+                        <a href="#">Refund Policy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ============================================
+        // HISTORY PAGE JAVASCRIPT
+        // ============================================
+        
+        let currentTab = 'upcoming';
+        let allBookings = [];
+        
+        // Load bookings from localStorage
+        function loadBookings() {
+            const saved = localStorage.getItem('bookings');
+            if (saved) {
+                allBookings = JSON.parse(saved);
+                console.log('Loaded', allBookings.length, 'bookings');
+            } else {
+                allBookings = [];
+                console.log('No bookings found in localStorage');
+            }
+            displayBookings();
+        }
+        
+        // Check if a date is upcoming
+        function isUpcoming(dateStr) {
+            if (!dateStr) return false;
+            const bookingDate = new Date(dateStr);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return bookingDate >= today;
+        }
+        
+        // Filter bookings based on tab, search, and status
+        function filterBookings() {
+            const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
+            const statusFilter = document.getElementById('statusFilter')?.value || 'all';
+            
+            let filtered = [...allBookings];
+            
+            // Filter by tab
+            if (currentTab === 'upcoming') {
+                filtered = filtered.filter(b => isUpcoming(b.date) && b.status !== 'cancelled');
+            } else if (currentTab === 'past') {
+                filtered = filtered.filter(b => !isUpcoming(b.date) && b.status !== 'cancelled');
+            } else if (currentTab === 'cancelled') {
+                filtered = filtered.filter(b => b.status === 'cancelled');
+            }
+            
+            // Filter by search
+            if (searchTerm) {
+                filtered = filtered.filter(b => 
+                    (b.service?.name || '').toLowerCase().includes(searchTerm) ||
+                    (b.staff?.name || '').toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            // Filter by status dropdown
+            if (statusFilter !== 'all') {
+                filtered = filtered.filter(b => b.status === statusFilter);
+            }
+            
+            // Sort by date (newest first)
+            filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            return filtered;
+        }
+        
+        // Display bookings
+        function displayBookings() {
+            const container = document.getElementById('bookings-container');
+            if (!container) return;
+            
+            const filtered = filterBookings();
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>No Bookings Found</h3>
+                        <p>You don't have any ${currentTab} appointments.</p>
+                        <a href="booking.html" class="btn btn-primary">Book an Appointment</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = filtered.map(booking => `
+                <div class="booking-card">
+                    <div class="booking-header">
+                        <h3>${booking.service?.name || 'Service'}</h3>
+                        <span class="status-badge status-${booking.status}">${booking.status?.toUpperCase() || 'PENDING'}</span>
+                    </div>
+                    <div class="booking-body">
+                        <div class="booking-detail">
+                            <i class="fas fa-user"></i>
+                            <span>${booking.customer?.name || 'Customer'}</span>
+                        </div>
+                        <div class="booking-detail">
+                            <i class="fas fa-cut"></i>
+                            <span>${booking.staff?.name || 'Staff not assigned'}</span>
+                        </div>
+                        <div class="booking-detail">
+                            <i class="fas fa-calendar"></i>
+                            <span>${booking.date ? new Date(booking.date).toLocaleDateString() : 'Date not set'}</span>
+                        </div>
+                        <div class="booking-detail">
+                            <i class="fas fa-clock"></i>
+                            <span>${booking.time || 'Time not set'}</span>
+                        </div>
+                        <div class="booking-detail">
+                            <i class="fas fa-rupee-sign"></i>
+                            <span>₹${booking.service?.price || 0} (Advance: ₹${(booking.service?.price || 0) * 0.3})</span>
+                        </div>
+                        ${booking.customer?.notes ? `
+                        <div class="booking-detail">
+                            <i class="fas fa-comment"></i>
+                            <span>${booking.customer.notes}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+                    <div class="booking-footer">
+                        ${booking.status === 'pending' ? `
+                            <button class="btn-cancel" onclick="cancelBooking(${booking.id})">Cancel</button>
+                            <button class="btn-view" onclick="viewBooking(${booking.id})">Details</button>
+                        ` : ''}
+                        ${booking.status === 'confirmed' && isUpcoming(booking.date) ? `
+                            <button class="btn-cancel" onclick="cancelBooking(${booking.id})">Cancel</button>
+                            <button class="btn-view" onclick="viewBooking(${booking.id})">Details</button>
+                        ` : ''}
+                        ${booking.status === 'confirmed' && !isUpcoming(booking.date) ? `
+                            <button class="btn-rebook" onclick="rebookBooking(${booking.id})">Rebook</button>
+                            <button class="btn-view" onclick="viewBooking(${booking.id})">Details</button>
+                        ` : ''}
+                        ${booking.status === 'completed' ? `
+                            <button class="btn-rebook" onclick="rebookBooking(${booking.id})">Book Again</button>
+                            <button class="btn-view" onclick="viewBooking(${booking.id})">Details</button>
+                        ` : ''}
+                        ${booking.status === 'cancelled' ? `
+                            <button class="btn-rebook" onclick="rebookBooking(${booking.id})">Book Again</button>
+                            <button class="btn-view" onclick="viewBooking(${booking.id})">Details</button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Cancel booking
+        function cancelBooking(id) {
+            if (confirm('Are you sure you want to cancel this booking?')) {
+                const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
+                const index = bookings.findIndex(b => b.id === id);
+                if (index !== -1) {
+                    bookings[index].status = 'cancelled';
+                    localStorage.setItem('bookings', JSON.stringify(bookings));
+                    loadBookings();
+                    showToast('Booking cancelled successfully!', 'success');
+                }
+            }
+        }
+        
+        // Rebook booking
+        function rebookBooking(id) {
+            const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
+            const booking = bookings.find(b => b.id === id);
+            if (booking && booking.service) {
+                localStorage.setItem('rebookData', JSON.stringify(booking));
+                window.location.href = `booking.html?service=${booking.service.id}`;
+            }
+        }
+        
+        // View booking details
+        function viewBooking(id) {
+            const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
+            const booking = bookings.find(b => b.id === id);
+            if (booking) {
+                const advanceAmount = (booking.service?.price || 0) * 0.3;
+                alert(`📋 Booking Details\n\n` +
+                    `Booking ID: #${booking.id}\n` +
+                    `Customer: ${booking.customer?.name}\n` +
+                    `Phone: ${booking.customer?.phone}\n` +
+                    `Email: ${booking.customer?.email}\n` +
+                    `Service: ${booking.service?.name}\n` +
+                    `Staff: ${booking.staff?.name}\n` +
+                    `Date: ${new Date(booking.date).toLocaleDateString()}\n` +
+                    `Time: ${booking.time}\n` +
+                    `Total Amount: ₹${booking.service?.price}\n` +
+                    `Advance Paid: ₹${advanceAmount}\n` +
+                    `Status: ${booking.status.toUpperCase()}\n` +
+                    `Notes: ${booking.customer?.notes || 'None'}`);
+            }
+        }
+        
+        // Show toast notification
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<span>${message}</span>`;
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                z-index: 9999;
+                animation: slideIn 0.3s;
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        
+        // Event listeners
+        document.getElementById('searchInput')?.addEventListener('input', displayBookings);
+        document.getElementById('statusFilter')?.addEventListener('change', displayBookings);
+        
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentTab = btn.dataset.tab;
+                displayBookings();
+            });
+        });
+        
+        // Add sample booking for demo if none exist
+        function addSampleBookings() {
+            const existing = localStorage.getItem('bookings');
+            if (!existing || JSON.parse(existing).length === 0) {
+                const sampleBookings = [
+                    {
+                        id: 1001,
+                        customer: { name: "Neha Gupta", email: "neha@example.com", phone: "9876543210", notes: "Bridal makeup trial needed" },
+                        service: { id: 1, name: "Bridal Makeup", price: 4999, duration: 120 },
+                        staff: { id: 1, name: "Priya Sharma" },
+                        date: "2024-12-25",
+                        time: "10:00 AM",
+                        status: "confirmed",
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 1002,
+                        customer: { name: "Priya Sharma", email: "priya@example.com", phone: "9876543211", notes: "" },
+                        service: { id: 2, name: "Hair Styling", price: 1999, duration: 60 },
+                        staff: { id: 2, name: "Anjali Desai" },
+                        date: "2024-12-20",
+                        time: "2:00 PM",
+                        status: "pending",
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+                localStorage.setItem('bookings', JSON.stringify(sampleBookings));
+                console.log('Sample bookings added');
+            }
+        }
+        
+        // Initialize hamburger menu
+        function initHamburgerMenu() {
+            const hamburger = document.getElementById('hamburgerMenu');
+            const navLinks = document.getElementById('navLinks');
+            if (hamburger && navLinks) {
+                hamburger.addEventListener('click', () => {
+                    hamburger.classList.toggle('active');
+                    navLinks.classList.toggle('active');
+                    document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+                });
+                navLinks.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        hamburger.classList.remove('active');
+                        navLinks.classList.remove('active');
+                        document.body.style.overflow = '';
+                    });
+                });
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initHamburgerMenu();
+            addSampleBookings();
+            loadBookings();
+        });
+        
+        // Make functions global
+        window.cancelBooking = cancelBooking;
+        window.rebookBooking = rebookBooking;
+        window.viewBooking = viewBooking;
+    </script>
+</body>
+</html>
