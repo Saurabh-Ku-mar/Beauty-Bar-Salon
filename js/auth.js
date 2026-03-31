@@ -5,7 +5,7 @@ class GoogleAuth {
         this.user = null;
         this.apiUrl = 'https://beauty-bar-backend.onrender.com/api';
         // REPLACE WITH YOUR ACTUAL GOOGLE CLIENT ID
-        this.clientId = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
+        this.clientId = '1083433548316-nhs98vfn50f7dd1l4q9qdn4vifv4rf2p.apps.googleusercontent.com';
         this.init();
     }
 
