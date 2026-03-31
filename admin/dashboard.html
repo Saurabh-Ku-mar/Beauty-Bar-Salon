@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Beauty Bar Salon</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--light);
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .admin-sidebar {
+            width: 280px;
+            background: var(--dark);
+            color: white;
+            padding: 2rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .admin-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .admin-nav {
+            list-style: none;
+        }
+
+        .admin-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-nav a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 12px 15px;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .admin-nav a:hover,
+        .admin-nav a.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .admin-nav a i {
+            width: 24px;
+        }
+
+        .admin-main {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+            background: var(--light);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .recent-section {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+        }
+
+        .recent-section h3 {
+            margin-bottom: 1rem;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-bar select,
+        .filter-bar input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .bookings-table {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: var(--secondary);
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-confirmed { background: #4CAF50; color: white; }
+        .status-pending { background: #FFC107; color: #333; }
+        .status-completed { background: #9E9E9E; color: white; }
+        .status-cancelled { background: #F44336; color: white; }
+
+        .action-btn {
+            padding: 5px 10px;
+            margin: 0 2px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .btn-approve { background: #4CAF50; color: white; }
+        .btn-reject { background: #F44336; color: white; }
+        .btn-view { background: #2196F3; color: white; }
+
+        .export-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .admin-sidebar {
+                width: 70px;
+                padding: 1rem;
+            }
+            .admin-logo span,
+            .admin-nav a span {
+                display: none;
+            }
+            .admin-main {
+                margin-left: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-sidebar">
+            <div class="admin-logo">
+                <i class="fas fa-crown"></i>
+                <span>Beauty Bar</span>
+            </div>
+            <ul class="admin-nav">
+                <li><a href="dashboard.html" class="active"><i class="fas fa-chart-line"></i><span>Dashboard</span></a></li>
+                <li><a href="bookings.html"><i class="fas fa-calendar-check"></i><span>Bookings</span></a></li>
+                <li><a href="services.html"><i class="fas fa-cut"></i><span>Services</span></a></li>
+                <li><a href="staff.html"><i class="fas fa-users"></i><span>Staff</span></a></li>
+                <li><a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
+            </ul>
+        </div>
+
+        <div class="admin-main">
+            <h2>Admin Dashboard</h2>
+            <p style="margin-bottom: 2rem; color: #666;">Welcome to Beauty Bar Salon Admin Panel</p>
+
+            <div class="stats-grid" id="stats-container">
+                <div class="stat-card">
+                    <h3>Total Bookings</h3>
+                    <div class="stat-value" id="total-bookings">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Pending Bookings</h3>
+                    <div class="stat-value" id="pending-bookings">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Confirmed Bookings</h3>
+                    <div class="stat-value" id="confirmed-bookings">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Revenue</h3>
+                    <div class="stat-value" id="total-revenue">₹0</div>
+                </div>
+            </div>
+
+            <div class="recent-section">
+                <h3>Recent Bookings</h3>
+                <div class="filter-bar">
+                    <select id="status-filter">
+                        <option value="all">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    <input type="text" id="search-filter" placeholder="Search by name or service">
+                    <button class="export-btn" onclick="exportBookings()">Export CSV</button>
+                </div>
+                <div class="bookings-table">
+                    <table id="bookings-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Customer</th>
+                                <th>Service</th>
+                                <th>Staff</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookings-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Admin authentication
+        if (!localStorage.getItem('adminLoggedIn')) {
+            window.location.href = 'login.html';
+        }
+
+        // Load bookings from localStorage
+        function loadBookings() {
+            const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
+            return bookings;
+        }
+
+        // Display bookings
+        function displayBookings() {
+            const statusFilter = document.getElementById('status-filter')?.value || 'all';
+            const searchFilter = document.getElementById('search-filter')?.value.toLowerCase() || '';
+            
+            let bookings = loadBookings();
+            
+            // Filter by status
+            if (statusFilter !== 'all') {
+                bookings = bookings.filter(b => b.status === statusFilter);
+            }
+            
+            // Filter by search
+            if (searchFilter) {
+                bookings = bookings.filter(b => 
+                    (b.customer?.name || '').toLowerCase().includes(searchFilter) ||
+                    (b.service?.name || '').toLowerCase().includes(searchFilter)
+                );
+            }
+            
+            // Update stats
+            updateStats();
+            
+            // Display table
+            const tbody = document.getElementById('bookings-list');
+            if (!tbody) return;
+            
+            if (bookings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center;">No bookings found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = bookings.map(booking => `
+                <tr>
+                    <td>#${booking.id}</td>
+                    <td>${booking.customer?.name || 'N/A'}</td>
+                    <td>${booking.service?.name || 'N/A'}</td>
+                    <td>${booking.staff?.name || 'N/A'}</td>
+                    <td>${booking.date ? new Date(booking.date).toLocaleDateString() : 'N/A'}</td>
+                    <td>${booking.time || 'N/A'}</td>
+                    <td>₹${booking.service?.price || 0}</td>
+                    <td><span class="status-badge status-${booking.status}">${booking.status}</span></td>
+                    <td>
+                        ${booking.status === 'pending' ? `
+                            <button class="action-btn btn-approve" onclick="updateBookingStatus(${booking.id}, 'confirmed')">Approve</button>
+                            <button class="action-btn btn-reject" onclick="updateBookingStatus(${booking.id}, 'cancelled')">Reject</button>
+                        ` : ''}
+                        <button class="action-btn btn-view" onclick="viewBooking(${booking.id})">View</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // Update statistics
+        function updateStats() {
+            const bookings = loadBookings();
+            
+            const total = bookings.length;
+            const pending = bookings.filter(b => b.status === 'pending').length;
+            const confirmed = bookings.filter(b => b.status === 'confirmed').length;
+            const totalRevenue = bookings
+                .filter(b => b.status === 'confirmed' || b.status === 'completed')
+                .reduce((sum, b) => sum + (b.service?.price * 0.3 || 0), 0);
+            
+            document.getElementById('total-bookings').textContent = total;
+            document.getElementById('pending-bookings').textContent = pending;
+            document.getElementById('confirmed-bookings').textContent = confirmed;
+            document.getElementById('total-revenue').textContent = `₹${totalRevenue}`;
+        }
+        
+        // Update booking status
+        function updateBookingStatus(id, newStatus) {
+            const bookings = loadBookings();
+            const index = bookings.findIndex(b => b.id === id);
+            
+            if (index !== -1) {
+                bookings[index].status = newStatus;
+                localStorage.setItem('bookings', JSON.stringify(bookings));
+                displayBookings();
+                showToast(`Booking #${id} ${newStatus === 'confirmed' ? 'approved' : 'rejected'}!`, 'success');
+            }
+        }
+        
+        // View booking details
+        function viewBooking(id) {
+            const bookings = loadBookings();
+            const booking = bookings.find(b => b.id === id);
+            
+            if (booking) {
+                const advanceAmount = booking.service?.price * 0.3 || 0;
+                alert(`📋 Booking Details\n\n` +
+                    `Customer: ${booking.customer?.name}\n` +
+                    `Phone: ${booking.customer?.phone}\n` +
+                    `Email: ${booking.customer?.email}\n` +
+                    `Service: ${booking.service?.name}\n` +
+                    `Staff: ${booking.staff?.name}\n` +
+                    `Date: ${new Date(booking.date).toLocaleDateString()}\n` +
+                    `Time: ${booking.time}\n` +
+                    `Total: ₹${booking.service?.price}\n` +
+                    `Advance: ₹${advanceAmount}\n` +
+                    `Status: ${booking.status}\n\n` +
+                    `Notes: ${booking.customer?.notes || 'No notes'}`);
+            }
+        }
+        
+        // Export to CSV
+        function exportBookings() {
+            const bookings = loadBookings();
+            
+            const headers = ['ID', 'Customer Name', 'Phone', 'Email', 'Service', 'Staff', 'Date', 'Time', 'Amount', 'Status', 'Notes'];
+            const rows = bookings.map(b => [
+                b.id,
+                b.customer?.name || '',
+                b.customer?.phone || '',
+                b.customer?.email || '',
+                b.service?.name || '',
+                b.staff?.name || '',
+                b.date ? new Date(b.date).toLocaleDateString() : '',
+                b.time || '',
+                b.service?.price || 0,
+                b.status,
+                b.customer?.notes || ''
+            ]);
+            
+            const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `bookings_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showToast('Bookings exported successfully!', 'success');
+        }
+        
+        // Show toast notification
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<span>${message}</span>`;
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                z-index: 9999;
+                animation: slideIn 0.3s;
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        
+        // Event listeners
+        document.getElementById('status-filter')?.addEventListener('change', displayBookings);
+        document.getElementById('search-filter')?.addEventListener('input', displayBookings);
+        
+        document.getElementById('logout-btn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'login.html';
+        });
+        
+        // Initial load
+        displayBookings();
+        
+        // Add sample booking for testing if none exist
+        function addSampleBookings() {
+            const bookings = loadBookings();
+            if (bookings.length === 0) {
+                const sampleBookings = [
+                    {
+                        id: 1001,
+                        customer: { name: "Neha Gupta", email: "neha@example.com", phone: "9876543210" },
+                        service: { id: 1, name: "Bridal Makeup", price: 4999, duration: 120 },
+                        staff: { id: 1, name: "Priya Sharma" },
+                        date: "2024-12-15",
+                        time: "10:00 AM",
+                        status: "confirmed",
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 1002,
+                        customer: { name: "Priya Sharma", email: "priya@example.com", phone: "9876543211" },
+                        service: { id: 2, name: "Hair Styling", price: 1999, duration: 60 },
+                        staff: { id: 2, name: "Anjali Desai" },
+                        date: "2024-12-14",
+                        time: "2:00 PM",
+                        status: "pending",
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 1003,
+                        customer: { name: "Anjali Desai", email: "anjali@example.com", phone: "9876543212" },
+                        service: { id: 3, name: "Facial Treatment", price: 2499, duration: 75 },
+                        staff: { id: 3, name: "Meera Kapoor" },
+                        date: "2024-12-13",
+                        time: "11:00 AM",
+                        status: "completed",
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 1004,
+                        customer: { name: "Riya Mehta", email: "riya@example.com", phone: "9876543213" },
+                        service: { id: 4, name: "Nail Art", price: 999, duration: 45 },
+                        staff: { id: 4, name: "Riya Mehta" },
+                        date: "2024-12-20",
+                        time: "3:00 PM",
+                        status: "pending",
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+                localStorage.setItem('bookings', JSON.stringify(sampleBookings));
+                displayBookings();
+            }
+        }
+        
+        addSampleBookings();
+    </script>
+</body>
+</html>
