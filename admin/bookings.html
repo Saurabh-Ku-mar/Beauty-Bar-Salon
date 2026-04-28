@@ -3,39 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Bookings - Beauty Bar Salon</title>
+    <title>Manage Bookings - Beauty Bar</title>
     <link rel="stylesheet" href="../css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; background: var(--light); }
+        body { font-family: 'Poppins', sans-serif; background: #FAF9F6; }
         .admin-container { display: flex; min-height: 100vh; }
-        .admin-sidebar { width: 280px; background: var(--dark); color: white; padding: 2rem; position: fixed; height: 100vh; overflow-y: auto; }
+        .admin-sidebar { width: 280px; background: #1C1C1C; color: white; padding: 2rem; position: fixed; height: 100vh; overflow-y: auto; }
         .admin-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 2rem; text-align: center; }
         .admin-nav { list-style: none; }
         .admin-nav li { margin-bottom: 0.5rem; }
         .admin-nav a { display: flex; align-items: center; gap: 1rem; padding: 12px 15px; color: #ccc; text-decoration: none; border-radius: 10px; transition: all 0.3s; }
         .admin-nav a:hover, .admin-nav a.active { background: rgba(255,255,255,0.1); color: white; }
-        .admin-nav a i { width: 24px; }
-        .admin-main { flex: 1; margin-left: 280px; padding: 2rem; background: var(--light); }
+        .admin-main { flex: 1; margin-left: 280px; padding: 2rem; }
         .filter-bar { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center; }
         .filter-bar select, .filter-bar input { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; }
-        .export-btn { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+        .export-btn { background: #B76E79; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
         .bookings-table { overflow-x: auto; background: white; border-radius: 15px; padding: 1rem; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: var(--secondary); }
+        th { background: #F8D7DA; }
         .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; display: inline-block; }
         .status-confirmed { background: #4CAF50; color: white; }
         .status-pending { background: #FFC107; color: #333; }
-        .status-completed { background: #9E9E9E; color: white; }
-        .status-cancelled { background: #F44336; color: white; }
         .action-btn { padding: 5px 10px; margin: 0 2px; border: none; border-radius: 5px; cursor: pointer; }
         .btn-approve { background: #4CAF50; color: white; }
         .btn-reject { background: #F44336; color: white; }
         .btn-view { background: #2196F3; color: white; }
-        @media (max-width: 768px) { .admin-sidebar { width: 70px; } .admin-main { margin-left: 70px; } .admin-logo span, .admin-nav a span { display: none; } }
+        @media (max-width: 768px) { .admin-sidebar { width: 70px; padding: 1rem; } .admin-main { margin-left: 70px; } .admin-logo span, .admin-nav a span { display: none; } }
     </style>
 </head>
 <body>
@@ -53,100 +50,41 @@
         <div class="admin-main">
             <h2>Manage Bookings</h2>
             <div class="filter-bar">
-                <select id="status-filter">
-                    <option value="all">All Status</option>
-                    <option value="pending">Pending</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                </select>
-                <input type="text" id="search-filter" placeholder="Search by name or service">
+                <select id="status-filter"><option value="all">All Status</option><option value="pending">Pending</option><option value="confirmed">Confirmed</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select>
+                <input type="text" id="search-filter" placeholder="Search by name">
                 <button class="export-btn" onclick="exportBookings()">Export CSV</button>
             </div>
-            <div class="bookings-table">
-                <table>
-                    <thead>
-                        <tr><th>ID</th><th>Customer</th><th>Service</th><th>Staff</th><th>Date</th><th>Time</th><th>Amount</th><th>Status</th><th>Actions</th></tr>
-                    </thead>
-                    <tbody id="bookings-list"></tbody>
-                </table>
-            </div>
+            <div class="bookings-table"><table id="bookings-table"><thead><tr><th>ID</th><th>Customer</th><th>Service</th><th>Staff</th><th>Date</th><th>Time</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead><tbody id="bookings-list"></tbody>?</div>
         </div>
     </div>
+    <script src="../js/data-service.js"></script>
     <script>
         if (!localStorage.getItem('adminLoggedIn')) window.location.href = 'login.html';
         
-        function loadBookings() { return JSON.parse(localStorage.getItem('bookings') || '[]'); }
+        function loadBookings() { return window.dataService ? window.dataService.getBookings() : []; }
         
         function displayBookings() {
+            if (!window.dataService) { setTimeout(displayBookings, 100); return; }
             const statusFilter = document.getElementById('status-filter')?.value || 'all';
             const searchFilter = document.getElementById('search-filter')?.value.toLowerCase() || '';
             let bookings = loadBookings();
             if (statusFilter !== 'all') bookings = bookings.filter(b => b.status === statusFilter);
-            if (searchFilter) bookings = bookings.filter(b => (b.customer?.name || '').toLowerCase().includes(searchFilter) || (b.service?.name || '').toLowerCase().includes(searchFilter));
+            if (searchFilter) bookings = bookings.filter(b => (b.customer?.name || '').toLowerCase().includes(searchFilter));
             const tbody = document.getElementById('bookings-list');
-            if (!tbody) return;
             if (bookings.length === 0) { tbody.innerHTML = '<tr><td colspan="9" style="text-align: center;">No bookings found</td></tr>'; return; }
-            tbody.innerHTML = bookings.map(booking => `
-                <tr>
-                    <td>#${booking.id}</td>
-                    <td>${booking.customer?.name || 'N/A'}</td>
-                    <td>${booking.service?.name || 'N/A'}</td>
-                    <td>${booking.staff?.name || 'N/A'}</td>
-                    <td>${booking.date ? new Date(booking.date).toLocaleDateString() : 'N/A'}</td>
-                    <td>${booking.time || 'N/A'}</td>
-                    <td>₹${booking.service?.price || 0}</td>
-                    <td><span class="status-badge status-${booking.status}">${booking.status}</span></td>
-                    <td>
-                        ${booking.status === 'pending' ? `
-                            <button class="action-btn btn-approve" onclick="updateBookingStatus(${booking.id}, 'confirmed')">Approve</button>
-                            <button class="action-btn btn-reject" onclick="updateBookingStatus(${booking.id}, 'cancelled')">Reject</button>
-                        ` : ''}
-                        <button class="action-btn btn-view" onclick="viewBooking(${booking.id})">View</button>
-                    </td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = bookings.map(b => `<tr><td>#${b.id}</td><td>${b.customer?.name || 'N/A'}</td><td>${b.service?.name || 'N/A'}</td><td>${b.staff?.name || 'N/A'}</td><td>${b.date || 'N/A'}</td><td>${b.time || 'N/A'}</td><td>₹${b.service?.price || 0}</td><td><span class="status-badge status-${b.status}">${b.status}</span></td><td>${b.status === 'pending' ? `<button class="action-btn btn-approve" onclick="updateStatus(${b.id}, 'confirmed')">Approve</button><button class="action-btn btn-reject" onclick="updateStatus(${b.id}, 'cancelled')">Reject</button>` : ''}<button class="action-btn btn-view" onclick="viewBooking(${b.id})">View</button></td></tr>`).join('');
         }
         
-        function updateBookingStatus(id, newStatus) {
-            const bookings = loadBookings();
-            const index = bookings.findIndex(b => b.id === id);
-            if (index !== -1) { bookings[index].status = newStatus; localStorage.setItem('bookings', JSON.stringify(bookings)); displayBookings(); alert(`Booking #${id} ${newStatus === 'confirmed' ? 'approved' : 'rejected'}!`); }
-        }
-        
-        function viewBooking(id) {
-            const bookings = loadBookings();
-            const booking = bookings.find(b => b.id === id);
-            if (booking) alert(`📋 Booking Details\n\nCustomer: ${booking.customer?.name}\nPhone: ${booking.customer?.phone}\nEmail: ${booking.customer?.email}\nService: ${booking.service?.name}\nStaff: ${booking.staff?.name}\nDate: ${new Date(booking.date).toLocaleDateString()}\nTime: ${booking.time}\nAmount: ₹${booking.service?.price}\nStatus: ${booking.status}\nNotes: ${booking.customer?.notes || 'None'}`);
-        }
-        
-        function exportBookings() {
-            const bookings = loadBookings();
-            const headers = ['ID','Customer Name','Phone','Email','Service','Staff','Date','Time','Amount','Status','Notes'];
-            const rows = bookings.map(b => [b.id, b.customer?.name || '', b.customer?.phone || '', b.customer?.email || '', b.service?.name || '', b.staff?.name || '', b.date ? new Date(b.date).toLocaleDateString() : '', b.time || '', b.service?.price || 0, b.status, b.customer?.notes || '']);
-            const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
-            const blob = new Blob([csv], { type: 'text/csv' }); const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = `bookings_${new Date().toISOString().split('T')[0]}.csv`; a.click(); URL.revokeObjectURL(url);
-        }
+        function updateStatus(id, status) { window.dataService.updateBookingStatus(id, status); displayBookings(); alert(`Booking #${id} ${status === 'confirmed' ? 'approved' : 'rejected'}!`); }
+        function viewBooking(id) { const b = loadBookings().find(b => b.id === id); if(b) alert(`Booking Details:\nCustomer: ${b.customer?.name}\nPhone: ${b.customer?.phone}\nEmail: ${b.customer?.email}\nService: ${b.service?.name}\nStaff: ${b.staff?.name}\nDate: ${b.date}\nTime: ${b.time}\nAmount: ₹${b.service?.price}\nStatus: ${b.status}`); }
+        function exportBookings() { const bookings = loadBookings(); const headers = ['ID','Customer','Phone','Email','Service','Staff','Date','Time','Amount','Status']; const rows = bookings.map(b => [b.id, b.customer?.name || '', b.customer?.phone || '', b.customer?.email || '', b.service?.name || '', b.staff?.name || '', b.date || '', b.time || '', b.service?.price || 0, b.status]); const csv = [headers, ...rows].map(row => row.join(',')).join('\n'); const blob = new Blob([csv], {type:'text/csv'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `bookings_${new Date().toISOString().split('T')[0]}.csv`; a.click(); URL.revokeObjectURL(url); }
         
         document.getElementById('status-filter')?.addEventListener('change', displayBookings);
         document.getElementById('search-filter')?.addEventListener('input', displayBookings);
         document.getElementById('logout-btn')?.addEventListener('click', (e) => { e.preventDefault(); localStorage.removeItem('adminLoggedIn'); window.location.href = 'login.html'; });
         
-        // Add sample data if empty
-        function addSampleData() {
-            const bookings = loadBookings();
-            if (bookings.length === 0) {
-                localStorage.setItem('bookings', JSON.stringify([
-                    { id: 1001, customer: { name: "Neha Gupta", email: "neha@example.com", phone: "9876543210" }, service: { id: 1, name: "Bridal Makeup", price: 4999 }, staff: { id: 1, name: "Priya Sharma" }, date: "2024-12-15", time: "10:00 AM", status: "confirmed", createdAt: new Date().toISOString() },
-                    { id: 1002, customer: { name: "Priya Sharma", email: "priya@example.com", phone: "9876543211" }, service: { id: 2, name: "Hair Styling", price: 1999 }, staff: { id: 2, name: "Anjali Desai" }, date: "2024-12-14", time: "2:00 PM", status: "pending", createdAt: new Date().toISOString() },
-                    { id: 1003, customer: { name: "Anjali Desai", email: "anjali@example.com", phone: "9876543212" }, service: { id: 3, name: "Facial Treatment", price: 2499 }, staff: { id: 3, name: "Meera Kapoor" }, date: "2024-12-13", time: "11:00 AM", status: "completed", createdAt: new Date().toISOString() },
-                    { id: 1004, customer: { name: "Riya Mehta", email: "riya@example.com", phone: "9876543213" }, service: { id: 4, name: "Nail Art", price: 999 }, staff: { id: 4, name: "Riya Mehta" }, date: "2024-12-20", time: "3:00 PM", status: "pending", createdAt: new Date().toISOString() }
-                ]));
-            }
-        }
-        addSampleData();
         displayBookings();
+        if (window.dataService) window.dataService.subscribe(() => displayBookings());
     </script>
 </body>
 </html>
