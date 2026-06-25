@@ -31,42 +31,39 @@
     <!-- ============================================
          NAVBAR SECTION
     ============================================ -->
-    <nav class="navbar">
-        <!-- Hamburger Menu - LEFT SIDE -->
-        <div class="hamburger" id="hamburgerMenu">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
+<nav class="navbar">
+    <div class="hamburger" id="hamburgerMenu">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+    
+    <a href="index.html" class="logo">Beauty Bar ✨</a>
+    
+    <!-- Mobile Login Button -->
+    <div class="login-mobile">
+        <button class="btn btn-outline" id="customerLoginBtnMobile">Login</button>
+    </div>
+    
+    <div class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="#services">Services</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#team">Our Team</a>
+        <a href="booking.html">Book Now</a>
+        <a href="gift-card.html">Gift Cards</a>
+        <a href="history.html">My Bookings</a>
+        
+        <div class="social-nav">
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
         </div>
         
-        <!-- Logo - CENTER -->
-        <a href="index.html" class="logo">Beauty Bar ✨</a>
-        
-        <!-- Mobile Login Button - RIGHT SIDE -->
-        <div class="login-mobile">
-    <button class="btn btn-outline" id="customerLoginBtnMobile">Login</button>
-        </div>  
-        <!-- Navigation Links -->
-        <div class="nav-links" id="navLinks">
-            <a href="index.html">Home</a>
-            <a href="#services">Services</a>
-            <a href="#gallery">Gallery</a>
-            <a href="#team">Our Team</a>
-            <a href="booking.html">Book Now</a>
-            <a href="gift-card.html">Gift Cards</a>
-            <a href="history.html">My Bookings</a>
-            
-            <div class="social-nav">
-                <a href="https://www.instagram.com/sandhya.rathi6921" class="social-icon" target="_blank"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="social-icon" target="_blank"><i class="fab fa-youtube"></i></a>
-                <a href="#" class="social-icon" target="_blank"><i class="fab fa-facebook-f"></i></a>
-            </div>
-            
-        <button class="btn btn-outline" id="customerLoginBtn">
-    <i class="fas fa-sign-in-alt"></i> Login
-        </button>
-        </div>
-    </nav>
+        <!-- Desktop Login Button -->
+        <button class="btn btn-outline" id="customerLoginBtn">Login</button>
+    </div>
+</nav>
 
     <!-- Floating WhatsApp Button -->
     <a href="https://wa.me/917052206406?text=Hello%20Beauty%20Bar%20Salon%2C%20I%20want%20to%20book%20an%20appointment" class="whatsapp-float" target="_blank">
@@ -85,7 +82,7 @@
 <section class="hero" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.pexels.com/photos/3992872/pexels-photo-3992872.jpeg?w=1920&h=1080&fit=crop'); background-size: cover; background-position: center; background-repeat: no-repeat;">
     <div class="hero-content">
         <h1>Where Beauty <span>Meets Luxury</span></h1>
-        <p>Experience premium salon services in an elegant atmosphere. Book your appointment today and get 30% off on your first visit!</p>
+  <p>Experience premium salon services in an elegant atmosphere. Book your appointment today and get 30% off on your first visit!</p>
         <div class="hero-buttons">
             <a href="booking.html" class="btn btn-primary">Book Appointment</a>
             <a href="#gallery" class="btn btn-outline">View Gallery</a>
@@ -420,8 +417,7 @@
         </div>
     </div>
   </footer>
-<!-- Login Modal -->
-    <!-- ============================================
+<!-- ============================================
      CUSTOMER LOGIN MODAL
 ============================================ -->
 <div class="modal" id="customerLoginModal">
@@ -483,7 +479,6 @@
          SCRIPTS (Load in correct order)
     ============================================ -->
     <script src="js/data-service.js"></script>
-    <script src="js/auth.js"></script>
     <script src="js/customer-auth.js"></script> 
     <script src="js/main.js"></script>
     <script src="js/gallery.js"></script>
