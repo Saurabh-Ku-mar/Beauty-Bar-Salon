@@ -1,5 +1,5 @@
 // frontend/js/customer-auth.js
-// Customer Authentication System
+// Complete Customer Authentication System - FIXED
 
 class CustomerAuth {
     constructor() {
@@ -133,7 +133,7 @@ class CustomerAuth {
     }
 
     // ============================================
-    // UI UPDATE
+    // UI UPDATE - FIXED
     // ============================================
     updateUI() {
         const isLoggedIn = this.isLoggedIn();
@@ -178,14 +178,18 @@ class CustomerAuth {
     }
 
     // ============================================
-    // LOGIN MODAL
+    // LOGIN MODAL - FIXED
     // ============================================
     openModal() {
+        console.log('🔓 Opening login modal...');
         const modal = document.getElementById('customerLoginModal');
         if (modal) {
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
             this.switchTab('login');
+        } else {
+            console.error('❌ Login modal not found!');
+            alert('Login modal not found. Please refresh the page.');
         }
     }
 
@@ -199,25 +203,38 @@ class CustomerAuth {
 
     switchTab(tab) {
         document.querySelectorAll('.customer-tab').forEach(t => {
-            t.classList.remove('active');
+            t.classList.toggle('active', t.dataset.tab === tab);
         });
         document.querySelectorAll('.customer-panel').forEach(p => {
-            p.classList.remove('active');
+            p.classList.toggle('active', p.dataset.panel === tab);
         });
-        
-        document.querySelector(`.customer-tab[data-tab="${tab}"]`)?.classList.add('active');
-        document.querySelector(`.customer-panel[data-panel="${tab}"]`)?.classList.add('active');
     }
 
     // ============================================
-    // EVENT LISTENERS
+    // EVENT LISTENERS - FIXED
     // ============================================
     setupEventListeners() {
-        // Close modal
-        document.querySelector('#customerLoginModal .close-modal')?.addEventListener('click', () => this.closeModal());
-        document.getElementById('customerLoginModal')?.addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) this.closeModal();
-        });
+        console.log('🔧 Setting up event listeners...');
+        
+        // Close modal button
+        const closeBtn = document.querySelector('#customerLoginModal .close-modal');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => this.closeModal());
+            console.log('✅ Close button attached');
+        } else {
+            console.warn('⚠️ Close button not found');
+        }
+        
+        // Click outside to close
+        const modal = document.getElementById('customerLoginModal');
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) {
+                    this.closeModal();
+                }
+            });
+            console.log('✅ Modal outside click attached');
+        }
         
         // Tab switching
         document.querySelectorAll('.customer-tab').forEach(tab => {
@@ -225,26 +242,35 @@ class CustomerAuth {
                 this.switchTab(tab.dataset.tab);
             });
         });
+        console.log('✅ Tabs attached');
         
         // Login form
-        document.getElementById('customerLoginForm')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('customerLoginEmail').value;
-            const password = document.getElementById('customerLoginPassword').value;
-            const success = await this.login(email, password);
-            if (success) this.closeModal();
-        });
+        const loginForm = document.getElementById('customerLoginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('customerLoginEmail').value;
+                const password = document.getElementById('customerLoginPassword').value;
+                const success = await this.login(email, password);
+                if (success) this.closeModal();
+            });
+            console.log('✅ Login form attached');
+        }
         
         // Register form
-        document.getElementById('customerRegisterForm')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('customerRegName').value;
-            const email = document.getElementById('customerRegEmail').value;
-            const password = document.getElementById('customerRegPassword').value;
-            const phone = document.getElementById('customerRegPhone').value;
-            const success = await this.register(name, email, password, phone);
-            if (success) this.closeModal();
-        });
+        const registerForm = document.getElementById('customerRegisterForm');
+        if (registerForm) {
+            registerForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const name = document.getElementById('customerRegName').value;
+                const email = document.getElementById('customerRegEmail').value;
+                const password = document.getElementById('customerRegPassword').value;
+                const phone = document.getElementById('customerRegPhone').value;
+                const success = await this.register(name, email, password, phone);
+                if (success) this.closeModal();
+            });
+            console.log('✅ Register form attached');
+        }
     }
 
     // ============================================
@@ -304,7 +330,7 @@ authStyles.textContent = `
         transition: all 0.3s;
     }
     .customer-tab.active {
-        background: var(--primary, #B76E79);
+        background: #B76E79;
         color: white;
     }
     .customer-panel {
@@ -326,6 +352,7 @@ authStyles.textContent = `
         padding: 10px;
         border: 1px solid #ddd;
         border-radius: 8px;
+        font-size: 1rem;
     }
     .customer-panel .btn {
         width: 100%;
@@ -334,6 +361,24 @@ authStyles.textContent = `
         border-radius: 8px;
         cursor: pointer;
         font-weight: 500;
+    }
+    .customer-panel .btn-primary {
+        background: linear-gradient(135deg, #B76E79, #F8D7DA);
+        color: white;
+    }
+    .close-modal {
+        float: right;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #999;
+        transition: color 0.3s;
+    }
+    .close-modal:hover {
+        color: #333;
+    }
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
     }
 `;
 document.head.appendChild(authStyles);
